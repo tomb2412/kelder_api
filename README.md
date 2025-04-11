@@ -7,7 +7,7 @@ API to serve Kelder sensing features and ship controlfas
 1. Install wsl Ubuntu 24.04 and the update kernel
 2. Install Docker Desktop and activat for wsl 2
 3. Clone repo
-4. Install pyenv, and create `virtualenv` and activate a new enviroment
+4. Install pyenv `curl https://pyenv.run | bash`, and create `virtualenv` and activate a new enviroment
     - 4.1. `vim basch file`
     - 4.2. `i` - insert mode. `esc` - escape. `:wq` - save and exit.
     - 4.3 Paste in export prompts
@@ -27,3 +27,9 @@ API to serve Kelder sensing features and ship controlfas
 - run the docker container `docker run -p 8000:80 kelder_api`
 
 - Docs are available at: http://localhost:8000/docs#/
+
+
+# Connecting to the Pi
+
+- SSH ip address: `ssh tom@192.168.1.167` password: tom
+- Activate virtual enviroment: `pyenv activate kelder_api_env`
