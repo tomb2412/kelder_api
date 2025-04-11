@@ -33,3 +33,11 @@ API to serve Kelder sensing features and ship controlfas
 
 - SSH ip address: `ssh tom@192.168.1.167` password: tom
 - Activate virtual enviroment: `pyenv activate kelder_api_env`
+
+# Packages
+
+- docker `sudo apt install docker.io`
+
+
+# Troubleshooting
+- poetry hangs. Run command verbose -vvv. For keyring `poetry config keyring.enabled false`
