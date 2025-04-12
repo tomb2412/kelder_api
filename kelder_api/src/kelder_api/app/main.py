@@ -7,9 +7,9 @@ import time
 import string
 import pynmea2
 
+from src.kelder_api.components.gps.views import router as gps_route
 
 app = FastAPI()
-
 
 @app.get("/")
 def read_root():
@@ -21,21 +21,4 @@ def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
 
 
-@app.get("/gps_coords")
-def get_gps_coords():
-    port="/dev/ttyAMA0"
-    ser=serial.Serial(port, baudrate=9600, timeout=0.5)
-    dataout = pynmea2.NMEAStreamReader()
-    newdata=ser.readline()
-
-    if newdata[0:6] == "$GPRMC":
-        newmsg=pynmea2.parse(newdata)
-        lat=newmsg.latitude
-        lng=newmsg.longitude
-        gps = "Latitude=" + str(lat) + "and Longitude=" + str(lng)
-
-        return {"Latitude":  str(lat), "Longitude": str(lng)}
-    
-    else:
-        return {}
-
+app.include_router(gps_route)
