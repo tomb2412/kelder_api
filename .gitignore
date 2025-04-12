@@ -1,3 +1,4 @@
 **/logs
 **/_pychache__
+*.pyc
 **/.vscode
