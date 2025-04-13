@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from src.kelder_api.components.gps.models import gpsCoords
+from src.kelder_api.components.gps.models import GpsMeasurementData
 from src.kelder_api.components.gps.service import getGpCoords
 
 router = APIRouter(tags=["Core Sensing"])
