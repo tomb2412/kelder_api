@@ -7,6 +7,5 @@ router = APIRouter(tags = ["Health"])
 
 @router.get("/health_check")
 def read_root():
-    logger.info("Health ok")
-    logger.debug("Some debugging info")
+    logger.debug("Health check success")
     return True
