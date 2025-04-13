@@ -42,3 +42,10 @@ API to serve Kelder sensing features and ship controlfas
 
 # Troubleshooting
 - poetry hangs. Run command verbose -vvv. For keyring `poetry config keyring.enabled false`
+
+
+# The GPS Module
+
+- Component NEO-6M GPS [data sheet](https://components101.com/sites/default/files/component_datasheet/NEO6MV2%20GPS%20Module%20Datasheet.pdf)
+- NMEA GPRMB data: [GPRMB structure](https://aprs.gids.nl/nmea/#rmc)
+- pynmea2 parsing data: [git hub](https://github.com/Knio/pynmea2)
