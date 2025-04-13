@@ -9,9 +9,8 @@ from src.kelder_api.components.gps.views import router as gps_route
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
-    filename=f"logs/{datetime.now().strftime("%Y-%m-%d")}_kelder_api.log",
+    filename=f"src/kelder_api/logs/{datetime.now().strftime("%Y-%m-%d")}_kelder_api.log",
     encoding = "utf-8",
-    filemode = "a",
     format="{levelname} - {asctime} - {message}",
     style = "{",
     datefmt = "%Y-%m-%d %H:%M:%S",
