@@ -1,13 +1,11 @@
 import asyncio
 import serial_asyncio
-import time
-import string
 import pynmea2
 import serial
 
 import logging
 
-from src.kelder_api.components.gps.models import GpsMeasurementData, GpsException
+from src.kelder_api.components.gps.models import GpsMeasurementData, GpsException, GpsRedisData
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +15,19 @@ GPS_SERIAL_CONF = {
     "timeout": 0.5
 }
 
-async def getGpCoords() -> GpsMeasurementData:
+async def SerialConnection():
+    try:
+        reader, _ = await serial_asyncio.open_serial_connection(**GPS_SERIAL_CONF)
+        return reader
+
+    except serial.SerialException:
+        logger.error("Serial connection to the GPS or port cannot be established")
+
+    except RecursionError:
+        logger.error("No newline read in GPS serial file, and recusion limit raised")
+
+
+async def getGpCoords(serial_reader) -> GpsMeasurementData:
     """
     Access latest GPS data via the serial port
 
@@ -33,42 +43,24 @@ async def getGpCoords() -> GpsMeasurementData:
     gps_data_found = True
 
     try:
-        reader, _ = await serial_asyncio.open_serial_connection(**GPS_SERIAL_CONF)
-        #ser=serial.Serial(**GPS_SERIAL_CONF)
-    except serial.SerialException:
-        logger.error("Serial connection to the GPS or port cannot be established")
-
-    except RecursionError:
-        logger.error("No newline read in GPS serial file, and recusion limit raised")
-
-    try:
         while gps_data_found:
-            newdata = await reader.readline()
+            newdata = await serial_reader.readline()
             newdata = newdata.decode("utf-8", errors="ignore").strip()
 
             if newdata[0:6] == "$GPRMC":
                 nmea_data_line=pynmea2.parse(newdata)
                 logger.debug("Parsed GPS data: %s", nmea_data_line)
 
-                gps_coords = GpsMeasurementData(
+                gps_coords = GpsRedisData(
                     timestamp = nmea_data_line.timestamp,
                     latitude_nmea = nmea_data_line.lat,
-                    latitude_dec = nmea_data_line.latitude,
-                    latitude_fmt = '%02d°%02d′%07.4f″' % (nmea_data_line.latitude, nmea_data_line.latitude_minutes, nmea_data_line.latitude_seconds),
                     longitude_nmea = nmea_data_line.lon,
-                    longitude_dec = nmea_data_line.longitude,
-                    longitude_fmt = '%02d°%02d′%07.4f″' % (nmea_data_line.longitude, nmea_data_line.longitude_minutes, nmea_data_line.longitude_seconds),
                     speed_over_ground= nmea_data_line.spd_over_grnd,
-                    true_course = nmea_data_line.true_course,
-                    magnetic_variation_absolute = nmea_data_line.mag_variation,
-                    magnetic_variation_direction = nmea_data_line.mag_var_dir
-                    )
-                logger.debug(f"Timestamp: {gps_coords.timestamp}, Latitude: {gps_coords.latitude_fmt}, Longitude: {gps_coords.longitude_fmt}")
+                )
+
+                logger.debug(f"Timestamp: {gps_coords.timestamp}, Latitude: {gps_coords.latitude_nmea}, Longitude: {gps_coords.longitude_nmea}")
 
                 return gps_coords
-
-            # else:
-            #     time.sleep(0.001)
 
         else:
             message = "NMEA GPRMC format not identified on serial port"

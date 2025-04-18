@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  kelder_api:
+    build: . # Assuming you've already built this image
+    container_name: kelder_api
+    privileged: true
+    tty: true
+    volumes:
+      - /dev:/dev
+    ports:
+      - "8000:80"
+    depends_on:
+      - redis

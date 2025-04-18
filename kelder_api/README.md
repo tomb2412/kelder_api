@@ -25,8 +25,8 @@ API to serve Kelder sensing features and ship controlfas
 - from the app directory, poetry install and virtual enviroment:
 `poetry run uvicorn src.kelder_api.app.main:app --reload --port=8000 --host=0.0.0.0`
 - build docker container `sudo docker build -t kelder_api .`
-- run the docker container `sudo docker run -rm --privileged --tty --volume /dev:/dev -p 8000:80 kelder_api`
-
+- run the docker container `sudo docker run --rm --privileged --tty --volume /dev:/dev -p 8000:80 kelder_api`
+- usefull docker commands `sudo docker ps`, `sudo docker kill container name`, `sudo docker exec -it <container name> bash`
 - Docs are available at: http://localhost:8000/docs#/
 
 

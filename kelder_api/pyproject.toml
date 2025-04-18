@@ -14,6 +14,7 @@ dependencies = [
     "pynmea2 (>=1.19.0,<2.0.0)",
     "pyserial-asyncio (>=0.6,<0.7)",
     "asyncio (>=3.4.3,<4.0.0)",
+    "redis (>=5.2.1,<6.0.0)",
 ]
 
 [tool.poetry]
