@@ -3,9 +3,15 @@ from typing import Union
 from datetime import datetime
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.kelder_api.components.health.views import router as health_route
 from src.kelder_api.components.gps.views import router as gps_route
+
+# Allow requests from your frontend's origin
+origins = [
+    "http://localhost:5173",  # Vite dev server
+]
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
@@ -18,6 +24,14 @@ logging.basicConfig(
 )
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # or use ["*"] for all origins (less secure)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(health_route)
 app.include_router(gps_route)
