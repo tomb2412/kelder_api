@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+  kelder_api:
+    build: . # Assuming you've already built this image
+    container_name: kelder_api
+    privileged: true
+    tty: true
+    volumes:
+      - /dev:/dev
+    ports:
+      - "8000:80"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+
+  worker:
+    build: .
+    privileged: true
+    environment:
+      REDIS_HOST: redis
+    devices:
+      - "/dev/ttyyAMA0:/dev/ttyyAMA0"
+    command: [ "poetry", "run", "python", "-m", "src.kelder_api.app.background_orchestrator" ]
+    depends_on:
+      - redis

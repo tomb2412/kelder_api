@@ -2,6 +2,8 @@ import asyncio
 import serial_asyncio
 import pynmea2
 import serial
+import redis
+import os
 
 import logging
 
@@ -9,25 +11,14 @@ from src.kelder_api.components.gps.models import GpsMeasurementData, GpsExceptio
 
 logger = logging.getLogger(__name__)
 
+
 GPS_SERIAL_CONF = {
     "url": "/dev/ttyAMA0",
     "baudrate": 9600,
     "timeout": 0.5
 }
 
-async def SerialConnection():
-    try:
-        reader, _ = await serial_asyncio.open_serial_connection(**GPS_SERIAL_CONF)
-        return reader
-
-    except serial.SerialException:
-        logger.error("Serial connection to the GPS or port cannot be established")
-
-    except RecursionError:
-        logger.error("No newline read in GPS serial file, and recusion limit raised")
-
-
-async def getGpCoords(serial_reader) -> GpsMeasurementData:
+async def SenseGpCoords() -> GpsMeasurementData:
     """
     Access latest GPS data via the serial port
 
@@ -43,8 +34,14 @@ async def getGpCoords(serial_reader) -> GpsMeasurementData:
     gps_data_found = True
 
     try:
+        reader, _ = await serial_asyncio.open_serial_connection(**GPS_SERIAL_CONF)
+
+    except serial.SerialException:
+        logger.error("Serial connection to the GPS or port cannot be established. Sometimes due to containers with incorrect access")
+
+    try:
         while gps_data_found:
-            newdata = await serial_reader.readline()
+            newdata = await reader.readline()
             newdata = newdata.decode("utf-8", errors="ignore").strip()
 
             if newdata[0:6] == "$GPRMC":
@@ -68,7 +65,36 @@ async def getGpCoords(serial_reader) -> GpsMeasurementData:
             raise GpsException(message)
     except pynmea2.ParseError:
         logger.error('Error occured parsing GPS serial output:\n%s', e)
+    except RecursionError:
+        logger.error("No newline read in GPS serial file, and recusion limit raised")
+
     except Exception as error:
         message = "An unhandled exception occured while reading gps data. \n%s"
         logger.error(message, error)
         raise GpsException(message)
+    
+
+async def ReadGPSCoords() -> GpsRedisData:
+    """
+    ADD DOCSTRING
+    """
+
+    r = redis.Redis(
+        host=os.getenv("REDIS_HOST", "localhost"),
+        port=int(os.getenv("REDIS_PORT", 6379)),
+        decode_responses=True
+    )
+
+    mode = r.get("ships_status")
+    raw_gps_read = r.get("gps:Latest")
+
+    timestamp, lat, lon, speed_over_ground = raw_gps_read.split("|")
+    gps_coords = GpsMeasurementData(
+        timestamp = timestamp,
+        latitude_nmea = lat,
+        longitude_nmea = lon,
+        speed_over_ground= speed_over_ground,
+    )
+    r.close()
+    return gps_coords
+
