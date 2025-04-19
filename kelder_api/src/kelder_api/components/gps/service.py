@@ -3,6 +3,7 @@ import serial_asyncio
 import pynmea2
 import serial
 import redis
+from redis.exceptions import ConnectionError, TimeoutError
 import os
 
 import logging
@@ -88,24 +89,36 @@ async def SenseGpCoords() -> GpsMeasurementData:
 
 async def ReadGPSCoords() -> GpsRedisData:
     """
-    ADD DOCSTRING
+    Reads latest GPS data from Redis seriver. 
     """
 
-    r = redis.Redis(
-        host=os.getenv("REDIS_HOST", "localhost"),
-        port=int(os.getenv("REDIS_PORT", 6379)),
-        decode_responses=True,
-    )
+    try:
+        r = redis.Redis(
+            host=os.getenv("REDIS_HOST", "localhost"),
+            port=int(os.getenv("REDIS_PORT", 6379)),
+            decode_responses=True,
+        )
 
-    mode = r.get("ships_status")
-    raw_gps_read = r.get("gps:Latest")
+        mode = r.get("ships_status")
+        raw_gps_read = r.get("gps:Latest")
 
-    timestamp, lat, lon, speed_over_ground = raw_gps_read.split("|")
-    gps_coords = GpsMeasurementData(
-        timestamp=timestamp,
-        latitude_nmea=lat,
-        longitude_nmea=lon,
-        speed_over_ground=speed_over_ground,
-    )
-    r.close()
-    return gps_coords
+        if mode is None or raw_gps_read is None:
+            msg = "The redis response reading keys is None. Check worker is writing successfully."
+            logger.error(msg)
+            raise GpsException(msg)
+
+        timestamp, lat, lon, speed_over_ground = raw_gps_read.split("|")
+        gps_coords = GpsMeasurementData(
+            timestamp=timestamp,
+            latitude_nmea=lat,
+            longitude_nmea=lon,
+            speed_over_ground=speed_over_ground,
+        )
+        r.close()
+
+        return gps_coords
+
+    except (ConnectionError, TimeoutError):
+        msg = "Connection to redis server failed."
+        logger.error(msg)
+        raise GpsException(msg)
