@@ -19,16 +19,13 @@ ENV PYTHONFAULTHANDLER=1 \
     POETRY_VERSION=2.1.0
 
 # Creating folders, and files for a project:
-COPY ./kelder_api/pyproject.toml /code/pyproject.toml
-COPY ./kelder_api/README.md /code/README.md
+COPY ./pyproject.toml /code/pyproject.toml
+COPY ./README.md /code/README.md
 COPY . /code
 
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-root
 
-#CMD ["fastapi", "run", "src/kelder_api/app/main.py", "--port", "80"]
-
 EXPOSE 80
 
-CMD ["poetry", "run", "uvicorn" ,"kelder_api.src.kelder_api.app.main:app","--reload", "--port", "80", "--proxy-headers", "--host", "0.0.0.0"]
-#main:app --reload --port=8000 --host=0.0.0.0
+CMD ["poetry", "run", "uvicorn" ,"src.kelder_api.app.main:app","--reload", "--port", "80", "--proxy-headers", "--host", "0.0.0.0"]
