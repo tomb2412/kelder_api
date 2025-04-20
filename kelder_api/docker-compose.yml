@@ -18,6 +18,7 @@ services:
     tty: true
     volumes:
       - /dev:/dev
+      - logs:/app/logs
     ports:
       - "8000:80"
     depends_on:
@@ -28,6 +29,8 @@ services:
   worker:
     build: .
     privileged: true
+    volumes:
+      - logs:/app/logs
     environment:
       REDIS_HOST: redis
     devices:
@@ -35,3 +38,6 @@ services:
     command: [ "poetry", "run", "python", "-m", "src.kelder_api.app.background_orchestrator" ]
     depends_on:
       - redis
+
+volumes:
+  logs:
