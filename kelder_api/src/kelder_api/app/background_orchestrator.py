@@ -26,7 +26,7 @@ stop_event = asyncio.Event()
 
 class mode(Enum):
     active = 1  # Seconds between samples
-    idle = 30
+    idle = 5
 
 
 VELOCITY_THRESHOLD = 1.5  # speed exceeds 1.5 kts
@@ -70,7 +70,7 @@ async def initiate_sensing():
 
             r.set("gps:Latest", timestamped_gps.redis_string)
             r.lpush("gps:History", timestamped_gps.redis_string)
-            r.ltrim("gps:History", 0, 1000)
+            r.ltrim("gps:History", 0, 10)
 
             r.set("ships_status", status)
 

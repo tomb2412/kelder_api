@@ -5,6 +5,8 @@ import serial
 import redis
 from redis.exceptions import ConnectionError, TimeoutError
 import os
+from datetime import datetime
+from typing import Tuple, List
 
 import logging
 
@@ -13,6 +15,7 @@ from src.kelder_api.components.gps.models import (
     GpsException,
     GpsRedisData,
 )
+from src.kelder_api.components.gps.utils import time_elapsed_seconds, gps_velocity
 
 from pydantic import ValidationError
 
@@ -20,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 GPS_SERIAL_CONF = {"url": "/dev/ttyAMA0", "baudrate": 9600, "timeout": 0.5}
-
+MAX_DELAY_SECONDS = 30
 
 async def SenseGpCoords() -> GpsMeasurementData:
     """
@@ -92,33 +95,60 @@ async def ReadGPSCoords() -> GpsRedisData:
     Reads latest GPS data from Redis seriver. 
     """
 
+    mode, timestamp, lat, lon, speed_over_ground, measurement_latency, gps_history = await _read_redis_gps()
+    
+    velocity = gps_velocity(gps_history)
+
+    gps_coords = GpsMeasurementData(
+        mode = mode,
+        measurement_latency = measurement_latency,
+        timestamp=timestamp,
+        latitude_nmea=lat,
+        longitude_nmea=lon,
+        speed_over_ground=speed_over_ground,
+    )
+
+    return gps_coords
+
+
+async def _read_redis_gps() -> Tuple[str, str, float, float, float, float, List[str]]:
+    """
+    Reads and parses redis gps measurments
+    """
     try:
         r = redis.Redis(
             host=os.getenv("REDIS_HOST", "localhost"),
             port=int(os.getenv("REDIS_PORT", 6379)),
             decode_responses=True,
         )
-
+            
         mode = r.get("ships_status")
         raw_gps_read = r.get("gps:Latest")
-
-        if mode is None or raw_gps_read is None:
-            msg = "The redis response reading keys is None. Check worker is writing successfully."
-            logger.error(msg)
-            raise GpsException(msg)
-
-        timestamp, lat, lon, speed_over_ground = raw_gps_read.split("|")
-        gps_coords = GpsMeasurementData(
-            timestamp=timestamp,
-            latitude_nmea=lat,
-            longitude_nmea=lon,
-            speed_over_ground=speed_over_ground,
-        )
-        r.close()
-
-        return gps_coords
+        gps_history = r.lrange("gps:History", 0, 4)
 
     except (ConnectionError, TimeoutError):
         msg = "Connection to redis server failed."
         logger.error(msg)
         raise GpsException(msg)
+    except AttributeError:
+        msg = "Could not read redis GPS data"
+        logger.error(msg)
+        raise GpsException(msg)
+
+    if mode is None or raw_gps_read is None:
+        msg = "The redis response reading keys is None. Check worker is writing successfully."
+        logger.error(msg)
+        raise GpsException(msg)
+
+    timestamp, lat, lon, speed_over_ground = raw_gps_read.split("|")
+    gps_history_parsed = [gps_history_reading.split("|") for gps_history_reading in gps_history]
+
+    measurement_latency = time_elapsed_seconds(timestamp)
+
+    if measurement_latency > MAX_DELAY_SECONDS:
+        msg = "Last successful GPS measurement occured %s seconds ago"
+        logger.error(msg, measurement_latency)
+
+    r.close()
+
+    return mode, timestamp, lat, lon, speed_over_ground, measurement_latency, gps_history_parsed
