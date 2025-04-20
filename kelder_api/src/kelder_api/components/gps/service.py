@@ -1,15 +1,16 @@
 import asyncio
 import serial_asyncio
-import time
-import string
 import pynmea2
 import serial
+import redis
+import os
 
 import logging
 
-from src.kelder_api.components.gps.models import GpsMeasurementData, GpsException
+from src.kelder_api.components.gps.models import GpsMeasurementData, GpsException, GpsRedisData
 
 logger = logging.getLogger(__name__)
+
 
 GPS_SERIAL_CONF = {
     "url": "/dev/ttyAMA0",
@@ -17,7 +18,7 @@ GPS_SERIAL_CONF = {
     "timeout": 0.5
 }
 
-async def getGpCoords() -> GpsMeasurementData:
+async def SenseGpCoords() -> GpsMeasurementData:
     """
     Access latest GPS data via the serial port
 
@@ -34,12 +35,9 @@ async def getGpCoords() -> GpsMeasurementData:
 
     try:
         reader, _ = await serial_asyncio.open_serial_connection(**GPS_SERIAL_CONF)
-        #ser=serial.Serial(**GPS_SERIAL_CONF)
-    except serial.SerialException:
-        logger.error("Serial connection to the GPS or port cannot be established")
 
-    except RecursionError:
-        logger.error("No newline read in GPS serial file, and recusion limit raised")
+    except serial.SerialException:
+        logger.error("Serial connection to the GPS or port cannot be established. Sometimes due to containers with incorrect access")
 
     try:
         while gps_data_found:
@@ -50,25 +48,16 @@ async def getGpCoords() -> GpsMeasurementData:
                 nmea_data_line=pynmea2.parse(newdata)
                 logger.debug("Parsed GPS data: %s", nmea_data_line)
 
-                gps_coords = GpsMeasurementData(
+                gps_coords = GpsRedisData(
                     timestamp = nmea_data_line.timestamp,
                     latitude_nmea = nmea_data_line.lat,
-                    latitude_dec = nmea_data_line.latitude,
-                    latitude_fmt = '%02d°%02d′%07.4f″' % (nmea_data_line.latitude, nmea_data_line.latitude_minutes, nmea_data_line.latitude_seconds),
                     longitude_nmea = nmea_data_line.lon,
-                    longitude_dec = nmea_data_line.longitude,
-                    longitude_fmt = '%02d°%02d′%07.4f″' % (nmea_data_line.longitude, nmea_data_line.longitude_minutes, nmea_data_line.longitude_seconds),
                     speed_over_ground= nmea_data_line.spd_over_grnd,
-                    true_course = nmea_data_line.true_course,
-                    magnetic_variation_absolute = nmea_data_line.mag_variation,
-                    magnetic_variation_direction = nmea_data_line.mag_var_dir
-                    )
-                logger.debug(f"Timestamp: {gps_coords.timestamp}, Latitude: {gps_coords.latitude_fmt}, Longitude: {gps_coords.longitude_fmt}")
+                )
+
+                logger.debug(f"Timestamp: {gps_coords.timestamp}, Latitude: {gps_coords.latitude_nmea}, Longitude: {gps_coords.longitude_nmea}")
 
                 return gps_coords
-
-            # else:
-            #     time.sleep(0.001)
 
         else:
             message = "NMEA GPRMC format not identified on serial port"
@@ -76,7 +65,36 @@ async def getGpCoords() -> GpsMeasurementData:
             raise GpsException(message)
     except pynmea2.ParseError:
         logger.error('Error occured parsing GPS serial output:\n%s', e)
+    except RecursionError:
+        logger.error("No newline read in GPS serial file, and recusion limit raised")
+
     except Exception as error:
         message = "An unhandled exception occured while reading gps data. \n%s"
         logger.error(message, error)
         raise GpsException(message)
+    
+
+async def ReadGPSCoords() -> GpsRedisData:
+    """
+    ADD DOCSTRING
+    """
+
+    r = redis.Redis(
+        host=os.getenv("REDIS_HOST", "localhost"),
+        port=int(os.getenv("REDIS_PORT", 6379)),
+        decode_responses=True
+    )
+
+    mode = r.get("ships_status")
+    raw_gps_read = r.get("gps:Latest")
+
+    timestamp, lat, lon, speed_over_ground = raw_gps_read.split("|")
+    gps_coords = GpsMeasurementData(
+        timestamp = timestamp,
+        latitude_nmea = lat,
+        longitude_nmea = lon,
+        speed_over_ground= speed_over_ground,
+    )
+    r.close()
+    return gps_coords
+

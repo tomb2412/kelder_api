@@ -4,24 +4,31 @@ from typing import Optional
 
 from datetime import time
 
-class GpsMeasurementData(BaseModel):
+from src.kelder_api.components.gps.utils import nmea_to_dms
+
+class GpsRedisData(BaseModel):
     timestamp: time = Field(description="Time stamp of the GPS measurement")
-
-    latitude_nmea: float = Field(description="Latitude NMEA output: DDDMM.MMMM (\"Degrees, minutes, seconds\")")
-    latitude_dec: float = Field(description= "Latitude in decimal representation")
-    latitude_fmt: str = Field(description = "Latitude string formatted output \"DD°MM′SS.SSSS″\"")
-
+    latitude_nmea: float = Field(description="Latitude NMEA output: DDMM.MMMM (\"Degrees, minutes, seconds\")")
     longitude_nmea: float = Field(description="Longitude NMEA output: DDDMM.MMMM (\"Degrees, minutes, seconds\")")
-    longitude_dec: float = Field(description= "Longitude in decimal representation")
-    longitude_fmt: str = Field(description = "Longitude string formatted output \"DD°MM′SS.SSSS″\"")
-
     speed_over_ground: float = Field(description= "Speed over ground in knots")
 
-    true_course: Optional[float] = Field(description = "True course")
-    magnetic_variation_absolute: str = Field(description="Magnetic variation")
-    magnetic_variation_direction: str = Field(decription="Direction of magnetic variation")
-    #Computed field for heading here
+    @computed_field
+    @property
+    def redis_string(self)->str:
+        return f"{self.timestamp}|{self.latitude_nmea}|{self.longitude_nmea}|{self.speed_over_ground}"
+
+class GpsMeasurementData(GpsRedisData):
+    @computed_field
+    @property
+    def latitude_fmt(self)->str:
+        return nmea_to_dms(self.latitude_nmea, is_latitude=True)
     
+    @computed_field
+    @property
+    def longitude_fmt(self)->str:
+        return nmea_to_dms(self.longitude_nmea, is_latitude=False)
+
+
 class GpsException(Exception):
     def __init__(self, msg):
         super().__init__(msg)
