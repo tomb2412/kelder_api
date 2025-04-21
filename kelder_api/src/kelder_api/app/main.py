@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.kelder_api.components.health.views import router as health_route
 from src.kelder_api.components.gps.views import router as gps_route
-
+from src.kelder_api.components.ultrasound.views import router as bilge_depth_route
 # Allow requests from your frontend's origin
 origins = [
     "http://localhost:5173",  # Vite dev server
@@ -35,3 +35,4 @@ app.add_middleware(
 
 app.include_router(health_route)
 app.include_router(gps_route)
+app.include_router(bilge_depth_route)

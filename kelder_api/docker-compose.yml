@@ -12,13 +12,18 @@ services:
           memory: 128M
 
   kelder_api:
-    build: . # Assuming you've already built this image
+    build: .
     container_name: kelder_api
     privileged: true
     tty: true
     volumes:
       - /dev:/dev
       - logs:/app/logs
+    devices:
+      - /dev/gpiomem
+      - /dev/mem
+    cap_add:
+      - SYS_RAWIO
     ports:
       - "8000:80"
     depends_on:
