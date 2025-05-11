@@ -97,6 +97,7 @@ async def ReadGPSCoords() -> GpsRedisData:
 
     mode, timestamp, lat, lon, speed_over_ground, measurement_latency, gps_history = await _read_redis_gps()
     
+    #To finish...
     velocity = gps_velocity(gps_history)
 
     gps_coords = GpsMeasurementData(

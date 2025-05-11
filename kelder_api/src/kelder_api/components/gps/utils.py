@@ -37,4 +37,6 @@ def gps_velocity(gps_history_raw: List[str]) -> Tuple[float, float, float]:
     lat_end = gps_history_raw[4][1]
     long_end = gps_history_raw[4][2]
 
+    # TO FINISH....
+
 

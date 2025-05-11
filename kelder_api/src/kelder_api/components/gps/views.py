@@ -1,16 +1,15 @@
 import logging
 
 from fastapi import APIRouter
-import redis
+#import redis
 
-from src.kelder_api.components.gps.models import GpsMeasurementData
-from src.kelder_api.components.gps.service import ReadGPSCoords, SenseGpCoords
+from src.kelder_api.components.gps.service import ReadGPSCoords
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["Core Sensing"])
 
-r = redis.Redis(host="redis", port=6379, decode_responses=True)
+#r = redis.Redis(host="redis", port=6379, decode_responses=True)
 
 
 @router.get("/gps_coords")
