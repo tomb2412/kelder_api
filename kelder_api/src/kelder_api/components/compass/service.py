@@ -3,7 +3,7 @@ import math as m
 
 import numpy as np
 import board
-import adafruit_lis2mdl.LIS2MDL
+import adafruit_lis2mdl
 
 from src.kelder_api.components.compass.exceptions import I2CConnectionFailure
 
