@@ -60,3 +60,10 @@ API to serve Kelder sensing features and ship controlfas
 # The Ultasound
 
  - install package: `sudo apt install python3-gpiozero python3-rpi.gpio`
+ - Enable gpio through the interface options `sudo raspi-config` -> Go to Interface Options -> Enable GPIO
+
+
+ # The Compass
+ - [wiring documentation](https://learn.adafruit.com/lsm303-accelerometer-slash-compass-breakout/python-circuitpython)
+ - [datasheet](https://www.mouser.com/datasheet/2/389/lsm303agr-954987.pdf)
+ - Ensure the sensor is correctly wired with sudo i2cdetect -y 1
