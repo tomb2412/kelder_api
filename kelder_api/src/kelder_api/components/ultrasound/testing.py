@@ -7,7 +7,7 @@ TRIG = 23
 ECHO = 24
 
 
-sensor = DistanceSensor(23, 24)
+sensor = DistanceSensor(TRIG, ECHO)
 
 while True:
     print('Distance to nearest object is', sensor.distance, 'm')

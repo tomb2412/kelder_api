@@ -79,8 +79,8 @@ async def SenseGpCoords() -> GpsMeasurementData:
             message = "NMEA GPRMC format not identified on serial port"
             logger.error(message)
             raise GpsException(message)
-    except pynmea2.ParseError:
-        logger.error("Error occured parsing GPS serial output:\n%s", e)
+    except pynmea2.ParseError as error:
+        logger.error("Error occured parsing GPS serial output:\n%s", error)
     except RecursionError:
         logger.error("No newline read in GPS serial file, and recusion limit raised")
 
