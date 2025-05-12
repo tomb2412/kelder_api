@@ -19,7 +19,10 @@ async def readCompassHeading():
     magnetic_field_vector = np.array(magnetometer.magnetic)
     normalised_field_vector = magnetic_field_vector/np.linalg.norm(magnetic_field_vector)
 
-    heading = m.degrees(m.atac2(normalised_field_vector[1],normalised_field_vector[0]))
+    heading = m.degrees(m.atan2(normalised_field_vector[1],normalised_field_vector[0]))
     heading = round(heading)
+    
+    if heading < 0:
+        heading += 360
 
     return(heading)
