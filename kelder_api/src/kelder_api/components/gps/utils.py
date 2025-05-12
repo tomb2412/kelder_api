@@ -15,13 +15,14 @@ def nmea_to_dms(nmea_val, is_latitude=True) -> str:
 
     return "%+03d°%02d′%04.2f″" % (degrees, minutes, seconds)
 
-def time_elapsed_seconds(time_str: str)->datetime:
+
+def time_elapsed_seconds(time_str: str) -> datetime:
     time_format = "%H:%M:%S+00:00"
 
     now = datetime.now()
 
     parsed_time = datetime.strptime(time_str, time_format)
-    parsed_time = parsed_time.replace(year = now.year, month = now.month, day = now.day)
+    parsed_time = parsed_time.replace(year=now.year, month=now.month, day=now.day)
 
     time_elapsed_seconds = (now - parsed_time).total_seconds()
 
@@ -38,5 +39,3 @@ def gps_velocity(gps_history_raw: List[str]) -> Tuple[float, float, float]:
     long_end = gps_history_raw[4][2]
 
     # TO FINISH....
-
-

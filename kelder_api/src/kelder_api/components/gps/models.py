@@ -24,7 +24,7 @@ class GpsRedisData(BaseModel):
 
 
 class GpsMeasurementData(GpsRedisData):
-    measurement_latency: float = Field(description = "Warning about GPS values")
+    measurement_latency: float = Field(description="Warning about GPS values")
 
     @computed_field
     @property

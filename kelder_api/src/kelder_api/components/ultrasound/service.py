@@ -9,8 +9,8 @@ ECHO = 24
 
 logger = logging.getLogger(__name__)
 
-async def getBilgeDepth()->float:
-    distance = DistanceSensor(TRIG,ECHO)
-    logging.debug("Succesfully read unltrasound distance: %s",distance)
-    return {"bilge_depth": distance}
 
+async def getBilgeDepth() -> float:
+    distance = DistanceSensor(TRIG, ECHO)
+    logging.debug("Succesfully read unltrasound distance: %s", distance)
+    return {"bilge_depth": distance}

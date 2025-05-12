@@ -10,5 +10,5 @@ ECHO = 24
 sensor = DistanceSensor(TRIG, ECHO)
 
 while True:
-    print('Distance to nearest object is', sensor.distance, 'm')
-    sleep(0.1)    
+    print("Distance to nearest object is", sensor.distance, "m")
+    sleep(0.1)

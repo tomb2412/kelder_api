@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 GPS_SERIAL_CONF = {"url": "/dev/ttyAMA0", "baudrate": 9600, "timeout": 0.5}
 MAX_DELAY_SECONDS = 30
 
+
 async def SenseGpCoords() -> GpsMeasurementData:
     """
     Access latest GPS data via the serial port
@@ -92,17 +93,25 @@ async def SenseGpCoords() -> GpsMeasurementData:
 
 async def ReadGPSCoords() -> GpsRedisData:
     """
-    Reads latest GPS data from Redis seriver. 
+    Reads latest GPS data from Redis seriver.
     """
 
-    mode, timestamp, lat, lon, speed_over_ground, measurement_latency, gps_history = await _read_redis_gps()
-    
-    #To finish...
+    (
+        mode,
+        timestamp,
+        lat,
+        lon,
+        speed_over_ground,
+        measurement_latency,
+        gps_history,
+    ) = await _read_redis_gps()
+
+    # To finish...
     velocity = gps_velocity(gps_history)
 
     gps_coords = GpsMeasurementData(
-        mode = mode,
-        measurement_latency = measurement_latency,
+        mode=mode,
+        measurement_latency=measurement_latency,
         timestamp=timestamp,
         latitude_nmea=lat,
         longitude_nmea=lon,
@@ -122,7 +131,7 @@ async def _read_redis_gps() -> Tuple[str, str, float, float, float, float, List[
             port=int(os.getenv("REDIS_PORT", 6379)),
             decode_responses=True,
         )
-            
+
         mode = r.get("ships_status")
         raw_gps_read = r.get("gps:Latest")
         gps_history = r.lrange("gps:History", 0, 4)
@@ -142,7 +151,9 @@ async def _read_redis_gps() -> Tuple[str, str, float, float, float, float, List[
         raise GpsException(msg)
 
     timestamp, lat, lon, speed_over_ground = raw_gps_read.split("|")
-    gps_history_parsed = [gps_history_reading.split("|") for gps_history_reading in gps_history]
+    gps_history_parsed = [
+        gps_history_reading.split("|") for gps_history_reading in gps_history
+    ]
 
     measurement_latency = time_elapsed_seconds(timestamp)
 
@@ -152,4 +163,12 @@ async def _read_redis_gps() -> Tuple[str, str, float, float, float, float, List[
 
     r.close()
 
-    return mode, timestamp, lat, lon, speed_over_ground, measurement_latency, gps_history_parsed
+    return (
+        mode,
+        timestamp,
+        lat,
+        lon,
+        speed_over_ground,
+        measurement_latency,
+        gps_history_parsed,
+    )
