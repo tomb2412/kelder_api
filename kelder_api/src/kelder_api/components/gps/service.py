@@ -1,23 +1,22 @@
 import asyncio
-import serial_asyncio
-import pynmea2
-import serial
-import redis
-from redis.exceptions import ConnectionError, TimeoutError
+import logging
 import os
 from datetime import datetime
-from typing import Tuple, List
+from typing import List, Tuple
 
-import logging
+import pynmea2
+import redis
+import serial
+import serial_asyncio
+from pydantic import ValidationError
+from redis.exceptions import ConnectionError, TimeoutError
 
 from src.kelder_api.components.gps.models import (
-    GpsMeasurementData,
     GpsException,
+    GpsMeasurementData,
     GpsRedisData,
 )
-from src.kelder_api.components.gps.utils import time_elapsed_seconds, gps_velocity
-
-from pydantic import ValidationError
+from src.kelder_api.components.gps.utils import gps_velocity, time_elapsed_seconds
 
 logger = logging.getLogger(__name__)
 

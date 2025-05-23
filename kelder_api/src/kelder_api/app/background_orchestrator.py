@@ -1,14 +1,13 @@
-import time
-import redis
-import logging
 import asyncio
+import logging
 import signal
 from datetime import datetime
-
 from enum import Enum
 
+import redis
 from pydantic import ValidationError
 
+from src.kelder_api.components.compass.service import readCompassHeading
 from src.kelder_api.components.gps.service import SenseGpCoords
 
 logger = logging.getLogger(__name__)
@@ -24,10 +23,13 @@ logging.basicConfig(
 stop_event = asyncio.Event()
 
 
-class mode(Enum):
-    active = 1  # Seconds between samples
-    idle = 5
+class sleep_interval(Enum):
+    UNDER_WAY = 1  # Seconds between samples
+    STATIONARY = 5
 
+class status(Enum):
+    UNDER_WAY = "Under Way"
+    STATIONARY = "Stationary"
 
 VELOCITY_THRESHOLD = 1.5  # speed exceeds 1.5 kts
 
@@ -35,8 +37,6 @@ r = redis.Redis(host="redis", port=6379, decode_responses=True)
 
 
 def shutdown_handler():
-    print("Shutting down...")
-
     # close redis connections, and clear keys
     r.flushdb()
     r.close()
@@ -53,20 +53,18 @@ def set_up_signal_handlers():
 async def initiate_sensing():
     set_up_signal_handlers()
 
-    sleep_interval = mode.active
+    mode = status.STATIONARY
 
     while not stop_event.is_set():
         try:
             timestamped_gps = await SenseGpCoords()
             logger.info("Successfully recieved new GPS data")
-
+            print(timestamped_gps)
             if timestamped_gps.speed_over_ground > VELOCITY_THRESHOLD:
-                sleep_interval = mode.active
-                status = "Under Way"
-
+                mode = status.UNDER_WAY
+                compass_heading = await readCompassHeading()
             else:
-                sleep_interval = mode.idle
-                status = "Stationary"
+                mode = status.STATIONARY
 
             r.set("gps:Latest", timestamped_gps.redis_string)
             r.lpush("gps:History", timestamped_gps.redis_string)
@@ -74,12 +72,15 @@ async def initiate_sensing():
 
             r.set("ships_status", status)
 
-        except ValidationError as error:
+
+        except ValidationError:
             msg = "GPS fix not established"
             logger.error(msg)
 
-        logger.info("GPS read successful. Ships status: %s", status)
-        await asyncio.sleep(sleep_interval.value)
+        logger.info("Ships status: %s", mode)
+        await asyncio.sleep(
+            sleep_interval.UNDER_WAY.value if mode == status.UNDER_WAY else sleep_interval.STATIONARY.value
+            )
 
     logging.info("Clean up shutdown complete")
 

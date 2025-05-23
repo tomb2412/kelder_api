@@ -1,8 +1,7 @@
-from pydantic import BaseModel, computed_field, Field
-
+from datetime import time
 from typing import Optional
 
-from datetime import time
+from pydantic import BaseModel, Field, computed_field
 
 from src.kelder_api.components.gps.utils import nmea_to_dms
 

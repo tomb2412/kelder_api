@@ -11,13 +11,13 @@ from src.kelder_api.components.compass.exceptions import I2CConnectionFailure
 logger = logging.getLogger("Compass")
 
 
-async def readCompassHeading():
+async def readCompassHeading() -> int:
     i2c = board.I2C()
 
     try:
         magnetometer = adafruit_lis2mdl.LIS2MDL(i2c)
     except ValueError:
-        raise I2CConnectionFailure()
+        raise I2CConnectionFailure
 
     magnetic_field_vector = np.array(magnetometer.magnetic)
     normalised_field_vector = magnetic_field_vector / np.linalg.norm(

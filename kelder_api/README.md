@@ -66,4 +66,9 @@ API to serve Kelder sensing features and ship controlfas
  # The Compass
  - [wiring documentation](https://learn.adafruit.com/lsm303-accelerometer-slash-compass-breakout/python-circuitpython)
  - [datasheet](https://www.mouser.com/datasheet/2/389/lsm303agr-954987.pdf)
- - Ensure the sensor is correctly wired with sudo i2cdetect -y 1
+ - Ensure the sensor is correctly wired with `sudo i2cdetect -y 1`
+
+ # The Wind Sensor
+
+ - [RS458 Wind sensor](https://www.aliexpress.com/w/wholesale-wind-sensor-rs485.html)
+ 
