@@ -16,13 +16,15 @@ from src.kelder_api.components.gps.models import (
     GpsMeasurementData,
     GpsRedisData,
 )
-from src.kelder_api.components.gps.utils import gps_velocity, time_elapsed_seconds
+from src.kelder_api.components.gps.utils import gps_velocity, time_elapsed_seconds, time_difference_seconds, parse_timestamp
 
 logger = logging.getLogger(__name__)
 
 
 GPS_SERIAL_CONF = {"url": "/dev/ttyAMA0", "baudrate": 9600, "timeout": 0.5}
 MAX_DELAY_SECONDS = 30
+MAX_VELOCITY_TEMPORAL_CHANGE = 10 # Maximum time between GPS measurements to give for a velocity measurement
+GPS_VELOCITY_HISTORY = 10
 
 
 async def SenseGpCoords() -> GpsMeasurementData:
@@ -105,7 +107,6 @@ async def ReadGPSCoords() -> GpsRedisData:
         gps_history,
     ) = await _read_redis_gps()
 
-    # To finish...
     velocity = gps_velocity(gps_history)
 
     gps_coords = GpsMeasurementData(
@@ -132,8 +133,8 @@ async def _read_redis_gps() -> Tuple[str, str, float, float, float, float, List[
         )
 
         mode = r.get("ships_status")
-        raw_gps_read = r.get("gps:Latest")
-        gps_history = r.lrange("gps:History", 0, 4)
+        raw_gps_read = r.get("gps:Latest") # REMOVED and replaced with first history value?
+        gps_history = r.lrange("gps:History", 0, GPS_VELOCITY_HISTORY)
 
     except (ConnectionError, TimeoutError):
         msg = "Connection to redis server failed."
@@ -149,18 +150,13 @@ async def _read_redis_gps() -> Tuple[str, str, float, float, float, float, List[
         logger.error(msg)
         raise GpsException(msg)
 
+    r.close()
+
     timestamp, lat, lon, speed_over_ground = raw_gps_read.split("|")
     gps_history_parsed = [
         gps_history_reading.split("|") for gps_history_reading in gps_history
     ]
-
-    measurement_latency = time_elapsed_seconds(timestamp)
-
-    if measurement_latency > MAX_DELAY_SECONDS:
-        msg = "Last successful GPS measurement occured %s seconds ago"
-        logger.error(msg, measurement_latency)
-
-    r.close()
+    gps_history_validated = gps_measurement_validator(gps_history_parsed)
 
     return (
         mode,
@@ -169,5 +165,39 @@ async def _read_redis_gps() -> Tuple[str, str, float, float, float, float, List[
         lon,
         speed_over_ground,
         measurement_latency,
-        gps_history_parsed,
+        gps_history_validated,
     )
+
+def gps_measurement_validator(gps_history: List[List[str]]) -> List[List[datetime, str, str]]:
+    """ 
+    Feauture to support a dynamic temoral range for velocity calculations, based on GPS history quality
+
+    This method checks and cleans missing gps measurements:
+        - Ensures most recent gps value was taken with a maximum allowed delay
+        - Ensures the gps velocity average was taken within a maximum allowed velocity time
+        - Trims the gps history to statisy the allowed velocity time period
+    """
+
+    gps_history_times = []
+
+    latest_timestamp = parse_timestamp(gps_history_times[0])
+    furtherst_timestamp = parse_timestamp(gps_history_times[GPS_VELOCITY_HISTORY])
+
+    measurement_latency = time_elapsed_seconds(latest_timestamp)
+
+    if measurement_latency > MAX_DELAY_SECONDS:
+        msg = "Last successful GPS measurement occured %s seconds ago"
+        logger.warning(msg, measurement_latency)
+    
+    gps_history_range = GPS_VELOCITY_HISTORY
+    time_range_from_history = time_difference_seconds(latest_timestamp, furtherst_timestamp)
+    while time_range_from_history > MAX_VELOCITY_TEMPORAL_CHANGE:
+        gps_history_range -= 1
+        if gps_history_range > 0:
+            time_range_from_history = time_difference_seconds(latest_timestamp, parse_timestamp(gps_history_times[gps_history_range]))
+        else:
+            msg = "GPS history contains no measurements within a recent threshold for an accurate velocity calculation"
+            time_range_from_history = 0
+            logger.error(msg)
+    
+    return gps_history[0:gps_history_range]
