@@ -2,14 +2,13 @@ import asyncio
 import logging
 import signal
 from datetime import datetime
-from enum import Enum
 
 import redis
 from pydantic import ValidationError
 
 from src.kelder_api.components.compass.service import readCompassHeading
+from src.kelder_api.components.gps.models import sleep_interval, status
 from src.kelder_api.components.gps.service import SenseGpCoords
-from src.kelder_api.components.gps.models import status, sleep_interval
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
@@ -23,8 +22,6 @@ logging.basicConfig(
 
 stop_event = asyncio.Event()
 r = redis.Redis(host="redis", port=6379, decode_responses=True)
-
-VELOCITY_THRESHOLD = 1.5  # speed exceeds 1.5 kts
 
 def shutdown_handler():
     # close redis connections, and clear keys
@@ -43,33 +40,29 @@ def set_up_signal_handlers():
 async def initiate_sensing():
     set_up_signal_handlers()
 
-    ships_status = status.STATIONARY
-
     while not stop_event.is_set():
         try:
             timestamped_gps = await SenseGpCoords()
             logger.info("Successfully recieved new GPS data")
-            print(timestamped_gps)
-            if timestamped_gps.speed_over_ground > VELOCITY_THRESHOLD:
-                ships_status = status.UNDER_WAY
-                compass_heading = await readCompassHeading()
-            else:
-                ships_status = status.STATIONARY
+
+            if timestamped_gps.ships_status == status.UNDER_WAY:
+                pass
+                #compass_heading = await readCompassHeading() #MAKE own redis key
 
             r.set("gps:Latest", timestamped_gps.redis_string)
             r.lpush("gps:History", timestamped_gps.redis_string)
             r.ltrim("gps:History", 0, 10)
 
-            r.set("ships_status", status)
+            r.set("ships_status", timestamped_gps.ships_status.value)
 
 
         except ValidationError:
             msg = "GPS fix not established"
             logger.error(msg)
 
-        logger.info("Ships status: %s", ships_status)
+        logger.info("Ships status: %s", timestamped_gps.ships_status)
         await asyncio.sleep(
-            sleep_interval.UNDER_WAY.value if ships_status == status.UNDER_WAY else sleep_interval.STATIONARY.value
+            sleep_interval.UNDER_WAY.value if timestamped_gps.ships_status == status.UNDER_WAY else sleep_interval.STATIONARY.value
             )
 
     logging.info("Clean up shutdown complete")

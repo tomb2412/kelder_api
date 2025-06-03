@@ -55,7 +55,7 @@ API to serve Kelder sensing features and ship controlfas
 - Component NEO-6M GPS [data sheet](https://components101.com/sites/default/files/component_datasheet/NEO6MV2%20GPS%20Module%20Datasheet.pdf)
 - NMEA GPRMB data: [GPRMB structure](https://aprs.gids.nl/nmea/#rmc)
 - pynmea2 parsing data: [git hub](https://github.com/Knio/pynmea2)
-
+- Minicom command to see serial stream: `sudo minicom -b 9600 -o -D /dev/ttyAMA0`
 
 # The Ultasound
 
@@ -72,3 +72,7 @@ API to serve Kelder sensing features and ship controlfas
 
  - [RS458 Wind sensor](https://www.aliexpress.com/w/wholesale-wind-sensor-rs485.html)
  
+
+ # The Cellular Modem
+
+ - [Clipper HAT Mini](https://learn.pimoroni.com/article/getting-started-with-clipper-hat)
