@@ -98,7 +98,7 @@ async def ReadGPSCoords() -> GpsRedisData:
     """
 
     (
-        mode,
+        ships_status,
         timestamp,
         lat,
         lon,
@@ -110,7 +110,7 @@ async def ReadGPSCoords() -> GpsRedisData:
     velocity = gps_velocity(gps_history)
 
     gps_coords = GpsMeasurementData(
-        mode=mode,
+        ships_status=ships_status,
         measurement_latency=measurement_latency,
         timestamp=timestamp,
         latitude_nmea=lat,
@@ -132,7 +132,7 @@ async def _read_redis_gps() -> Tuple[str, str, float, float, float, float, List[
             decode_responses=True,
         )
 
-        mode = r.get("ships_status")
+        ships_status = r.get("ships_status")
         raw_gps_read = r.get("gps:Latest") # REMOVED and replaced with first history value?
         gps_history = r.lrange("gps:History", 0, GPS_VELOCITY_HISTORY)
 
@@ -145,7 +145,7 @@ async def _read_redis_gps() -> Tuple[str, str, float, float, float, float, List[
         logger.error(msg)
         raise GpsException(msg)
 
-    if mode is None or raw_gps_read is None:
+    if ships_status is None or raw_gps_read is None:
         msg = "The redis response reading keys is None. Check worker is writing successfully."
         logger.error(msg)
         raise GpsException(msg)
@@ -159,7 +159,7 @@ async def _read_redis_gps() -> Tuple[str, str, float, float, float, float, List[
     gps_history_validated = gps_measurement_validator(gps_history_parsed)
 
     return (
-        mode,
+        ships_status,
         timestamp,
         lat,
         lon,

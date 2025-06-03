@@ -6,7 +6,16 @@ from pydantic import BaseModel, Field, computed_field
 from src.kelder_api.components.gps.utils import nmea_to_dms
 
 
+class status(Enum):
+    UNDER_WAY = "Under Way"
+    STATIONARY = "Stationary"
+
+class sleep_interval(Enum):
+    UNDER_WAY = 1  # Seconds between samples
+    STATIONARY = 5
+
 class GpsRedisData(BaseModel):
+    ships_status: status = Field(description="Ships status either underway or stationary")
     timestamp: time = Field(description="Time stamp of the GPS measurement")
     latitude_nmea: float = Field(
         description='Latitude NMEA output: DDMM.MMMM ("Degrees, minutes, seconds")'

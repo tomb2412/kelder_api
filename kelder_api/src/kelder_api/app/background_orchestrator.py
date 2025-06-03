@@ -9,6 +9,7 @@ from pydantic import ValidationError
 
 from src.kelder_api.components.compass.service import readCompassHeading
 from src.kelder_api.components.gps.service import SenseGpCoords
+from src.kelder_api.components.gps.models import status, sleep_interval
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
@@ -21,20 +22,9 @@ logging.basicConfig(
 )
 
 stop_event = asyncio.Event()
-
-
-class sleep_interval(Enum):
-    UNDER_WAY = 1  # Seconds between samples
-    STATIONARY = 5
-
-class status(Enum):
-    UNDER_WAY = "Under Way"
-    STATIONARY = "Stationary"
-
-VELOCITY_THRESHOLD = 1.5  # speed exceeds 1.5 kts
-
 r = redis.Redis(host="redis", port=6379, decode_responses=True)
 
+VELOCITY_THRESHOLD = 1.5  # speed exceeds 1.5 kts
 
 def shutdown_handler():
     # close redis connections, and clear keys
@@ -53,7 +43,7 @@ def set_up_signal_handlers():
 async def initiate_sensing():
     set_up_signal_handlers()
 
-    mode = status.STATIONARY
+    ships_status = status.STATIONARY
 
     while not stop_event.is_set():
         try:
@@ -61,10 +51,10 @@ async def initiate_sensing():
             logger.info("Successfully recieved new GPS data")
             print(timestamped_gps)
             if timestamped_gps.speed_over_ground > VELOCITY_THRESHOLD:
-                mode = status.UNDER_WAY
+                ships_status = status.UNDER_WAY
                 compass_heading = await readCompassHeading()
             else:
-                mode = status.STATIONARY
+                ships_status = status.STATIONARY
 
             r.set("gps:Latest", timestamped_gps.redis_string)
             r.lpush("gps:History", timestamped_gps.redis_string)
@@ -77,9 +67,9 @@ async def initiate_sensing():
             msg = "GPS fix not established"
             logger.error(msg)
 
-        logger.info("Ships status: %s", mode)
+        logger.info("Ships status: %s", ships_status)
         await asyncio.sleep(
-            sleep_interval.UNDER_WAY.value if mode == status.UNDER_WAY else sleep_interval.STATIONARY.value
+            sleep_interval.UNDER_WAY.value if ships_status == status.UNDER_WAY else sleep_interval.STATIONARY.value
             )
 
     logging.info("Clean up shutdown complete")
