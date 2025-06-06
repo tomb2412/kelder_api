@@ -8,12 +8,12 @@ from pydantic import ValidationError
 
 from src.kelder_api.components.compass.exceptions import I2CConnectionFailure
 from src.kelder_api.components.compass.service import CompassSensor
-from src.kelder_api.components.gps.models import sleep_interval, status
+from src.kelder_api.components.gps.models import status
 from src.kelder_api.components.gps.service import (
-    GPS_VELOCITY_HISTORY,
     SenseGpCoords,
     parse_gps_data,
 )
+from src.kelder_api.configuration.settings import Settings
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
@@ -24,7 +24,12 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
     level=logging.DEBUG,
 )
-r = redis.Redis(host="redis", port=6379, decode_responses=True)
+
+r = redis.Redis(
+    host=Settings().redis.redis_host,
+    port=Settings().redis.redis_port,
+    decode_responses=True,
+)
 stop_event = asyncio.Event()
 
 
@@ -60,7 +65,7 @@ async def initiate_sensing():
 
             print(timestamped_gps)
 
-            gps_history = r.lrange("gps:History", 0, GPS_VELOCITY_HISTORY)
+            gps_history = r.lrange("gps:History", 0, Settings().gps.gps_velocity_history)
             ships_status = parse_gps_data(gps_history).ships_status
             r.set("ships_status", ships_status.value)
 
@@ -91,9 +96,9 @@ async def initiate_sensing():
 
         logger.info("Ships status: %s", ships_status.value)
         await asyncio.sleep(
-            sleep_interval.UNDER_WAY.value
+            Settings().sleep_times.UNDER_WAY_SLEEP
             if ships_status == status.UNDER_WAY
-            else sleep_interval.STATIONARY.value
+            else Settings().sleep_times.STATIONARY_SLEEP
         )
 
     logging.info("Clean up shutdown complete")

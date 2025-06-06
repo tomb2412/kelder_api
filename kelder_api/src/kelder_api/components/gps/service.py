@@ -11,12 +11,12 @@ import serial_asyncio
 from pydantic import ValidationError
 from redis.exceptions import ConnectionError, TimeoutError
 
+from src.kelder_api.configuration.settings import Settings
+
 from src.kelder_api.components.gps.models import (
-    VELOCITY_THRESHOLD,
     GpsException,
     GpsMeasurementData,
     GpsRedisData,
-    status,
 )
 from src.kelder_api.components.gps.utils import (
     gps_velocity,
@@ -26,14 +26,6 @@ from src.kelder_api.components.gps.utils import (
 )
 
 logger = logging.getLogger(__name__)
-
-
-GPS_SERIAL_CONF = {"url": "/dev/ttyAMA0", "baudrate": 9600, "timeout": 0.5}
-MAX_DELAY_SECONDS = 30
-MAX_VELOCITY_TEMPORAL_CHANGE = (
-    15  # Maximum seconds between GPS measurements to give for a velocity measurement
-)
-GPS_VELOCITY_HISTORY = 10
 
 
 async def SenseGpCoords() -> GpsMeasurementData:
@@ -52,7 +44,11 @@ async def SenseGpCoords() -> GpsMeasurementData:
     gps_data_found = True
 
     try:
-        reader, _ = await serial_asyncio.open_serial_connection(**GPS_SERIAL_CONF)
+        reader, _ = await serial_asyncio.open_serial_connection(
+            url=Settings().gps.gps_serial_port,
+            baudrate=Settings().gps.gps_baudrate,
+            timeout=Settings().gps.gps_timeout,
+        )
 
     except serial.SerialException:
         logger.error(
@@ -119,13 +115,13 @@ async def _read_redis_gps() -> Tuple[str, str, float, float, float, float, List[
     """
     try:
         r = redis.Redis(
-            host=os.getenv("REDIS_HOST", "localhost"),
-            port=int(os.getenv("REDIS_PORT", 6379)),
+            host=Settings().redis.redis_host,
+            port=Settings().redis.redis_port,
             decode_responses=True,
         )
 
         ships_status = r.get("ships_status")
-        gps_history = r.lrange("gps:History", 0, GPS_VELOCITY_HISTORY)
+        gps_history = r.lrange("gps:History", 0, Settings().gps.gps_velocity_history)
 
     except (ConnectionError, TimeoutError):
         msg = "Connection to redis server failed."
@@ -144,6 +140,7 @@ async def _read_redis_gps() -> Tuple[str, str, float, float, float, float, List[
     r.close()
 
     return ships_status, gps_history
+
 
 def parse_gps_data(gps_history: List[str]):
     """
@@ -191,7 +188,7 @@ def gps_measurement_validator(
 
     # Raise a warning if the GPS reading was taken too long ago
     measurement_latency = time_elapsed_seconds(latest_timestamp)
-    if measurement_latency > MAX_DELAY_SECONDS:
+    if measurement_latency > Settings().gps.max_delay_seconds:
         quality_flag = True
         logger.warning(
             "Last successful GPS measurement occured %s seconds ago",
@@ -200,7 +197,7 @@ def gps_measurement_validator(
 
     # Raise a quality concern if the GPS history is too short. Likely if the RAM was cleared
     gps_history_range = len(gps_history)
-    if gps_history_range < GPS_VELOCITY_HISTORY:
+    if gps_history_range < Settings().gps.gps_velocity_history:
         quality_flag = True
         logger.warning(
             "GPS history shorter than desired length, only contains %s elements.",
@@ -208,11 +205,11 @@ def gps_measurement_validator(
         )
 
     # Ensures the history
-    furtherst_timestamp = gps_history_times[gps_history_range-1]
+    furtherst_timestamp = gps_history_times[gps_history_range - 1]
     time_range_from_history = time_difference_seconds(
         latest_timestamp, furtherst_timestamp
     )
-    while time_range_from_history > MAX_VELOCITY_TEMPORAL_CHANGE:
+    while time_range_from_history > Settings().gps.max_velocity_temporal_change:
         gps_history_range -= 1
         if gps_history_range > 0:
             time_range_from_history = time_difference_seconds(

@@ -9,15 +9,9 @@ from src.kelder_api.components.gps.utils import nmea_to_dms
 
 VELOCITY_THRESHOLD = 3  # speed in kts exceeding to define underway
 
-
 class status(Enum):
     UNDER_WAY = "Under Way"
     STATIONARY = "Stationary"
-
-
-class sleep_interval(Enum):
-    UNDER_WAY = 1  # Seconds between samples + 1 second for reading ~ 6 seconds
-    STATIONARY = 5
 
 
 class GpsRedisData(BaseModel):
@@ -67,7 +61,7 @@ class GpsMeasurementData(GpsRedisData):
 
     @computed_field
     @property
-    def ships_status(self)-> status:
+    def ships_status(self) -> status:
         if self.average_speed_over_ground > VELOCITY_THRESHOLD:
             return status.UNDER_WAY
         elif self.average_speed_over_ground <= VELOCITY_THRESHOLD:
