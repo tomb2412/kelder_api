@@ -12,9 +12,11 @@ from pydantic import ValidationError
 from redis.exceptions import ConnectionError, TimeoutError
 
 from src.kelder_api.components.gps.models import (
+    VELOCITY_THRESHOLD,
     GpsException,
     GpsMeasurementData,
     GpsRedisData,
+    status,
 )
 from src.kelder_api.components.gps.utils import (
     gps_velocity,
@@ -28,7 +30,9 @@ logger = logging.getLogger(__name__)
 
 GPS_SERIAL_CONF = {"url": "/dev/ttyAMA0", "baudrate": 9600, "timeout": 0.5}
 MAX_DELAY_SECONDS = 30
-MAX_VELOCITY_TEMPORAL_CHANGE = 15 # Maximum seconds between GPS measurements to give for a velocity measurement
+MAX_VELOCITY_TEMPORAL_CHANGE = (
+    15  # Maximum seconds between GPS measurements to give for a velocity measurement
+)
 GPS_VELOCITY_HISTORY = 10
 
 
@@ -58,7 +62,9 @@ async def SenseGpCoords() -> GpsMeasurementData:
     try:
         while gps_data_found:
             newdata = await reader.readline()
-            newdata = newdata.decode("utf-8", errors="ignore").strip() #"$GPRMC,194200.00,A,5054.828,N,00124.513,W,2.5,90.0,030625,,,A*41" #
+            newdata = (
+                newdata.decode("utf-8", errors="ignore").strip()
+            )  # "$GPRMC,194200.00,A,5054.828,N,00124.513,W,2.5,90.0,030625,,,A*41" #
 
             if newdata[0:6] == "$GPRMC":
                 logger.info("New NMEA sentence identified: %s", newdata)
@@ -72,21 +78,20 @@ async def SenseGpCoords() -> GpsMeasurementData:
                         longitude_nmea=nmea_data_line.lon,
                         instantaneous_speed_over_ground=nmea_data_line.spd_over_grnd,
                     )
-                    logger.debug(
-                        f"Timestamp: {gps_coords.timestamp}, Latitude: {gps_coords.latitude_nmea}, Longitude: {gps_coords.longitude_nmea}"
-                    )
-
-                    return gps_coords
-
                 except ValidationError:
                     msg = "Failed to establish a satilite fix."
                     logging.error(msg)
-                    raise GpsException(msg)
+                    # raise GpsException(msg)
+                else:
+                    logger.debug(
+                        f"Timestamp: {gps_coords.timestamp}, Latitude: {gps_coords.latitude_nmea}, Longitude: {gps_coords.longitude_nmea}"
+                    )
+                    return gps_coords
 
         else:
             message = "NMEA GPRMC format not identified on serial port"
             logger.error(message)
-            raise GpsException(message)
+            # raise GpsException(message)
     except pynmea2.ParseError as error:
         logger.error("Error occured parsing GPS serial output:\n%s", error)
     except RecursionError:
@@ -140,6 +145,7 @@ async def _read_redis_gps() -> Tuple[str, str, float, float, float, float, List[
 
     return ships_status, gps_history
 
+
 def parse_gps_data(gps_history: List[str]):
     """
     Handles extraction of the gps strings
@@ -147,7 +153,9 @@ def parse_gps_data(gps_history: List[str]):
     gps_history_parsed = [
         gps_history_reading.split("|") for gps_history_reading in gps_history
     ]
-    gps_history_validated, measurement_latency, quality_flag = gps_measurement_validator(gps_history_parsed)
+    gps_history_validated, measurement_latency, quality_flag = (
+        gps_measurement_validator(gps_history_parsed)
+    )
     velocity = gps_velocity(gps_history_validated)
 
     gps_coords = GpsMeasurementData(
@@ -157,12 +165,15 @@ def parse_gps_data(gps_history: List[str]):
         longitude_nmea=gps_history_parsed[0][2],
         instantaneous_speed_over_ground=gps_history_parsed[0][3],
         average_speed_over_ground=velocity,
-        quality_flag=quality_flag
+        quality_flag=quality_flag,
     )
 
     return gps_coords
 
-def gps_measurement_validator(gps_history: List[List[str]], quality_flag = False) -> Union[List[Any], datetime]:
+
+def gps_measurement_validator(
+    gps_history: List[List[str]], quality_flag=False
+) -> Union[List[Any], datetime]:
     """
     Feauture to support a dynamic temoral range for velocity calculations, based on GPS history quality
 
@@ -173,7 +184,9 @@ def gps_measurement_validator(gps_history: List[List[str]], quality_flag = False
     """
 
     # Create a list of timestamps -> could change to map the 2D gps history list
-    gps_history_times = [parse_timestamp(gps_measurement[0]) for gps_measurement in gps_history]
+    gps_history_times = [
+        parse_timestamp(gps_measurement[0]) for gps_measurement in gps_history
+    ]
     # Calculate the timestamp of the most recent GPS measurement
     latest_timestamp = gps_history_times[0]
 
@@ -181,24 +194,46 @@ def gps_measurement_validator(gps_history: List[List[str]], quality_flag = False
     measurement_latency = time_elapsed_seconds(latest_timestamp)
     if measurement_latency > MAX_DELAY_SECONDS:
         quality_flag = True
-        logger.warning("Last successful GPS measurement occured %s seconds ago", measurement_latency)
+        logger.warning(
+            "Last successful GPS measurement occured %s seconds ago",
+            measurement_latency,
+        )
 
     # Raise a quality concern if the GPS history is too short. Likely if the RAM was cleared
     gps_history_range = len(gps_history)
     if gps_history_range < GPS_VELOCITY_HISTORY:
         quality_flag = True
-        logger.warning("GPS history shorter than desired length, only contains %s elements." gps_history_length)
+        logger.warning(
+            "GPS history shorter than desired length, only contains %s elements.",
+            gps_history_range,
+        )
 
     # Ensures the history
     furtherst_timestamp = gps_history_times[gps_history_range]
-    time_range_from_history = time_difference_seconds(latest_timestamp, furtherst_timestamp)
+    time_range_from_history = time_difference_seconds(
+        latest_timestamp, furtherst_timestamp
+    )
     while time_range_from_history > MAX_VELOCITY_TEMPORAL_CHANGE:
         gps_history_range -= 1
         if gps_history_range > 0:
-            time_range_from_history = time_difference_seconds(latest_timestamp, gps_history_times[gps_history_range])
+            time_range_from_history = time_difference_seconds(
+                latest_timestamp, gps_history_times[gps_history_range]
+            )
         else:
             msg = "GPS history contains no measurements within a recent threshold for an accurate velocity calculation"
             time_range_from_history = 0
             logger.warning(msg)
 
     return gps_history[0:gps_history_range], measurement_latency, quality_flag
+
+
+def identify_ships_status(gps_history: list[str]) -> status:
+    """
+    Can implement more support for adaption to changing range when underway or stationary
+    """
+    gps_coords = parse_gps_data(gps_history)
+
+    if gps_coords.average_speed_over_ground > VELOCITY_THRESHOLD:
+        return status.UNDER_WAY
+    elif gps_coords.average_speed_over_ground <= VELOCITY_THRESHOLD:
+        return status.STATIONARY

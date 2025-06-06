@@ -1,6 +1,7 @@
 import time
 import logging
 import math as m
+from typing import List
 
 import numpy as np
 import board
@@ -11,7 +12,7 @@ from src.kelder_api.components.compass.models import HeadingData
 
 logger = logging.getLogger("Compass")
 
-TACKING_THRESHOLD = 30 #Heading change to define a tack
+TACKING_THRESHOLD = 30  # Heading change to define a tack
 
 
 class CompassSensor:
@@ -38,7 +39,9 @@ class CompassSensor:
             magnetic_field_vector
         )
 
-        heading = m.degrees(m.atan2(normalised_field_vector[1], normalised_field_vector[0]))
+        heading = m.degrees(
+            m.atan2(normalised_field_vector[1], normalised_field_vector[0])
+        )
         heading = round(heading)
 
         if heading < 0:
@@ -52,7 +55,7 @@ class CompassSensor:
         Identifies changes in tack from the heading history.
         Calculates average heading from the compass redis history
 
-        Returns: 
+        Returns:
             cleaned heading data
 
         Accessed by background worker
@@ -65,15 +68,22 @@ class CompassSensor:
         heading_change = 0
         tack_index = -1
         # redis history added by head, so loop increases further back in time.
-        while heading_change <= TACKING_THRESHOLD and (tack_index+1) < history_length:
+        while heading_change <= TACKING_THRESHOLD and (tack_index + 1) < history_length:
             tack_index += 1
-            heading_change = float(heading_data.heading_measurements[tack_index][1]) - (heading_data.heading_measurements[tack_index+1][1])
+            heading_change = (
+                float(heading_data.heading_measurements[tack_index][1])
+                - (heading_data.heading_measurements[tack_index + 1][1])
+            )
 
-        if tack_index+1 == history_length:
-            logger.info("No heading exceeds tacking threshold. Continuing along the current tack")
+        if tack_index + 1 == history_length:
+            logger.info(
+                "No heading exceeds tacking threshold. Continuing along the current tack"
+            )
 
-        elif tack_index+1 <= history_length:
-            logging.info(f"Tack detected at timestamp: {heading_history[tack_index][0]}")
+        elif tack_index + 1 <= history_length:
+            logging.info(
+                f"Tack detected at timestamp: {heading_history[tack_index][0]}"
+            )
 
         # Recalculate the heading properties
         heading_data = HeadingData(heading_history=heading_history[0:tack_index])
@@ -81,4 +91,5 @@ class CompassSensor:
         return heading_data
 
     @classmethod
-    def driftCalculation(self, heading, gps_data)
+    def driftCalculation(self, heading, gps_data):
+        pass
