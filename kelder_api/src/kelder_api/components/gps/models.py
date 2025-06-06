@@ -6,8 +6,8 @@ from pydantic import BaseModel, Field, computed_field
 
 from src.kelder_api.components.gps.utils import nmea_to_dms
 
+from src.kelder_api.configuration.settings import Settings
 
-VELOCITY_THRESHOLD = 3  # speed in kts exceeding to define underway
 
 class status(Enum):
     UNDER_WAY = "Under Way"
@@ -62,9 +62,9 @@ class GpsMeasurementData(GpsRedisData):
     @computed_field
     @property
     def ships_status(self) -> status:
-        if self.average_speed_over_ground > VELOCITY_THRESHOLD:
+        if abs(self.average_speed_over_ground) > Settings().gps.velocity_threshold:
             return status.UNDER_WAY
-        elif self.average_speed_over_ground <= VELOCITY_THRESHOLD:
+        elif abs(self.average_speed_over_ground) <= Settings().gps.velocity_threshold:
             return status.STATIONARY
 
 

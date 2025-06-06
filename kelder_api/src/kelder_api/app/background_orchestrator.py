@@ -66,7 +66,9 @@ async def initiate_sensing():
             print(timestamped_gps)
 
             gps_history = r.lrange("gps:History", 0, Settings().gps.gps_velocity_history)
-            ships_status = parse_gps_data(gps_history).ships_status
+            gps_parsed = parse_gps_data(gps_history)
+            ships_status = gps_parsed.ships_status
+
             r.set("ships_status", ships_status.value)
 
             if ships_status == status.UNDER_WAY:

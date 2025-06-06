@@ -34,6 +34,7 @@ class GPS(BaseSettings):
         description="Baudrate for the GPS transmission", default=9600
     )
     gps_timeout: float = Field(description="UART timeout period", default=1)
+    velocity_threshold: float = Field(description="speed in kts exceeding to define underway", default = 1.5)
 
 
 class Compass(BaseModel):
