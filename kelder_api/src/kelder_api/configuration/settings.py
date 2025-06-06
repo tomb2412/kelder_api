@@ -3,11 +3,11 @@ from pydantic import BaseModel, Field
 
 
 class SleepTimes(BaseSettings):
-    UNDER_WAY_SLEEP: int = Field(
+    UNDER_WAY_SLEEP: float = Field(
         description="Seconds between samples, when sailing + 1 second for reading ~ 6 seconds",
         default=1,
     )
-    STATIONARY_SLEEP: int = Field(
+    STATIONARY_SLEEP: float = Field(
         description="Seconds between samples, when stationary + 1 second for reading ~ 6 seconds",
         default=5,
     )
