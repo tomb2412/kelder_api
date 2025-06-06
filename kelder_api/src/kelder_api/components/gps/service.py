@@ -209,7 +209,7 @@ def gps_measurement_validator(
         )
 
     # Ensures the history
-    furtherst_timestamp = gps_history_times[gps_history_range]
+    furtherst_timestamp = gps_history_times[gps_history_range-1]
     time_range_from_history = time_difference_seconds(
         latest_timestamp, furtherst_timestamp
     )
