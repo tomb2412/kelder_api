@@ -33,7 +33,7 @@ API to serve Kelder sensing features and ship controlfas
 - docker compose `docker compose up --build`
 - To see the keys `docker compose exec redis redis-cli`  and then `KEYS *`. GPS history: `docker compose exec redis redis-cli LRANGE gps:History 0 10`
 
-- Docs are available at: http://localhost:8000/docs#/
+w- Docs are available at: http://localhost:8000/docs#/ or http://raspberrypi.local:8000/docs#/ or http://192.168.1.167:8000/docs#/
 
 
 # Connecting to the Pi
