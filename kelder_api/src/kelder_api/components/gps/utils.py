@@ -22,7 +22,9 @@ def nmea_to_dms(nmea_val, is_latitude=True) -> str:
 
 
 def time_elapsed_seconds(time_str: datetime) -> datetime:
-    # Method to calulate the time difference from the last successful reading
+    """
+    Method to calulate the time difference from the last successful reading
+    """
     now = datetime.now()
     parsed_time = time_str.replace(year=now.year, month=now.month, day=now.day)
 
@@ -88,6 +90,10 @@ def gps_velocity(gps_history_raw: List[str]) -> Tuple[float, float, float]:
     distance = haversine(latitude_start, latitude_end, longitude_start, longitude_end)
     time = time_difference_seconds(parse_timestamp(time_start), parse_timestamp(time_end))
 
-    speed_over_ground = distance/time
+    try:
+        speed_over_ground = distance/time
+    except ZeroDivisionError:
+        speed_over_ground = 0
+        
 
     return speed_over_ground
