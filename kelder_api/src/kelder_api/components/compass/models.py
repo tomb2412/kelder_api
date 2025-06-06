@@ -21,7 +21,7 @@ class HeadingData(BaseModel):
     def heading_timestamps(self) -> List[datetime]:
         """List of corresponsing measurement timestamps."""
         return [
-            datetime.strptime(heading.split("|")[0], '%Y-%m-%d %H:%M:%S') 
+            datetime.strptime(heading.split("|")[0], "%Y-%m-%d %H:%M:%S")
             for heading in self.heading_history
         ]
 

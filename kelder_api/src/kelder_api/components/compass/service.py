@@ -66,14 +66,20 @@ class CompassSensor:
         # Nested list structure, first element - timestamp, second element heading
         history_length = len(heading_data.heading_measurements)
         heading_change = 0
-        tack_index = -1
+        tack_index = 0
+
         # redis history added by head, so loop increases further back in time.
         while heading_change <= TACKING_THRESHOLD and (tack_index + 1) < history_length:
-            tack_index += 1
-            heading_change = (
-                float(heading_data.heading_measurements[tack_index][1])
-                - (heading_data.heading_measurements[tack_index + 1][1])
+            heading_change = abs(
+                (
+                    heading_data.heading_measurements[tack_index]
+                    - heading_data.heading_measurements[tack_index + 1]
+                    + 180
+                )
+                % 360
+                - 180
             )
+            tack_index += 1
 
         if tack_index + 1 == history_length:
             logger.info(
@@ -82,13 +88,13 @@ class CompassSensor:
 
         elif tack_index + 1 <= history_length:
             logging.info(
-                f"Tack detected at timestamp: {heading_history[tack_index][0]}"
+                "Tack detected at timestamp: %s",
+                {heading_data.heading_timestamps[tack_index]},
             )
 
         # Recalculate the heading properties
         heading_data = HeadingData(heading_history=heading_history[0:tack_index])
-
-        return heading_data
+        return heading_data, tack_index
 
     @classmethod
     def driftCalculation(self, heading, gps_data):

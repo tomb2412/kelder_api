@@ -1,9 +1,16 @@
 from pydantic_settings import BaseSettings
 from pydantic import BaseModel, Field
 
+
 class SleepTimes(BaseSettings):
-    UNDER_WAY_SLEEP:int = Field(description = "Seconds between samples, when sailing + 1 second for reading ~ 6 seconds", default=1)
-    STATIONARY_SLEEP:int = Field(description = "Seconds between samples, when stationary + 1 second for reading ~ 6 seconds", default=5)
+    UNDER_WAY_SLEEP: int = Field(
+        description="Seconds between samples, when sailing + 1 second for reading ~ 6 seconds",
+        default=1,
+    )
+    STATIONARY_SLEEP: int = Field(
+        description="Seconds between samples, when stationary + 1 second for reading ~ 6 seconds",
+        default=5,
+    )
 
 
 class Redis(BaseSettings):
@@ -34,7 +41,9 @@ class GPS(BaseSettings):
         description="Baudrate for the GPS transmission", default=9600
     )
     gps_timeout: float = Field(description="UART timeout period", default=1)
-    velocity_threshold: float = Field(description="speed in kts exceeding to define underway", default = 1.5)
+    velocity_threshold: float = Field(
+        description="speed in kts exceeding to define underway", default=1.5
+    )
 
 
 class Compass(BaseModel):
@@ -42,10 +51,17 @@ class Compass(BaseModel):
 
 
 class Settings(BaseModel):
-    redis: Redis = Field(description="Redis server connection config", default_factory=Redis)
-    sleep_times: SleepTimes = Field(description="Sleep times depending on ships motion", default_factory=SleepTimes)
+    redis: Redis = Field(
+        description="Redis server connection config", default_factory=Redis
+    )
+    sleep_times: SleepTimes = Field(
+        description="Sleep times depending on ships motion", default_factory=SleepTimes
+    )
     gps: GPS = Field(description="All gps configuration settings", default_factory=GPS)
-    compass: Compass = Field(description="All compass configuration", default_factory=Compass)
+    compass: Compass = Field(
+        description="All compass configuration", default_factory=Compass
+    )
+
 
 def get_settings() -> Settings:
     return Settings()

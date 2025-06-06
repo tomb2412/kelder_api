@@ -63,9 +63,9 @@ async def initiate_sensing():
             r.lpush("gps:History", timestamped_gps.redis_string)
             r.ltrim("gps:History", 0, 10)
 
-            print(timestamped_gps)
-
-            gps_history = r.lrange("gps:History", 0, Settings().gps.gps_velocity_history)
+            gps_history = r.lrange(
+                "gps:History", 0, Settings().gps.gps_velocity_history
+            )
             gps_parsed = parse_gps_data(gps_history)
             ships_status = gps_parsed.ships_status
 
@@ -74,6 +74,9 @@ async def initiate_sensing():
             if ships_status == status.UNDER_WAY:
                 try:
                     compass_heading = await CompassSensor.readCompassHeading()
+                    logging.info(
+                        "Successfully retrieved compass heading: %s", compass_heading
+                    )
                 except I2CConnectionFailure:
                     compass_heading = 0
                     logging.error("Cannot read from compass")
@@ -93,8 +96,6 @@ async def initiate_sensing():
                         compass_heading_history
                     )
                     r.ltrim("compass:History", 0, tack_index)
-
-                    print(average_tack_heading)
 
         logger.info("Ships status: %s", ships_status.value)
         await asyncio.sleep(
