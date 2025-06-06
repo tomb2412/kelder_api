@@ -16,7 +16,7 @@ class status(Enum):
 
 
 class sleep_interval(Enum):
-    UNDER_WAY = 1  # Seconds between samples
+    UNDER_WAY = 1  # Seconds between samples + 1 second for reading ~ 6 seconds
     STATIONARY = 5
 
 
@@ -64,6 +64,14 @@ class GpsMeasurementData(GpsRedisData):
     @property
     def longitude_fmt(self) -> str:
         return nmea_to_dms(self.longitude_nmea, is_latitude=False)
+
+    @computed_field
+    @property
+    def ships_status(self)-> status:
+        if self.average_speed_over_ground > VELOCITY_THRESHOLD:
+            return status.UNDER_WAY
+        elif self.average_speed_over_ground <= VELOCITY_THRESHOLD:
+            return status.STATIONARY
 
 
 class GpsException(Exception):

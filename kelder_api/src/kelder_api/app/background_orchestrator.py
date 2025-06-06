@@ -12,7 +12,7 @@ from src.kelder_api.components.gps.models import sleep_interval, status
 from src.kelder_api.components.gps.service import (
     GPS_VELOCITY_HISTORY,
     SenseGpCoords,
-    identify_ships_status,
+    parse_gps_data,
 )
 
 logger = logging.getLogger(__name__)
@@ -58,11 +58,13 @@ async def initiate_sensing():
             r.lpush("gps:History", timestamped_gps.redis_string)
             r.ltrim("gps:History", 0, 10)
 
+            print(timestamped_gps)
+
             gps_history = r.lrange("gps:History", 0, GPS_VELOCITY_HISTORY)
-            ships_status = identify_ships_status(gps_history)
+            ships_status = parse_gps_data(gps_history).ships_status
             r.set("ships_status", ships_status.value)
 
-            if timestamped_gps.ships_status == status.UNDER_WAY:
+            if ships_status == status.UNDER_WAY:
                 try:
                     compass_heading = await CompassSensor.readCompassHeading()
                 except I2CConnectionFailure:
@@ -84,6 +86,8 @@ async def initiate_sensing():
                         compass_heading_history
                     )
                     r.ltrim("compass:History", 0, tack_index)
+
+                    print(average_tack_heading)
 
         logger.info("Ships status: %s", ships_status.value)
         await asyncio.sleep(

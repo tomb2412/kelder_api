@@ -108,8 +108,8 @@ async def ReadGPSCoords() -> GpsRedisData:
     Reads latest GPS data from Redis seriver.
     """
 
-    ships_status, gps_history = await _read_redis_gps()
-    gps_coords = parse_gps_data(ships_status, gps_history)
+    ships_status_raw, gps_history = await _read_redis_gps()
+    gps_coords = parse_gps_data(gps_history)
     return gps_coords
 
 
@@ -144,7 +144,6 @@ async def _read_redis_gps() -> Tuple[str, str, float, float, float, float, List[
     r.close()
 
     return ships_status, gps_history
-
 
 def parse_gps_data(gps_history: List[str]):
     """
@@ -225,15 +224,3 @@ def gps_measurement_validator(
             logger.warning(msg)
 
     return gps_history[0:gps_history_range], measurement_latency, quality_flag
-
-
-def identify_ships_status(gps_history: list[str]) -> status:
-    """
-    Can implement more support for adaption to changing range when underway or stationary
-    """
-    gps_coords = parse_gps_data(gps_history)
-
-    if gps_coords.average_speed_over_ground > VELOCITY_THRESHOLD:
-        return status.UNDER_WAY
-    elif gps_coords.average_speed_over_ground <= VELOCITY_THRESHOLD:
-        return status.STATIONARY
