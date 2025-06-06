@@ -6,7 +6,7 @@ from datetime import datetime
 import redis
 from pydantic import ValidationError
 
-from src.kelder_api.components.compass.service import readCompassHeading
+from src.kelder_api.components.compass.service import CompassSensor
 from src.kelder_api.components.gps.models import sleep_interval, status
 from src.kelder_api.components.gps.service import SenseGpCoords
 
@@ -21,7 +21,6 @@ logging.basicConfig(
 )
 
 stop_event = asyncio.Event()
-r = redis.Redis(host="redis", port=6379, decode_responses=True)
 
 def shutdown_handler():
     # close redis connections, and clear keys
@@ -38,23 +37,36 @@ def set_up_signal_handlers():
 
 
 async def initiate_sensing():
+    r = redis.Redis(host="redis", port=6379, decode_responses=True)
     set_up_signal_handlers()
 
     while not stop_event.is_set():
         try:
             timestamped_gps = await SenseGpCoords()
             logger.info("Successfully recieved new GPS data")
-
-            if timestamped_gps.ships_status == status.UNDER_WAY:
-                pass
-                #compass_heading = await readCompassHeading() #MAKE own redis key
-
-            r.set("gps:Latest", timestamped_gps.redis_string)
+            
             r.lpush("gps:History", timestamped_gps.redis_string)
             r.ltrim("gps:History", 0, 10)
 
+            gps_history = r.lrange("gps:History", 0, GPS_VELOCITY_HISTORY)
+            
             r.set("ships_status", timestamped_gps.ships_status.value)
 
+            if timestamped_gps.ships_status == status.UNDER_WAY:
+                try:
+                    compass_heading = await CompassSensor.readCompassHeading()
+                except I2CConnectionFailure:
+                    compass_heading = 0
+                    logging.error("Cannot read from compass")
+                else:
+                    r.lpush("compass:History", f"{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}|{compass_heading}")
+                    
+                    # Read and parse heading information
+                    compass_heading_history = r.lrange("compass:History", 0, -1) # UPDATE TO ACTAUL LENGTH
+
+                    # Store until tack changes, or exceeds memory threshold, or status = STATIONARY
+                    average_tack_heading, tack_index = CompassSensor.tackDetection(compass_heading_history)
+                    r.ltrim("compass:History", 0, tack_index)
 
         except ValidationError:
             msg = "GPS fix not established"
@@ -70,3 +82,17 @@ async def initiate_sensing():
 
 if __name__ == "__main__":
     asyncio.run(initiate_sensing())
+
+def identify_ships_status(gps_history: list[str]) -> status:
+    """
+    Can implement more support for adaption to changing range when underway or stationary
+    """
+    gps_coords = parse_gps_data(gps_history)
+
+    if gps_coords.average_speed_over_ground > VELOCITY_THRESHOLD:
+        return status.UNDER_WAY
+    elif gps_coords.average_speed_over_ground <= VELOCITY_THRESHOLD:
+        return status.STATIONARY
+
+
+

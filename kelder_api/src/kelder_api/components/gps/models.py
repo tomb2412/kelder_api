@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field, computed_field
 from src.kelder_api.components.gps.utils import nmea_to_dms
 
 
-VELOCITY_THRESHOLD = 1.5  # speed exceeds 1.5 kts
+VELOCITY_THRESHOLD = 3  # speed in kts exceeding to define underway 
 
 class status(Enum):
     UNDER_WAY = "Under Way"
@@ -18,6 +18,9 @@ class sleep_interval(Enum):
     STATIONARY = 5
 
 class GpsRedisData(BaseModel):
+    """
+    Containing GPS data from a single measurement
+    """
     timestamp: time = Field(description="Time stamp of the GPS measurement")
     latitude_nmea: str = Field(
         description='Latitude NMEA output: DDMM.MMMM ("Degrees, minutes, seconds")'
@@ -29,22 +32,17 @@ class GpsRedisData(BaseModel):
 
     @computed_field
     @property
-    def ships_status(self) -> status:
-        if self.instantaneous_speed_over_ground > VELOCITY_THRESHOLD:
-            return status.UNDER_WAY
-        elif self.instantaneous_speed_over_ground <= VELOCITY_THRESHOLD:
-            return status.STATIONARY
-
-
-    @computed_field
-    @property
     def redis_string(self) -> str:
         return f"{self.timestamp}|{self.latitude_nmea}|{self.longitude_nmea}|{self.instantaneous_speed_over_ground}"
 
 
 class GpsMeasurementData(GpsRedisData):
+    """
+    Containing GPS data to be sent in a request, read from Redis
+    """
     measurement_latency: float = Field(description="Warning about GPS values")
     average_speed_over_ground: Optional[float] = Field(description="Time average speed over ground in knots", default=None)
+    quality_flag: Optional[bool] = Field(description = "A flag to raise concerns over the quality of response data")
 
     @computed_field
     @property
