@@ -58,7 +58,7 @@ def convert_to_decimal_degrees(lat_or_long: str) -> float:
     return float(lat_or_long[0:2]) + float(lat_or_long[2:]) / 60
 
 
-def haversine(latitude_start, latitude_end, longitude_start, longitude_end) -> int:
+def haversine(latitude_start: str, latitude_end: str, longitude_start: str, longitude_end: str) -> float:
     latitude_start = convert_to_decimal_degrees(latitude_start)
     latitude_end = convert_to_decimal_degrees(latitude_end)
     longitude_start = convert_to_decimal_degrees(longitude_start)

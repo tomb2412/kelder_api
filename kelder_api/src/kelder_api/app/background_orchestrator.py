@@ -50,7 +50,7 @@ def set_up_signal_handlers():
 async def initiate_sensing():
     set_up_signal_handlers()
 
-    ships_status = status.STATIONARY
+#    ships_status = status.STATIONARY
     while not stop_event.is_set():
         try:
             timestamped_gps = await SenseGpCoords()
@@ -66,7 +66,7 @@ async def initiate_sensing():
             gps_history = r.lrange(
                 "gps:History", 0, Settings().gps.gps_velocity_history
             )
-            gps_parsed = parse_gps_data(gps_history)
+            gps_parsed = background_gps_extraction(gps_history)
             ships_status = gps_parsed.ships_status
 
             r.set("ships_status", ships_status.value)

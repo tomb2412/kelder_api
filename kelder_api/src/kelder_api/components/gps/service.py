@@ -11,8 +11,6 @@ import serial_asyncio
 from pydantic import ValidationError
 from redis.exceptions import ConnectionError, TimeoutError
 
-from src.kelder_api.configuration.settings import Settings
-
 from src.kelder_api.components.gps.models import (
     GpsException,
     GpsMeasurementData,
@@ -24,6 +22,7 @@ from src.kelder_api.components.gps.utils import (
     time_difference_seconds,
     time_elapsed_seconds,
 )
+from src.kelder_api.configuration.settings import Settings
 
 logger = logging.getLogger(__name__)
 
@@ -101,7 +100,7 @@ async def SenseGpCoords() -> GpsMeasurementData:
 
 async def ReadGPSCoords() -> GpsRedisData:
     """
-    Reads latest GPS data from Redis seriver.
+    Public API for the view - Reads latest GPS data from Redis seriver.
     """
 
     ships_status_raw, gps_history = await _read_redis_gps()
@@ -159,6 +158,8 @@ def parse_gps_data(gps_history: List[str]):
         timestamp=gps_history_parsed[0][0],
         latitude_nmea=gps_history_parsed[0][1],
         longitude_nmea=gps_history_parsed[0][2],
+        previous_latitude_nmea=gps_history_parsed[1][1],
+        previous_longitude_nmea=gps_history_parsed[1][2],
         instantaneous_speed_over_ground=gps_history_parsed[0][3],
         average_speed_over_ground=velocity,
         quality_flag=quality_flag,
@@ -166,6 +167,34 @@ def parse_gps_data(gps_history: List[str]):
 
     return gps_coords
 
+def veiw_gps_extraction(gps_history: List[str]) -> GpsMeasurementViewData:
+    
+
+def background_gps_extraction(gps_history: List[str]):
+    """
+    Handles extraction of the gps strings
+    """
+    gps_history_parsed = [
+        gps_history_reading.split("|") for gps_history_reading in gps_history
+    ]
+    gps_history_validated, measurement_latency, quality_flag = (
+        gps_measurement_validator(gps_history_parsed)
+    )
+    velocity = gps_velocity(gps_history_validated)
+
+    gps_coords = GpsMeasurementData(
+        measurement_latency=measurement_latency,
+        timestamp=gps_history_parsed[0][0],
+        latitude_nmea=gps_history_parsed[0][1],
+        longitude_nmea=gps_history_parsed[0][2],
+        previous_latitude_nmea=gps_history_parsed[1][1],
+        previous_longitude_nmea=gps_history_parsed[1][2],
+        instantaneous_speed_over_ground=gps_history_parsed[0][3],
+        average_speed_over_ground=velocity,
+        quality_flag=quality_flag,
+    )
+
+    return gps_coords
 
 def gps_measurement_validator(
     gps_history: List[List[str]], quality_flag=False
