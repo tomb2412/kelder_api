@@ -103,12 +103,15 @@ async def ReadGPSCoords() -> GpsRedisData:
     Public API for the view - Reads latest GPS data from Redis seriver.
     """
 
-    ships_status_raw, gps_history = await _read_redis_gps()
-    gps_coords = parse_gps_data(gps_history)
+    ships_status_raw, gps_history, log_dict = await _read_redis_gps()
+    gps_coords = extract_gps_data(gps_history, log_dict)
+
+    # READ REDIS LOG ADD VALUES TO GPS COORDS
+
     return gps_coords
 
 
-async def _read_redis_gps() -> Tuple[str, str, float, float, float, float, List[str]]:
+async def _read_redis_gps() -> Tuple[status, str, List[str], Dict[str]]:
     """
     Reads from redis the gps measurments
     """
@@ -119,8 +122,9 @@ async def _read_redis_gps() -> Tuple[str, str, float, float, float, float, List[
             decode_responses=True,
         )
 
-        ships_status = r.get("ships_status")
-        gps_history = r.lrange("gps:History", 0, Settings().gps.gps_velocity_history)
+        await log_values = {k.decode(): v.decode() for k, v in r.hgetall("log")}
+        await ships_status = r.get("ships_status")
+        await gps_history = r.lrange("gps:History", 0, Settings().gps.gps_velocity_history)
 
     except (ConnectionError, TimeoutError):
         msg = "Connection to redis server failed."
@@ -138,10 +142,10 @@ async def _read_redis_gps() -> Tuple[str, str, float, float, float, float, List[
 
     r.close()
 
-    return ships_status, gps_history
+    return ships_status, gps_history, log_values
 
 
-def parse_gps_data(gps_history: List[str]):
+def extract_gps_data(gps_history: List[str], log_dict: Optional[Dict[str]]=None):
     """
     Handles extraction of the gps strings
     """
@@ -163,35 +167,8 @@ def parse_gps_data(gps_history: List[str]):
         instantaneous_speed_over_ground=gps_history_parsed[0][3],
         average_speed_over_ground=velocity,
         quality_flag=quality_flag,
-    )
-
-    return gps_coords
-
-def veiw_gps_extraction(gps_history: List[str]) -> GpsMeasurementViewData:
-    
-
-def background_gps_extraction(gps_history: List[str]):
-    """
-    Handles extraction of the gps strings
-    """
-    gps_history_parsed = [
-        gps_history_reading.split("|") for gps_history_reading in gps_history
-    ]
-    gps_history_validated, measurement_latency, quality_flag = (
-        gps_measurement_validator(gps_history_parsed)
-    )
-    velocity = gps_velocity(gps_history_validated)
-
-    gps_coords = GpsMeasurementData(
-        measurement_latency=measurement_latency,
-        timestamp=gps_history_parsed[0][0],
-        latitude_nmea=gps_history_parsed[0][1],
-        longitude_nmea=gps_history_parsed[0][2],
-        previous_latitude_nmea=gps_history_parsed[1][1],
-        previous_longitude_nmea=gps_history_parsed[1][2],
-        instantaneous_speed_over_ground=gps_history_parsed[0][3],
-        average_speed_over_ground=velocity,
-        quality_flag=quality_flag,
+        log_time_start=log_dict.time_start if log_dict is not None else None,
+        log_distance=log_dict.log if log_dict is not None else None
     )
 
     return gps_coords
@@ -215,7 +192,7 @@ def gps_measurement_validator(
     # Calculate the timestamp of the most recent GPS measurement
     latest_timestamp = gps_history_times[0]
 
-    # Raise a warning if the GPS reading was taken too long ago
+    # Raise a quality concern if the GPS reading was taken too long ago
     measurement_latency = time_elapsed_seconds(latest_timestamp)
     if measurement_latency > Settings().gps.max_delay_seconds:
         quality_flag = True
