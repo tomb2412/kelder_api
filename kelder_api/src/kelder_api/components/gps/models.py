@@ -48,6 +48,7 @@ class GpsMeasurementData(GpsRedisData):
         description="A flag to raise concerns over the quality of response data"
     )
 
+    # These fields are not essential for the background worker but are given in the view
     log_distance: Optional[float] = Field(description="The distance over ground travelled in nm so far", default=None)
     log_start_time: Optional[datetime] = Field(description="The time the ships status has been underway", default=None)
 

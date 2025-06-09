@@ -76,7 +76,7 @@ async def initiate_sensing():
             await r.set("ships_status", ships_status.value)
 
             if ships_status == status.UNDER_WAY:
-                await record_compass_measurement()
+                await record_compass_measurement(gps_extracted)
                 await update_log_values(gps_extracted,gps_history,ships_status,previous_ships_status)
 
         logger.info("Ships status: %s", ships_status.value)
@@ -129,7 +129,7 @@ async def update_log_values(
     logger.info("Trip log recalculated: %s", log_distance_under_way)
 
 
-async def record_compass_measurement() -> None:
+async def record_compass_measurement(gps_extracted: GpsMeasurementData) -> None:
     """
     Make a compass reading and call tack detection and drift processes
     """
@@ -144,20 +144,23 @@ async def record_compass_measurement() -> None:
     else:
         await r.lpush(
             "compass:History",
-            f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}|{compass_heading}",
+            f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}|{compass_heading}|{gps_extracted.latitude_nmea}|{gps_extracted.longitude_nmea}",
         )
 
         # Read and parse heading information
         await compass_heading_history = r.lrange(
             "compass:History", 0, -1
-        )  # UPDATE TO ACTAUL LENGTH
+        )  # TODO: UPDATE TO ACTAUL LENGTH
 
         # Store until tack changes, or exceeds memory threshold, or status = STATIONARY
-        average_tack_heading, tack_index = CompassSensor.tackDetection(
+        heading_data, tack_index = CompassSensor.tackDetection(
             compass_heading_history
         )
         await r.ltrim("compass:History", 0, tack_index)
     
+        drift_speed, drift_bearing = CompassSensor.driftCalculation(
+            heading_data
+        )
 
 
 if __name__ == "__main__":

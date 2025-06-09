@@ -1,13 +1,15 @@
 from datetime import datetime
-from typing import List
+from typing import List, Any
 
 import numpy as np
 from pydantic import BaseModel, Field, computed_field
 
+from src.kelder_api.components.gps.utils import convert_to_decimal_degrees
+
 
 class HeadingData(BaseModel):
     heading_history: List[str] = Field(
-        description="Heading history for format timestamp|heading"
+        description="Heading history for format timestamp|heading|latitude|longitude"
     )
 
     @computed_field
@@ -29,3 +31,28 @@ class HeadingData(BaseModel):
     @property
     def average_heading(self) -> float:
         return float(np.mean(self.heading_measurements))
+
+    @computed_field
+    @property
+    def start_of_tack_latitude(self) -> List[datetime]:
+        """The furthest back heading recording - third element is latitude"""
+        return convert_to_decimal_degrees(self.heading_history[-1].split("|")[2])
+
+    @computed_field
+    @property
+    def start_of_tack_longitude(self) -> List[datetime]:
+        """The furthest back heading recording - fourth element is longitude"""
+        return convert_to_decimal_degrees(self.heading_history[-1].split("|")[3])
+ 
+    @computed_field
+    @property
+    def end_of_tack_latitude(self) -> List[datetime]:
+        """The most recent heading recording - third element is latitude"""
+        return convert_to_decimal_degrees(self.heading_history[0].split("|")[2])
+    
+    @computed_field
+    @property
+    def end_of_tack_longitude(self) -> List[datetime]:
+        """The most recent heading recording - fourth element is longitude"""
+        return convert_to_decimal_degrees(self.heading_history[0].split("|")[3])
+ 

@@ -52,7 +52,7 @@ def time_difference_seconds(time_start: datetime, time_end: datetime) -> datetim
 
 def convert_to_decimal_degrees(lat_or_long: str) -> float:
     """
-    This only supports northern hemisphere calculations
+    This only supports northern hemisphere calculations. The coversion is DDMM.MMM -> DD.DDDD
     """
     lat_or_long = lat_or_long.zfill(10)
     return float(lat_or_long[0:2]) + float(lat_or_long[2:]) / 60
