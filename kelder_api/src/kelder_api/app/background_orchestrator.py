@@ -2,18 +2,21 @@ import asyncio
 import logging
 import signal
 from datetime import datetime
+from typing import List
 
 import redis
+
 #import redis.asyncio as redis
 from pydantic import ValidationError
 
 from src.kelder_api.components.compass.exceptions import I2CConnectionFailure
 from src.kelder_api.components.compass.service import CompassSensor
-from src.kelder_api.components.gps.models import status
+from src.kelder_api.components.gps.models import GpsMeasurementData, status
 from src.kelder_api.components.gps.service import (
     SenseGpCoords,
     extract_gps_data,
 )
+from src.kelder_api.components.gps.utils import haversine
 from src.kelder_api.configuration.settings import Settings
 
 logger = logging.getLogger(__name__)
@@ -31,6 +34,7 @@ r = redis.Redis(
     port=Settings().redis.redis_port,
     decode_responses=True,
 )
+
 stop_event = asyncio.Event()
 
 
@@ -62,18 +66,18 @@ async def initiate_sensing():
             msg = "GPS fix not established"
             logger.error(msg)
         else:
-            await r.lpush("gps:History", timestamped_gps.redis_string)
-            await r.ltrim("gps:History", 0, 10)
+            r.lpush("gps:History", timestamped_gps.redis_string)
+            r.ltrim("gps:History", 0, 10)
 
-            await gps_history = r.lrange(
+            gps_history = r.lrange(
                 "gps:History", 0, Settings().gps.gps_velocity_history
             )
             gps_extracted = extract_gps_data(gps_history)
-
+            print(gps_extracted)
             previous_ships_status = ships_status
             ships_status = gps_extracted.ships_status
 
-            await r.set("ships_status", ships_status.value)
+            r.set("ships_status", ships_status.value)
 
             if ships_status == status.UNDER_WAY:
                 await record_compass_measurement(gps_extracted)
@@ -99,11 +103,12 @@ async def update_log_values(
     """
     # If the previous status was stationary, start the log
     if previous_ships_status == status.STATIONARY:
-        await r.hset("log", {"time_start": datetime.now(), "log": 0})
+        r.hset("log", mapping={"time_start": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "log": 0})
         previous_log = 0
     # If the boat was already underway
     else:
-        previous_log = await r.hget("logs", "log").decode()
+        previous_log = r.hget("logs", "log")
+        print(previous_log)
 
     # Try and find the previous gps measurement
     try:
@@ -118,14 +123,15 @@ async def update_log_values(
         previous_longitude_nmea = previous_gps_measurement[2]
 
     # Calculate the new log distance
-    log_distance_under_way = previous_log + haversine(
+    log_distance_under_way = float(previous_log) + float(haversine(
                     previous_latitude_nmea,
                     previous_longitude_nmea,
-                    latitude_nmea,
-                    longitude_nmea
+                    gps_extracted.latitude_nmea,
+                    gps_extracted.longitude_nmea
                 )
+    )
 
-    await r.hset("logs", "log", log_distance_under_way)
+    r.hset("logs", "log", log_distance_under_way)
     logger.info("Trip log recalculated: %s", log_distance_under_way)
 
 
@@ -142,26 +148,26 @@ async def record_compass_measurement(gps_extracted: GpsMeasurementData) -> None:
         compass_heading = 0
         logging.error("Cannot read from compass")
     else:
-        await r.lpush(
+        r.lpush(
             "compass:History",
             f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}|{compass_heading}|{gps_extracted.latitude_nmea}|{gps_extracted.longitude_nmea}",
         )
 
         # Read and parse heading information
-        await compass_heading_history = r.lrange(
-            "compass:History", 0, -1
+        compass_heading_history = r.lrange(
+            "compass:History", 0, 10
         )  # TODO: UPDATE TO ACTAUL LENGTH
+        print(compass_heading_history)
 
         # Store until tack changes, or exceeds memory threshold, or status = STATIONARY
         heading_data, tack_index = CompassSensor.tackDetection(
             compass_heading_history
         )
-        await r.ltrim("compass:History", 0, tack_index)
-    
+        r.ltrim("compass:History", 0, tack_index)
+        print(heading_data)
         drift_speed, drift_bearing = CompassSensor.driftCalculation(
             heading_data
         )
-
 
 if __name__ == "__main__":
     asyncio.run(initiate_sensing())

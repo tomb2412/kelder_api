@@ -79,18 +79,20 @@ def haversine(latitude_start: str, latitude_end: str, longitude_start: str, long
     return distance
 
 
-def gps_velocity(gps_history_raw: List[str]) -> Tuple[float, float, float]:
+def gps_velocity(gps_history_raw: List[str]) -> float:
     """
     Method to calculate the speed over ground from gps measurements
     """
+    try:
+        time_start = gps_history_raw[0][0]
+        latitude_start = gps_history_raw[0][1]
+        longitude_start = gps_history_raw[0][2]
 
-    time_start = gps_history_raw[0][0]
-    latitude_start = gps_history_raw[0][1]
-    longitude_start = gps_history_raw[0][2]
-
-    time_end = gps_history_raw[-1][0]
-    latitude_end = gps_history_raw[-1][1]
-    longitude_end = gps_history_raw[-1][2]
+        time_end = gps_history_raw[-1][0]
+        latitude_end = gps_history_raw[-1][1]
+        longitude_end = gps_history_raw[-1][2]
+    except IndexError:
+        return 0
 
     distance = haversine(latitude_start, latitude_end, longitude_start, longitude_end)
     time = time_difference_seconds(

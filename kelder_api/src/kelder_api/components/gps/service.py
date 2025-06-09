@@ -2,7 +2,7 @@ import asyncio
 import logging
 import os
 from datetime import datetime
-from typing import Any, List, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import pynmea2
 import redis
@@ -15,6 +15,7 @@ from src.kelder_api.components.gps.models import (
     GpsException,
     GpsMeasurementData,
     GpsRedisData,
+    status,
 )
 from src.kelder_api.components.gps.utils import (
     gps_velocity,
@@ -106,12 +107,12 @@ async def ReadGPSCoords() -> GpsRedisData:
     ships_status_raw, gps_history, log_dict = await _read_redis_gps()
     gps_coords = extract_gps_data(gps_history, log_dict)
 
-    # READ REDIS LOG ADD VALUES TO GPS COORDS
+    # TODO READ REDIS LOG ADD VALUES TO GPS COORDS
 
     return gps_coords
 
 
-async def _read_redis_gps() -> Tuple[status, str, List[str], Dict[str]]:
+async def _read_redis_gps() -> Tuple[status, List[str], Dict[str, str]]:
     """
     Reads from redis the gps measurments
     """
@@ -121,10 +122,10 @@ async def _read_redis_gps() -> Tuple[status, str, List[str], Dict[str]]:
             port=Settings().redis.redis_port,
             decode_responses=True,
         )
-
-        await log_values = {k.decode(): v.decode() for k, v in r.hgetall("log")}
-        await ships_status = r.get("ships_status")
-        await gps_history = r.lrange("gps:History", 0, Settings().gps.gps_velocity_history)
+        log_values = r.hgetall("log")
+        log_values = {k.decode(): v.decode() for k, v in log_values}
+        ships_status = r.get("ships_status")
+        gps_history = r.lrange("gps:History", 0, Settings().gps.gps_velocity_history)
 
     except (ConnectionError, TimeoutError):
         msg = "Connection to redis server failed."
@@ -145,31 +146,54 @@ async def _read_redis_gps() -> Tuple[status, str, List[str], Dict[str]]:
     return ships_status, gps_history, log_values
 
 
-def extract_gps_data(gps_history: List[str], log_dict: Optional[Dict[str]]=None):
+def extract_gps_data(gps_history: List[str], log_dict: Optional[Dict[str,str]]=None):
     """
     Handles extraction of the gps strings
     """
     gps_history_parsed = [
         gps_history_reading.split("|") for gps_history_reading in gps_history
     ]
+    print(gps_history_parsed)
     gps_history_validated, measurement_latency, quality_flag = (
         gps_measurement_validator(gps_history_parsed)
     )
     velocity = gps_velocity(gps_history_validated)
+    if log_dict is not None and log_dict != {}:
+        start_time = log_dict.time_start
+        log = log_dict.log
+    else:
+        start_time = None
+        log = None
 
-    gps_coords = GpsMeasurementData(
-        measurement_latency=measurement_latency,
-        timestamp=gps_history_parsed[0][0],
-        latitude_nmea=gps_history_parsed[0][1],
-        longitude_nmea=gps_history_parsed[0][2],
-        previous_latitude_nmea=gps_history_parsed[1][1],
-        previous_longitude_nmea=gps_history_parsed[1][2],
-        instantaneous_speed_over_ground=gps_history_parsed[0][3],
-        average_speed_over_ground=velocity,
-        quality_flag=quality_flag,
-        log_time_start=log_dict.time_start if log_dict is not None else None,
-        log_distance=log_dict.log if log_dict is not None else None
-    )
+    try:
+        gps_coords = GpsMeasurementData(
+            measurement_latency=measurement_latency,
+            timestamp=gps_history_parsed[0][0],
+            latitude_nmea=gps_history_parsed[0][1],
+            longitude_nmea=gps_history_parsed[0][2],
+            previous_latitude_nmea=gps_history_parsed[1][1],
+            previous_longitude_nmea=gps_history_parsed[1][2],
+            instantaneous_speed_over_ground=gps_history_parsed[0][3],
+            average_speed_over_ground=velocity,
+            quality_flag=quality_flag,
+            log_time_start=start_time,
+            log_distance=log
+        )
+    except IndexError:
+        logger.error("No gps history recieved - previous data matched to current")
+        gps_coords = GpsMeasurementData(
+            measurement_latency=measurement_latency,
+            timestamp=gps_history_parsed[0][0],
+            latitude_nmea=gps_history_parsed[0][1],
+            longitude_nmea=gps_history_parsed[0][2],
+            previous_latitude_nmea=gps_history_parsed[0][1],
+            previous_longitude_nmea=gps_history_parsed[0][2],
+            instantaneous_speed_over_ground=gps_history_parsed[0][3],
+            average_speed_over_ground=velocity,
+            quality_flag=quality_flag,
+            log_time_start=start_time,
+            log_distance=log
+        )
 
     return gps_coords
 

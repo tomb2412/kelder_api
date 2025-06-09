@@ -34,25 +34,24 @@ class HeadingData(BaseModel):
 
     @computed_field
     @property
-    def start_of_tack_latitude(self) -> List[datetime]:
+    def start_of_tack_latitude(self) -> str:
         """The furthest back heading recording - third element is latitude"""
-        return convert_to_decimal_degrees(self.heading_history[-1].split("|")[2])
+        return self.heading_history[-1].split("|")[2]
 
     @computed_field
     @property
-    def start_of_tack_longitude(self) -> List[datetime]:
+    def start_of_tack_longitude(self) -> str:
         """The furthest back heading recording - fourth element is longitude"""
-        return convert_to_decimal_degrees(self.heading_history[-1].split("|")[3])
- 
+        return self.heading_history[-1].split("|")[3]
+
     @computed_field
     @property
-    def end_of_tack_latitude(self) -> List[datetime]:
+    def end_of_tack_latitude(self) -> str:
         """The most recent heading recording - third element is latitude"""
-        return convert_to_decimal_degrees(self.heading_history[0].split("|")[2])
-    
+        return self.heading_history[0].split("|")[2]
+
     @computed_field
     @property
-    def end_of_tack_longitude(self) -> List[datetime]:
+    def end_of_tack_longitude(self) -> str:
         """The most recent heading recording - fourth element is longitude"""
-        return convert_to_decimal_degrees(self.heading_history[0].split("|")[3])
- 
+        return self.heading_history[0].split("|")[3]
