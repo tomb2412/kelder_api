@@ -123,7 +123,6 @@ async def _read_redis_gps() -> Tuple[status, List[str], Dict[str, str]]:
             decode_responses=True,
         )
         log_values = r.hgetall("log")
-        log_values = {k.decode(): v.decode() for k, v in log_values}
         ships_status = r.get("ships_status")
         gps_history = r.lrange("gps:History", 0, Settings().gps.gps_velocity_history)
 
@@ -153,14 +152,14 @@ def extract_gps_data(gps_history: List[str], log_dict: Optional[Dict[str,str]]=N
     gps_history_parsed = [
         gps_history_reading.split("|") for gps_history_reading in gps_history
     ]
-    print(gps_history_parsed)
+    # print(gps_history_parsed)
     gps_history_validated, measurement_latency, quality_flag = (
         gps_measurement_validator(gps_history_parsed)
     )
     velocity = gps_velocity(gps_history_validated)
     if log_dict is not None and log_dict != {}:
-        start_time = log_dict.time_start
-        log = log_dict.log
+        start_time = log_dict["time_start"]
+        log = log_dict["log"]
     else:
         start_time = None
         log = None
