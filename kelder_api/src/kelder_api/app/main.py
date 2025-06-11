@@ -13,6 +13,8 @@ from src.kelder_api.components.compass.views import router as compass_router
 # Allow requests from your frontend's origin
 origins = [
     "http://localhost:5173",  # Vite dev server
+    "http://192.168.1.167:5173",
+    "http://192.168.1.131:5173"
 ]
 
 logger = logging.getLogger(__name__)
