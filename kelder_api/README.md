@@ -28,12 +28,12 @@ API to serve Kelder sensing features and ship controlfas
 # Run Docker
 - build docker container `sudo docker build -t kelder_api .`
 - run the docker container `sudo docker run --rm --privileged --tty --volume /dev:/dev -p 8000:80 kelder_api`
-- usefull docker commands `sudo docker ps`, `sudo docker kill container name`, `sudo docker exec -it <container name> bash`
+- usefull docker commands `sudo docker ps`, `sudo docker kill container name`, `sudo docker exec -it <container name> bash`, logs: `cd /app/logs`
 
 - docker compose `docker compose up --build`
 - To see the keys `docker compose exec redis redis-cli`  and then `KEYS *`. GPS history: `docker compose exec redis redis-cli LRANGE gps:History 0 10`
 
-- Docs are available at: http://localhost:8000/docs#/
+w- Docs are available at: http://localhost:8000/docs#/ or http://raspberrypi.local:8000/docs#/ or http://192.168.1.167:8000/docs#/
 
 
 # Connecting to the Pi
@@ -55,3 +55,24 @@ API to serve Kelder sensing features and ship controlfas
 - Component NEO-6M GPS [data sheet](https://components101.com/sites/default/files/component_datasheet/NEO6MV2%20GPS%20Module%20Datasheet.pdf)
 - NMEA GPRMB data: [GPRMB structure](https://aprs.gids.nl/nmea/#rmc)
 - pynmea2 parsing data: [git hub](https://github.com/Knio/pynmea2)
+- Minicom command to see serial stream: `sudo minicom -b 9600 -o -D /dev/ttyAMA0`
+
+# The Ultasound
+
+ - install package: `sudo apt install python3-gpiozero python3-rpi.gpio`
+ - Enable gpio through the interface options `sudo raspi-config` -> Go to Interface Options -> Enable GPIO
+
+
+ # The Compass
+ - [wiring documentation](https://learn.adafruit.com/lsm303-accelerometer-slash-compass-breakout/python-circuitpython)
+ - [datasheet](https://www.mouser.com/datasheet/2/389/lsm303agr-954987.pdf)
+ - Ensure the sensor is correctly wired with `sudo i2cdetect -y 1`
+
+ # The Wind Sensor
+
+ - [RS458 Wind sensor](https://www.aliexpress.com/w/wholesale-wind-sensor-rs485.html)
+ 
+
+ # The Cellular Modem
+
+ - [Clipper HAT Mini](https://learn.pimoroni.com/article/getting-started-with-clipper-hat)

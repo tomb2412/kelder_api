@@ -4,6 +4,13 @@ WORKDIR /code
 
 # RUN curl -sSL https://install.python-poetry.org | python3 -
 RUN pip install poetry==2.1.0
+RUN apt-get update && apt-get install -y \
+    python3-gpiozero \
+    python3-rpi.gpio \
+    curl \
+    build-essential \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONFAULTHANDLER=1 \
     PYTHONUNBUFFERED=1 \

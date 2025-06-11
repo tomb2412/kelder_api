@@ -12,22 +12,32 @@ services:
           memory: 128M
 
   kelder_api:
-    build: . # Assuming you've already built this image
+    build: .
     container_name: kelder_api
     privileged: true
     tty: true
     volumes:
       - /dev:/dev
+      - logs:/app/logs
+    devices:
+      - /dev/gpiomem
+      - /dev/mem
+    cap_add:
+      - SYS_RAWIO
     ports:
       - "8000:80"
     depends_on:
       - redis
     environment:
       - REDIS_HOST=redis
+    env_file:
+      - .env 
 
   worker:
     build: .
     privileged: true
+    volumes:
+      - logs:/app/logs
     environment:
       REDIS_HOST: redis
     devices:
@@ -35,3 +45,8 @@ services:
     command: [ "poetry", "run", "python", "-m", "src.kelder_api.app.background_orchestrator" ]
     depends_on:
       - redis
+    env_file:
+      - .env 
+
+volumes:
+  logs:
