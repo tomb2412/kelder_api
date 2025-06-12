@@ -55,7 +55,7 @@ class CompassSensor:
         return heading
 
     @classmethod
-    def tackDetection(self, heading_history: List[str]) -> Tuple[HeadingData, int]:
+    def tackDetection(self, heading_history: HeadingData) -> Tuple[HeadingData, int]:
         """
         Identifies changes in tack from the heading history.
         Calculates average heading from the compass redis history
@@ -65,8 +65,6 @@ class CompassSensor:
 
         Accessed by background worker
         """
-
-        heading_data = HeadingData(heading_history=heading_history)
 
         # Nested list structure, first element - timestamp, second element heading
         history_length = len(heading_data.heading_measurements)
