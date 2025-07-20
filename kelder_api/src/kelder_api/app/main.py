@@ -10,7 +10,7 @@ from src.kelder_api.components.gps.views import router as gps_route
 from src.kelder_api.components.ultrasound.views import router as bilge_depth_route
 from src.kelder_api.components.compass.views import router as compass_router
 
-# Allow requests from your frontend's origin
+# Allow requests from frontend's origin
 origins = [
     "http://localhost:5173",  # Vite dev server
 ]
@@ -29,7 +29,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # or use ["*"] for all origins (less secure)
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

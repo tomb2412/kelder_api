@@ -3,6 +3,7 @@ import logging
 import signal
 from datetime import datetime
 from typing import List
+import random
 
 import redis
 
@@ -25,6 +26,7 @@ from src.kelder_api.configuration.settings import Settings
  TODO - Catch the i2c board not found error - in read compass
  TODO - Compass configuration
  TODO - Move drift history length to config
+ TODO - Tidy and configure redis strings
 """
 
 logger = logging.getLogger(__name__)
@@ -81,9 +83,22 @@ async def initiate_sensing():
 
             if ships_status == status.UNDER_WAY:
                 compass_measurement = await record_compass_measurement(gps_extracted)
-                await update_log_values(gps_extracted,gps_history,ships_status,previous_ships_status)
+                log = await calculate_log(gps_extracted,gps_history,previous_ships_status)
 
             # Add to redis
+                # log status
+                if (previous_ships_status == status.STATIONARY):
+                    r.hset("log", mapping={
+                        "time_start": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        "log": 0,
+                        "end_time": 0
+                    })
+                
+                r.hset("logs", "log", log)
+
+            if (previous_ships_status == status.UNDER_WAY) and (ships_status == status.STATIONARY)
+                r.hset("log", mapping={"end_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
+            
             # ships status
             r.set("ships_status", ships_status.value)
 
@@ -106,23 +121,20 @@ async def initiate_sensing():
 
     logging.info("Clean up shutdown complete")
 
-async def update_log_values(
+async def calculate_log(
         gps_extracted: GpsMeasurementData,
         gps_history: List[str],
-        ships_status: status,
         previous_ships_status: status
-    ) -> None:
+    ) -> float:
     """
     Handles distance and time logging for each trip. Trip defined as being underway
     """
     # If the previous status was stationary, start the log
     if previous_ships_status == status.STATIONARY:
-        r.hset("log", mapping={"time_start": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "log": 0})
         previous_log = 0
     # If the boat was already underway
     else:
         previous_log = r.hget("logs", "log")
-        print(previous_log)
 
     # Try and find the previous gps measurement
     try:
@@ -142,11 +154,12 @@ async def update_log_values(
                     previous_longitude_nmea,
                     gps_extracted.latitude_nmea,
                     gps_extracted.longitude_nmea
-                )
+                ) + random.random(0)
     )
 
-    r.hset("logs", "log", log_distance_under_way)
     logger.info("Trip log recalculated: %s", log_distance_under_way)
+
+    return log_distance_under_way
 
 
 async def record_compass_measurement(gps_extracted: GpsMeasurementData) -> None:
