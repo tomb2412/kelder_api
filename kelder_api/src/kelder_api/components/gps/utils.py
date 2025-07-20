@@ -19,7 +19,7 @@ def nmea_to_dms(nmea_val, is_latitude=True) -> str:
     minutes = int(minutes_full)
     seconds = (minutes_full - minutes) * 60
 
-    return "%+03d°%02d′%04.2f″" % (degrees, minutes, seconds)
+    return "%+03d°%02d′%02d″" % (degrees, minutes, seconds)
 
 
 def time_elapsed_seconds(time_str: datetime) -> datetime:
