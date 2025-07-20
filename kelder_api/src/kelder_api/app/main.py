@@ -5,10 +5,10 @@ from datetime import datetime
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.kelder_api.components.health.views import router as health_route
-from src.kelder_api.components.gps.views import router as gps_route
-from src.kelder_api.components.ultrasound.views import router as bilge_depth_route
-from src.kelder_api.components.compass.views import router as compass_router
+from src.kelder_api.routes.health.views import router as health_route
+from src.kelder_api.routes.gps.views import router as gps_route
+from src.kelder_api.routes.bilge_depth.views import router as bilge_depth_route
+from src.kelder_api.routes.compass.views import router as compass_router
 
 # Allow requests from frontend's origin
 origins = [
