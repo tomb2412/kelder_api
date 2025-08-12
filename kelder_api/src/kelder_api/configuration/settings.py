@@ -61,7 +61,3 @@ class Settings(BaseModel):
     compass: Compass = Field(
         description="All compass configuration", default_factory=Compass
     )
-
-
-def get_settings() -> Settings:
-    return Settings()
