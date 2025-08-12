@@ -17,7 +17,6 @@ origins = [
     "http://192.168.1.131:5173"
 ]
 
-logger = logging.getLogger(__name__)
 logging.basicConfig(
     filename=f"/app/logs/{datetime.now().strftime('%Y-%m-%d')}_kelder_api.log",
     encoding="utf-8",
@@ -26,6 +25,8 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
     level=logging.DEBUG,
 )
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -41,3 +42,9 @@ app.include_router(health_route)
 app.include_router(gps_route)
 app.include_router(bilge_depth_route)
 app.include_router(compass_router)
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Clean up Redis connections on shutdown."""
+    logger.info("Shutting down Redis client...")
+    await redis_client.close()
