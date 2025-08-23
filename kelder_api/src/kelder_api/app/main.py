@@ -14,7 +14,7 @@ from src.kelder_api.routes.compass.views import router as compass_router
 origins = [
     "http://localhost:5173",  # Vite dev server
     "http://192.168.1.167:5173",
-    "http://192.168.1.131:5173"
+    "http://192.168.1.131:5173",
 ]
 
 logging.basicConfig(
@@ -42,6 +42,7 @@ app.include_router(health_route)
 app.include_router(gps_route)
 app.include_router(bilge_depth_route)
 app.include_router(compass_router)
+
 
 @app.on_event("shutdown")
 async def shutdown_event():

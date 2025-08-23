@@ -145,7 +145,7 @@ async def _read_redis_gps() -> Tuple[status, List[str], Dict[str, str]]:
     return ships_status, gps_history, log_values
 
 
-def extract_gps_data(gps_history: List[str], log_dict: Optional[Dict[str,str]]=None):
+def extract_gps_data(gps_history: List[str], log_dict: Optional[Dict[str, str]] = None):
     """
     Handles extraction of the gps strings
     """
@@ -176,7 +176,7 @@ def extract_gps_data(gps_history: List[str], log_dict: Optional[Dict[str,str]]=N
             average_speed_over_ground=velocity,
             quality_flag=quality_flag,
             log_time_start=start_time,
-            log_distance=log
+            log_distance=log,
         )
     except IndexError:
         logger.error("No gps history recieved - previous data matched to current")
@@ -191,10 +191,11 @@ def extract_gps_data(gps_history: List[str], log_dict: Optional[Dict[str,str]]=N
             average_speed_over_ground=velocity,
             quality_flag=quality_flag,
             log_time_start=start_time,
-            log_distance=log
+            log_distance=log,
         )
 
     return gps_coords
+
 
 def gps_measurement_validator(
     gps_history: List[List[str]], quality_flag=False

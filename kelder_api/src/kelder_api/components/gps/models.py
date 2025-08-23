@@ -35,6 +35,7 @@ class GpsRedisData(BaseModel):
     def redis_string(self) -> str:
         return f"{self.timestamp}|{self.latitude_nmea}|{self.longitude_nmea}|{self.instantaneous_speed_over_ground}"
 
+
 class GpsMeasurementData(GpsRedisData):
     """
     Containing GPS data to be sent in a request, read from Redis
@@ -49,8 +50,12 @@ class GpsMeasurementData(GpsRedisData):
     )
 
     # These fields are not essential for the background worker but are given in the view
-    log_distance: Optional[float] = Field(description="The distance over ground travelled in nm so far", default=None)
-    log_start_time: Optional[datetime] = Field(description="The time the ships status has been underway", default=None)
+    log_distance: Optional[float] = Field(
+        description="The distance over ground travelled in nm so far", default=None
+    )
+    log_start_time: Optional[datetime] = Field(
+        description="The time the ships status has been underway", default=None
+    )
 
     @computed_field
     @property
@@ -70,7 +75,7 @@ class GpsMeasurementData(GpsRedisData):
         elif abs(self.average_speed_over_ground) <= Settings().gps.velocity_threshold:
             return status.STATIONARY
 
+
 class GpsException(Exception):
     def __init__(self, msg):
         super().__init__(msg)
-

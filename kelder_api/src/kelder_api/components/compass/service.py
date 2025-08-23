@@ -106,9 +106,9 @@ class CompassSensor:
 
         is speed through water, the dot product? - Not with flow
 
-        Arbitrary coordinate system. Intuatively follows current and boat speed. 
+        Arbitrary coordinate system. Intuatively follows current and boat speed.
         Here current data not available so defined as perpendicular to boat speed
- 
+
         # Calculate the opposite vector
         #  - Calculate SOG heading.
         #  - Calculate theta - subtract angle between HDG and SOG.
@@ -118,23 +118,38 @@ class CompassSensor:
         """
 
         # First calculate the speed over groud direction
-        delta_latitude = convert_to_decimal_degrees(heading.end_of_tack_latitude) - convert_to_decimal_degrees(heading.start_of_tack_latitude)
-        delta_longitude = convert_to_decimal_degrees(heading.end_of_tack_longitude) - convert_to_decimal_degrees(heading.start_of_tack_longitude)
+        delta_latitude = convert_to_decimal_degrees(
+            heading.end_of_tack_latitude
+        ) - convert_to_decimal_degrees(heading.start_of_tack_latitude)
+        delta_longitude = convert_to_decimal_degrees(
+            heading.end_of_tack_longitude
+        ) - convert_to_decimal_degrees(heading.start_of_tack_longitude)
 
         # lat long mag is in DD.DDDD
         lat_long_magnitude = m.sqrt(delta_latitude**2 + delta_longitude**2)
         # sog mag is nautical miles
-        distance_over_ground = haversine(heading.start_of_tack_latitude, heading.end_of_tack_latitude, heading.start_of_tack_longitude, heading.end_of_tack_longitude)
-        time_difference = time_difference_seconds(heading.heading_timestamps[0],heading.heading_timestamps[-1])
-        sog_magnitude = distance_over_ground/time_difference
+        distance_over_ground = haversine(
+            heading.start_of_tack_latitude,
+            heading.end_of_tack_latitude,
+            heading.start_of_tack_longitude,
+            heading.end_of_tack_longitude,
+        )
+        time_difference = time_difference_seconds(
+            heading.heading_timestamps[0], heading.heading_timestamps[-1]
+        )
+        sog_magnitude = distance_over_ground / time_difference
 
-        # dot with (0,1) and divide by magnitude 
-        speed_over_ground_heading = m.acos(delta_longitude/lat_long_magnitude)
+        # dot with (0,1) and divide by magnitude
+        speed_over_ground_heading = m.acos(delta_longitude / lat_long_magnitude)
 
         theata_radians = speed_over_ground_heading - m.radians(heading.average_heading)
-        drift_magnitude = sog_magnitude*m.sin(theata_radians)
+        drift_magnitude = sog_magnitude * m.sin(theata_radians)
 
-        drift_bearing = heading.average_heading - 90 if m.copysign(1,theata_radians) else heading.average_heading + 90
+        drift_bearing = (
+            heading.average_heading - 90
+            if m.copysign(1, theata_radians)
+            else heading.average_heading + 90
+        )
 
         logger.info("Calculated drift and bearing successfully")
         logger.debug(f"""
@@ -153,5 +168,3 @@ Drift parameters:
         """)
 
         return drift_magnitude, drift_bearing
-
-        

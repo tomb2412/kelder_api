@@ -6,31 +6,45 @@ from pydantic import BaseModel, Field, computed_field
 
 from src.kelder_api.components.gps.utils import convert_to_decimal_degrees
 
+
 class CompassHeadingBackground(BaseModel):
     """
     Model used privately by the background worker to store the compass and heading data
     """
+
     gps_timestamp: datetime = Field("Timestamp from the gps measurement")
     latitude_nmea: str = Field("Latitude output from the gps DDMM.MMMM")
     longitude_nmea: str = Field("Longitude output from the gps DDMM.MMMM")
-    compass_heading: float = Field(description="Compass heading read directly from the board")
-    
-    #Optional fields not known upon initialisation, but required in the redis string
-    drift_speed: Optional[float] = Field(description="Component of speed perpendicular to heading.", default = None)
-    drift_bearing: Optional[float] = Field(description="Direction of motion perpendicular to heading.", default = None)
-    tack_index: Optional[int] = Field(description="The most recent index in the compass history where a tack was detected", default = None)
+    compass_heading: float = Field(
+        description="Compass heading read directly from the board"
+    )
+
+    # Optional fields not known upon initialisation, but required in the redis string
+    drift_speed: Optional[float] = Field(
+        description="Component of speed perpendicular to heading.", default=None
+    )
+    drift_bearing: Optional[float] = Field(
+        description="Direction of motion perpendicular to heading.", default=None
+    )
+    tack_index: Optional[int] = Field(
+        description="The most recent index in the compass history where a tack was detected",
+        default=None,
+    )
 
     @computed_field
     @property
     def redis_string(self) -> str:
-        return "|".join([
-            self.gps_timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-            self.compass_heading,
-            self.latitude_nmea,
-            self.longitude_nmea,
-            self.drift_speed,
-            self.drift_bearing
-        ])
+        return "|".join(
+            [
+                self.gps_timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+                self.compass_heading,
+                self.latitude_nmea,
+                self.longitude_nmea,
+                self.drift_speed,
+                self.drift_bearing,
+            ]
+        )
+
 
 class HeadingData(BaseModel):
     heading_history: List[str] = Field(
