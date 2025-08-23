@@ -4,12 +4,14 @@ from contextlib import asynccontextmanager
 from pydantic import BaseModel
 from datetime import datetime
 from typing import List
+import json
 
 from src.kelder_api.configuration.settings import Settings
 
 from logging import getLogger
 
 logger = getLogger(__name__)
+
 
 class RedisClient:
     def __init__(self):
@@ -21,9 +23,7 @@ class RedisClient:
             self._connection_pool = ConnectionPool(
                 host=self.settings.redis_host,
                 port=self.settings.redis_port,
-                
                 decode_responses=True,
-
                 max_connections=10,
                 retry_on_timeout=True,
                 socket_timeout=5.0,
@@ -36,7 +36,7 @@ class RedisClient:
         if self._connection_pool:
             await self._connection_pool.disconnect()
             self._connection_pool = None
-    
+
     @asynccontextmanager
     async def get_connection(self) -> AsyncGenerator[Redis, None]:
         connection_pool = await self._ensure_connection_pool()
@@ -52,13 +52,14 @@ class RedisClient:
             await redis.close()
             logger.debug("Closed redis connection")
 
-
     async def write_value(self, key: str, value: str, expiration: Optional[int] = None):
         async with self.get_connection() as redis:
             try:
                 await redis.set(key, value)
             except Exception as error:
-                logger.error(f"Redis exception raised setting the key-value pair: {key}:{value}, with {error}")
+                logger.error(
+                    f"Redis exception raised setting the key-value pair: {key}:{value}, with {error}"
+                )
                 raise error
 
     async def read_value(self, key: str) -> Optional[str]:
@@ -66,38 +67,37 @@ class RedisClient:
             try:
                 return await redis.get(key)
             except Exception as error:
-                logger.error(f"Redis exception raised reading the value: {value}, because of: {error}")
+                logger.error(
+                    f"Redis exception raised reading the value: {value}, because of: {error}"
+                )
                 raise error
 
-    async def write_set(self, key: str, reading: BaseModel) -> None:
+    async def write_set(self, sensor_id: str, reading: BaseModel) -> None:
         async with self.get_connection() as redis:
+            key = f"sensor:ts:{sensor_id}"
             try:
                 await redis.zadd(key, {reading.json(): reading.timestamp.timestamp()})
             except Exception as error:
-                logger.error(f"Redis exception raised writing to sorted set, with {error}")
+                logger.error(
+                    f"Redis exception raised writing to sorted set, with {error}"
+                )
                 raise error
-    
-    async def read_set(self, sensor_id: str, datetime_range: Optional[datetime] = None) -> List[BaseModel]:
+
+    async def read_set(
+        self, sensor_id: str, datetime_range: Optional[datetime | str] = None
+    ) -> List[BaseModel]:
         async with self.get_connection() as redis:
             """Get time-range data from sorted set."""
             key = f"sensor:ts:{sensor_id}"
-            
-            end_time = datetime_to or time.time()
-            
+
             # Get data in time range with scores (timestamps)
-            if datetime_range:
-                data = await self.redis.zrevrangebyscore(key, end_time, start_time, 
-                                                    withscores=True, start=0, num=limit)
-            else:
-                data = await self.redis.zrangebyscore(key, start_time, end_time, withscores=True)
-            
-            results = []
-            for value_ts, timestamp in data:
-                value = value_ts.split(':')[0]  # Extract value from "value:timestamp"
-                results.append({
-                    'timestamp': timestamp,
-                    'value': float(value),
-                    'sensor_id': sensor_id
-                })
-            
+            sensor_data = await redis.zrevrangebyscore(
+                key,
+                max=datetime_range[1].timestamp() if datetime_range else "+inf",
+                min=datetime_range[0].timestamp() if datetime_range else "-inf",
+                withscores=True,
+            )
+
+            results = [json.loads(measurement) for measurement, _ in sensor_data]
+            times = [timestamp for _, timestamp in sensor_data]
             return results
