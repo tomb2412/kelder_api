@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings
 from pydantic import BaseModel, Field
-
+from src.kelder_api.components.velocity.models import CalculationType
 
 class SleepTimes(BaseSettings):
     UNDER_WAY_SLEEP: float = Field(
@@ -21,19 +21,6 @@ class Redis(BaseSettings):
 
 
 class GPS(BaseSettings):
-    gps_velocity_history: int = Field(
-        description="Number of GPS measurements to average over in a velocity calculation",
-        default=10,
-    )
-    max_velocity_temporal_change: int = Field(
-        description="Maximum seconds between GPS measurements to give for a velocity measurement",
-        default=15,
-    )
-    max_delay_seconds: int = Field(
-        description="Maximum latency between a gps measurement without a quality warning",
-        default=30,
-    )
-
     gps_serial_port: str = Field(
         description="Serial port for the GPS", default="/dev/ttyAMA0"
     )
@@ -43,6 +30,23 @@ class GPS(BaseSettings):
     gps_timeout: float = Field(description="UART timeout period", default=1)
     velocity_threshold: float = Field(
         description="speed in kts exceeding to define underway", default=1.5
+    )
+
+class Velocity(BaseSettings):
+    velocity_calculation_type: CalculationType = Field(
+        description="Method of retrieving GPS history in the velocity calculation"
+        )
+    gps_velocity_history: int = Field(
+        description="Number of GPS measurements or number of seconds since now to average over in a velocity calculation",
+        default=10,
+    )
+    max_velocity_temporal_change: int = Field(
+        description="Maximum seconds between GPS measurements to give for a velocity measurement",
+        default=15,
+    )
+    max_delay_seconds: int = Field(
+        description="Maximum latency between a gps measurement without a quality warning",
+        default=30,
     )
 
 
