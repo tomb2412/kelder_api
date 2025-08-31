@@ -98,9 +98,9 @@ class GPSInterface:
             hdop = gpgsa_active_satellites.hdop,
             satellites_in_view = gpgsv_satellites_in_view.satellites
         )
+        logger.debug("Writing GPS reading.")
         await self.redis_client.write_set("GPS", gps_redis_data)
-        logger.debug("Successfully written GPS reading.")
-        
+            
     async def read_gps_latest(self, active: bool = False) -> GPSRedisData:
         """Retrieves the lastest gps measurement regardless of status"""
         try:
@@ -133,16 +133,16 @@ class GPSInterface:
         gps_time_series = await self.redis_client.read_set("GPS", [start_datetime, end_datetime])
 
         if active:
-            return [gps_measurement for gps_measurement in gps_time_series if gps_measurement["status"] == "A"]
+            return [GPSRedisData(**gps_measurement) for gps_measurement in gps_time_series if gps_measurement["status"] == "A"]
         else:
-            return gps_time_series
+            return [GPSRedisData(**gps_measurement) for gps_measurement in gps_time_series]
 
     async def read_gps_all_history(self, active: bool = False)-> List[GPSRedisData]:
         """Returns all GPS history""" 
         if active:
             return await self.read_active_gps_measurements()
         else:
-            return await self.redis_client.read_set("GPS")
+            return [GPSRedisData(**gps_measurement) for gps_measurement in await self.redis_client.read_set("GPS")]
 
     async def read_active_gps_measurements(self) -> List[GPSRedisData]:
         """Returns only active GPS measurements from all history"""
