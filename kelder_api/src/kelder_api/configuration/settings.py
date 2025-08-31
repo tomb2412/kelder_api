@@ -34,7 +34,8 @@ class GPS(BaseSettings):
 
 class Velocity(BaseSettings):
     velocity_calculation_type: CalculationType = Field(
-        description="Method of retrieving GPS history in the velocity calculation"
+        description="Method of retrieving GPS history in the velocity calculation",
+        default=CalculationType.TIMESERIES
         )
     gps_velocity_history: int = Field(
         description="Number of GPS measurements or number of seconds since now to average over in a velocity calculation",
@@ -65,3 +66,4 @@ class Settings(BaseModel):
     compass: Compass = Field(
         description="All compass configuration", default_factory=Compass
     )
+    velocity: Velocity = Field(description="Velocity settings", default_factory=Velocity)
