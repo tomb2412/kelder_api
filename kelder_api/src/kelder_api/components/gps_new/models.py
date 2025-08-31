@@ -34,10 +34,10 @@ class GPRMCRecommendedCourse(BaseModel):
         return cls(
             timestamp = datetime.combine(nmea_data.datestamp, nmea_data.timestamp),
             status = GPSStatus.ACTIVE if nmea_data.status == "A" else GPSStatus.VOID,
-            latitude_nmea = nmea_data.lon,
+            latitude_nmea = nmea_data.lat,
             latitude_hemisphere = LatitudeHemisphere.NORTH if nmea_data.lat_dir == 'N' else LatitudeHemisphere.SOUTH,
-            longitude_hemisphere = nmea_data.lon,
-            longitude_nmea = LongitudeHemisphere.WEST if nmea_data.lon_dir == "W" else LongitudeHemisphere.EAST
+            longitude_nmea = nmea_data.lon,
+            longitude_hemisphere = LongitudeHemisphere.WEST if nmea_data.lon_dir == "W" else LongitudeHemisphere.EAST
         )
     
 class GPGSAActiveSatellites(BaseModel):
