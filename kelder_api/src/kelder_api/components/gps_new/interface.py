@@ -125,11 +125,8 @@ class GPSInterface:
             logger.debug(f"GPS history shorter than length requested. Returning length: {len(gps_history)}")
             return gps_history
         
-    async def read_gps_history_time_series(self, start_datetime: datetime, end_datetime: datetime | None = None, active: bool = False) -> List[GPSRedisData]:
-        """Retrieves the gps measurement within a datetime range"""
-        if not end_datetime:
-            end_datetime = datetime.now()
-        
+    async def read_gps_history_time_series(self, start_datetime: datetime, end_datetime: datetime = datetime.now(), active: bool = False) -> List[GPSRedisData]:
+        """Retrieves the gps measurement within a datetime range"""        
         gps_time_series = await self.redis_client.read_set("GPS", [start_datetime, end_datetime])
 
         if active:
