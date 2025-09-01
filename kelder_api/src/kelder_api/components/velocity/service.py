@@ -8,7 +8,13 @@ from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.velocity.models import GPSVelocity, CalculationType
 from src.kelder_api.configuration.settings import Settings
 from src.kelder_api.components.gps_new.models import GPSRedisData
-from src.kelder_api.components.velocity.utils import haversine, time_difference_seconds
+from src.kelder_api.components.velocity.utils import (
+    haversine,
+    time_difference_seconds,
+    bearing_degrees,
+    convert_to_decimal_degrees,
+    average_bearing
+)
 
 logger = logging.getLogger(__name__)
 
@@ -42,31 +48,47 @@ class VelocityCalculator:
             message = "Insufficient GPS history for a velocity measurement, length: %s" %gps_points
             logger.warning(message)
             speed_over_ground_avg = None
+            course_over_ground_avg = None
         else:
+            course_over_ground_list = []
             speed_over_ground_list = []
             for i in range(0, gps_points-1):
+                latitude_start = convert_to_decimal_degrees(gps_history[i].latitude_nmea, lon=False)
+                latitude_end = convert_to_decimal_degrees(gps_history[i+1].latitude_nmea, lon=False)
+                longitude_start = convert_to_decimal_degrees(gps_history[i].longitude_nmea)
+                longitude_end = convert_to_decimal_degrees(gps_history[i+1].longitude_nmea)
+                
                 distance_travelled = haversine(
-                    latitude_start=gps_history[i].latitude_nmea,
-                    latitude_end=gps_history[i+1].latitude_nmea,
-                    longitude_start=gps_history[i].longitude_nmea,
-                    longitude_end=gps_history[i+1].longitude_nmea
+                    latitude_start=latitude_start,
+                    latitude_end=latitude_end,
+                    longitude_start=longitude_start,
+                    longitude_end=longitude_end
                 )
                 time_difference = time_difference_seconds(
                     time_end = gps_history[i].timestamp,
                     time_start = gps_history[i+1].timestamp
+                )
+                cog_degrees = bearing_degrees(
+                    latitude_start=latitude_start,
+                    latitude_end=latitude_end,
+                    longitude_start=longitude_start,
+                    longitude_end=longitude_end
                 )
                 try:
                     instantaneous_speed_over_ground = distance_travelled/time_difference
                 except ZeroDivisionError:
                     instantaneous_speed_over_ground = 0
                 speed_over_ground_list.append(instantaneous_speed_over_ground)
-
+                course_over_ground_list.append(cog_degrees)
+            
             speed_over_ground_avg = sum(speed_over_ground_list)/(gps_points-1)
+            course_over_ground_avg = average_bearing(course_over_ground_list)
 
         await self.write_velocity(
             GPSVelocity(
                 timestamp=datetime_now,
                 speed_over_ground=speed_over_ground_avg,
+                course_over_ground=course_over_ground_avg,
                 number_of_measurements=gps_points
             )
         )

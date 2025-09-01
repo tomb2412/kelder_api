@@ -1,4 +1,5 @@
 import math
+import numpy as np
 from datetime import datetime
 
 EARTH_RADUIS = 6371
@@ -20,6 +21,36 @@ def time_difference_seconds(time_start: datetime, time_end: datetime) -> datetim
     return (time_end - time_start).total_seconds()
 
 
+def bearing_degrees(latitude_start, longitude_start, latitude_end, longitude_end):
+    """Calculate initial bearing (forward azimuth) from point 1 to point 2. Coords in DD.DD"""
+    latitude_start, longitude_start, latitude_end, longitude_end = map(math.radians, [latitude_start, longitude_start, latitude_end, longitude_end])
+    
+    dlon = longitude_end - longitude_start
+    
+    y = math.sin(dlon) * math.cos(latitude_end)
+    x = math.cos(latitude_start) * math.sin(latitude_end) - math.sin(latitude_start) * math.cos(latitude_end) * math.cos(dlon)
+    
+    bearing = math.atan2(y, x)
+    
+    # Convert to degrees and normalize to 0-360
+    bearing = math.degrees(bearing)
+    bearing = (bearing + 360) % 360
+    
+    return bearing
+
+def average_bearing(bearings):
+    """Average bearings using vector method"""
+    bearings_rad = np.radians(bearings)
+    
+    # Convert to unit vectors
+    x = np.mean(np.cos(bearings_rad))
+    y = np.mean(np.sin(bearings_rad))
+    
+    # Get average bearing
+    avg_bearing = np.degrees(np.arctan2(y, x))
+    return (avg_bearing + 360) % 360
+
+
 def convert_to_decimal_degrees(degree: str, lon: bool = True) -> float:
     """
     This only supports northern hemisphere calculations. 
@@ -35,11 +66,7 @@ def convert_to_decimal_degrees(degree: str, lon: bool = True) -> float:
 def haversine(
     latitude_start: str, latitude_end: str, longitude_start: str, longitude_end: str
 ) -> float:
-    latitude_start = convert_to_decimal_degrees(latitude_start, lon=False)
-    latitude_end = convert_to_decimal_degrees(latitude_end, lon=False)
-    longitude_start = convert_to_decimal_degrees(longitude_start)
-    longitude_end = convert_to_decimal_degrees(longitude_end)
-
+    """Requires a DD.DD format"""
     d_latitude = (latitude_end - latitude_start) * math.pi / 180
     d_longitude = (longitude_end - longitude_start) * math.pi / 180
 
