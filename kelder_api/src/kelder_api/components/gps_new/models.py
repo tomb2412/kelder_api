@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, computed_field
-from datetime import time, datetime
+from datetime import datetime
 from pynmea2 import NMEASentence
 from typing import List, Dict
 
