@@ -35,12 +35,8 @@ class VelocityCalculator:
             return await self.gps_interface.read_gps_history_time_series(start_datetime, active = True)
         
 
-    async def calculate_gps_velocity(self, datetime_now: datetime | None = None) -> GPSVelocity:
+    async def calculate_gps_velocity(self, datetime_now: datetime = datetime.now()) -> GPSVelocity:
         """Calculates a speed over ground in knots from gps history, returns an error if less than 2 measurements"""
-        # TODO: Add in course over ground using average bearings
-        if not datetime_now:
-            datetime_now = datetime.now()
-
         gps_history = await self._get_gps_data(datetime_now)
         gps_points = len(gps_history)
 
