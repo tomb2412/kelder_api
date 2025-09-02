@@ -1,9 +1,10 @@
-import board
+# import board
 import adafruit_lis2mdl
 import logging
 import numpy as np
 import math
 from datetime import datetime
+from typing import List
 
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.compass_new.models import CompassRedisData
@@ -16,20 +17,26 @@ class CompassInterface:
     TODO: support calibration feature
     """
 
-    def __init__(self, redis_client: RedisClient):
+    def __init__(self, redis_client: RedisClient, fake_transport: bool = False):
         self.redis_client = redis_client
-        self.i2c_board = board.I2C()
+        if fake_transport:
+            self.i2c_board = board.I2C()
 
-    def read_heading_from_compass(self, now: datetime = datetime.now()):
+    async def read_heading_from_compass(self, now: datetime = datetime.now(), fake_measurements: List[float] | None = None):
         try:
-            magnetometer = adafruit_lis2mdl.LIS2MDL(self.i2c_board)
+            if fake_measurements:
+                logger.debug("Using fake compass sensor")
+                magnetic_field_vector = fake_measurements
+                raise ValueError
+            else:
+                magnetic_field_vector = adafruit_lis2mdl.LIS2MDL(self.i2c_board).magnetic
             logger.debug("successfully connected to the compass and taken reading")
         except ValueError:
             message = "Connection to the I2C board has failed. Check board status light and wiring."
             logging.error(message)
             heading = None
         else:
-            magnetic_field_vector = np.array(magnetometer.magnetic)
+            magnetic_field_vector = np.array(magnetic_field_vector)
             normalised_field_vector = magnetic_field_vector / np.linalg.norm(
                 magnetic_field_vector
             )
@@ -47,25 +54,26 @@ class CompassInterface:
             timestamp = now,
             heading = heading
         )
-        self.write_heading(compass_redis_data)
+        await self.write_heading(compass_redis_data)
     
     async def write_heading(self, compass_redis_data: CompassRedisData) -> None:
-        logger.dubug("Writing compass data")
+        logger.debug("Writing compass data")
         await self.redis_client.write_set("COMPASS", compass_redis_data)
         
     async def read_heading_history_latest(self, active: bool = False) -> CompassRedisData:
         logger.debug("Reading latest compass data")
         heading_history = await self.redis_client.read_set("COMPASS")
         if active:
-            return CompassRedisData(**[heading for heading in heading_history if heading["heading"]][0])
+            return CompassRedisData(**[heading for heading in heading_history if heading["heading"] is not None][0])
         else:
+            # TODO: Add in index error catch - return empty model?
             return CompassRedisData(**heading_history[0])
 
     async def read_heading_history_all(self, active: bool = False) -> List[CompassRedisData]:
         logger.debug("Reading all compass data")
         heading_history = await self.redis_client.read_set("COMPASS")
         if active:
-            return [CompassRedisData(**heading) for heading in heading_history if heading["heading"]]
+            return [CompassRedisData(**heading) for heading in heading_history if heading["heading"] is not None]
         else:
             return [CompassRedisData(**heading) for heading in heading_history]
         
@@ -73,7 +81,7 @@ class CompassInterface:
         logger.debug(f"Reading compass data of length {length}")
         heading_history = await self.redis_client.read_set("COMPASS")
         if active:
-            return [CompassRedisData(**heading) for heading in heading_history if heading["heading"]][0:length]
+            return [CompassRedisData(**heading) for heading in heading_history if heading["heading"] is not None][0:length]
         else:
             return [CompassRedisData(**heading) for heading in heading_history][0:length]
 
@@ -81,6 +89,6 @@ class CompassInterface:
         logger.debug(f"Reading compass data between {start_datetime} to {end_datetime}")
         heading_history = await self.redis_client.read_set("COMPASS", [start_datetime, end_datetime])
         if active:
-            return [CompassRedisData(**heading) for heading in heading_history if heading["heading"]]
+            return [CompassRedisData(**heading) for heading in heading_history if heading["heading"] is not None]
         else:
             return [CompassRedisData(**heading) for heading in heading_history]
