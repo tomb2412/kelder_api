@@ -103,7 +103,7 @@ class VelocityCalculator:
         logger.debug("Reading latest velocity measurement")
         if active:
             velocities = await self.redis_client.read_set("VELOCITY")
-            latest_active_velocity = [active_sog for active_sog in velocities if active_sog["speed_over_ground"]][0]
+            latest_active_velocity = [active_sog for active_sog in velocities if active_sog["speed_over_ground"] is not None][0]
             return GPSVelocity(**latest_active_velocity)
         else:
             return GPSVelocity(**(await self.redis_client.read_set("VELOCITY"))[0])
@@ -112,7 +112,7 @@ class VelocityCalculator:
         logger.debug("Reading all velocity measurement")
         if active:
             velocities = await self.redis_client.read_set("VELOCITY")
-            return [GPSVelocity(**active_sog) for active_sog in velocities if active_sog["speed_over_ground"]]
+            return [GPSVelocity(**active_sog) for active_sog in velocities if active_sog["speed_over_ground"] is not None]
         else:
             return [GPSVelocity(**velocity) for velocity in await self.redis_client.read_set("VELOCITY")]
         
