@@ -9,6 +9,9 @@ import redis
 #import redis.asyncio as redis
 from pydantic import ValidationError
 
+import digitalio
+from digitalio import DigitalInOut
+
 from src.kelder_api.components.compass.exceptions import I2CConnectionFailure
 from src.kelder_api.components.compass.service import CompassSensor
 from src.kelder_api.components.gps.models import GpsMeasurementData, status
@@ -18,6 +21,7 @@ from src.kelder_api.components.gps.service import (
 )
 from src.kelder_api.components.gps.utils import haversine
 from src.kelder_api.configuration.settings import Settings
+
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(

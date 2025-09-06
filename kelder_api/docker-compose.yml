@@ -22,6 +22,8 @@ services:
     devices:
       - /dev/gpiomem
       - /dev/mem
+      - /dev/gpiomem:/dev/gpiomem
+      - /dev/i2c-1:/dev/i2c-1
     cap_add:
       - SYS_RAWIO
     ports:
@@ -29,7 +31,8 @@ services:
     depends_on:
       - redis
     environment:
-      - REDIS_HOST=redis
+      - REDIS_HOST:redis
+      - BLINKA_FT232H:0
     env_file:
       - .env 
 
@@ -39,9 +42,15 @@ services:
     volumes:
       - logs:/app/logs
     environment:
-      REDIS_HOST: redis
+      - REDIS_HOST=redis
+      - BLINKA_FT232H=0
     devices:
       - "/dev/ttyyAMA0:/dev/ttyyAMA0"
+      - "/dev/ttys0:/dev/ttys0"
+      - /dev/gpiomem
+      - /dev/mem
+      - /dev/gpiomem:/dev/gpiomem
+      - /dev/i2c-1:/dev/i2c-1
     command: [ "poetry", "run", "python", "-m", "src.kelder_api.app.background_orchestrator" ]
     depends_on:
       - redis
