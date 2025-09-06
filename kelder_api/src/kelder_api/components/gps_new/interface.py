@@ -11,7 +11,7 @@ from datetime import datetime
 from time import time
 
 from src.kelder_api.components.redis_client.redis_client import RedisClient
-from src.kelder_api.configuration.settings import Settings
+from src.kelder_api.configuration.settings import get_ettings
 from src.kelder_api.components.gps_new.models import (
     GPGSVSatellitesInView,
     GPGSAActiveSatellites,
@@ -31,9 +31,9 @@ class GPSInterface:
         self.redis_client = redis_client
 
         # Attributes for serial gps connection
-        self.PORT = Settings().gps.gps_serial_port
-        self.BAUDRATE = Settings().gps.gps_baudrate
-        self.TIMEOUT = Settings().gps.gps_timeout
+        self.PORT = get_settings().gps.gps_serial_port
+        self.BAUDRATE = get_settings().gps.gps_baudrate
+        self.TIMEOUT = get_settings().gps.gps_timeout
 
         # Attributes for parsing the serial data stream
         self.sentence_models: Dict[str, callable] = {

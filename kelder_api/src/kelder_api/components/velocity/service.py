@@ -6,7 +6,7 @@ import numpy as np
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.velocity.models import GPSVelocity, CalculationType
-from src.kelder_api.configuration.settings import Settings
+from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.velocity.utils import (
     haversine,
@@ -24,8 +24,8 @@ class VelocityCalculator:
         self.gps_interface = gps_interface
         self.redis_client = redis_client
 
-        self.velocity_calculation_type = Settings().velocity.velocity_calculation_type
-        self.num_gps_measurements = Settings().velocity.gps_velocity_history
+        self.velocity_calculation_type = get_settings().velocity.velocity_calculation_type
+        self.num_gps_measurements = get_settings().velocity.gps_velocity_history
 
     async def _get_gps_data(self, now: datetime) -> List[GPSRedisData]:
         """Private method which retrieves gps data through n latest measurements or last n seconds"""

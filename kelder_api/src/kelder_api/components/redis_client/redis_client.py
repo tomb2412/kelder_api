@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import List
 import json
 
-from src.kelder_api.configuration.settings import Settings
+from src.kelder_api.configuration.settings import get_settings
 
 from logging import getLogger
 
@@ -16,7 +16,7 @@ logger = getLogger(__name__)
 class RedisClient:
     def __init__(self):
         self._connection_pool: Optional[ConnectionPool] = None
-        self.settings = Settings().redis
+        self.settings = get_settings().redis
 
     async def _ensure_connection_pool(self):
         if not self._connection_pool:

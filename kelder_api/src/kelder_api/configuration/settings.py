@@ -1,10 +1,18 @@
 from functools import lru_cache
+from pathlib import Path
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import BaseModel, Field
 
 from src.kelder_api.components.velocity.models import CalculationType
 
+import os
+
+model_config = SettingsConfigDict(
+        env_file=str(Path(__file__).resolve().parent.parent.parent.parent / ".env"),
+        env_file_encoding="utf-8",
+        extra = "allow"
+    )
 
 class SleepTimes(BaseSettings):
     UNDER_WAY_SLEEP: float = Field(
@@ -16,12 +24,16 @@ class SleepTimes(BaseSettings):
         default=5,
     )
 
+    model_config = model_config
+
 
 class Redis(BaseSettings):
     redis_host: str = Field(
         description="The host name of the redis client", default="localhost"
     )
     redis_port: int = Field(description="Redis port name", default=6379)
+
+    model_config = model_config
 
 
 class GPS(BaseSettings):
@@ -35,6 +47,8 @@ class GPS(BaseSettings):
     velocity_threshold: float = Field(
         description="speed in kts exceeding to define underway", default=1.5
     )
+
+    model_config = model_config
 
 
 class Velocity(BaseSettings):
@@ -55,9 +69,11 @@ class Velocity(BaseSettings):
         default=30,
     )
 
+    model_config = model_config
+
 
 class Compass(BaseSettings):
-    pass
+    model_config = model_config
 
 
 class Orchestrator(BaseSettings):
@@ -66,6 +82,7 @@ class Orchestrator(BaseSettings):
         default=0.2
     )
 
+    model_config = model_config
 
 class Settings(BaseModel):
     redis: Redis = Field(
@@ -88,4 +105,7 @@ class Settings(BaseModel):
 
 @lru_cache(maxsize=1)
 def get_settings():
+    print(os.getcwd())
+    print(os.listdir())
+    print(str(Path(__file__).resolve().parent.parent))
     return Settings()
