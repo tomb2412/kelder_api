@@ -41,7 +41,8 @@ services:
     environment:
       REDIS_HOST: redis
     devices:
-      - "/dev/ttyyAMA0:/dev/ttyyAMA0"
+      - "/dev/ttyAMA0:/dev/ttyAMA0"
+      - "/dev/ttyS0:/dev/ttyS0"
     command: [ "poetry", "run", "python", "-m", "src.kelder_api.app.background_orchestrator" ]
     depends_on:
       - redis

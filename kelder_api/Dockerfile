@@ -1,9 +1,5 @@
 FROM python:3.12-slim
 
-WORKDIR /code
-
-# RUN curl -sSL https://install.python-poetry.org | python3 -
-RUN pip install poetry==2.1.0
 RUN apt-get update && apt-get install -y \
     python3-gpiozero \
     python3-rpi.gpio \
@@ -11,6 +7,12 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# RUN curl -sSL https://install.python-poetry.org | python3 -
+RUN pip install --no-cache-dir "poetry==2.1.0"
+
+WORKDIR /code
+COPY ./pyproject.toml /code/pyproject.toml
 
 ENV PYTHONFAULTHANDLER=1 \
     PYTHONUNBUFFERED=1 \
@@ -26,7 +28,6 @@ ENV PYTHONFAULTHANDLER=1 \
     POETRY_VERSION=2.1.0
 
 # Creating folders, and files for a project:
-COPY ./pyproject.toml /code/pyproject.toml
 COPY ./README.md /code/README.md
 COPY . /code
 
