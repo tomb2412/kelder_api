@@ -11,7 +11,7 @@ from datetime import datetime
 from time import time
 
 from src.kelder_api.components.redis_client.redis_client import RedisClient
-from src.kelder_api.configuration.settings import get_ettings
+from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.components.gps_new.models import (
     GPGSVSatellitesInView,
     GPGSAActiveSatellites,
