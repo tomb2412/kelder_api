@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings
 from pydantic import BaseModel, Field
 from src.kelder_api.components.velocity.models import CalculationType
 
+
 class SleepTimes(BaseSettings):
     UNDER_WAY_SLEEP: float = Field(
         description="Seconds between samples, when sailing + 1 second for reading ~ 6 seconds",
@@ -34,11 +35,12 @@ class GPS(BaseSettings):
         description="speed in kts exceeding to define underway", default=1.5
     )
 
+
 class Velocity(BaseSettings):
     velocity_calculation_type: CalculationType = Field(
         description="Method of retrieving GPS history in the velocity calculation",
-        default=CalculationType.TIMESERIES
-        )
+        default=CalculationType.TIMESERIES,
+    )
     gps_velocity_history: int = Field(
         description="Number of GPS measurements or number of seconds since now to average over in a velocity calculation",
         default=10,
@@ -58,7 +60,10 @@ class Compass(BaseSettings):
 
 
 class Ochestrator(BaseSettings):
-    sog_threshold: int = Field("The >= speed over ground which sets the VesselState as underway")
+    sog_threshold: int = Field(
+        "The >= speed over ground which sets the VesselState as underway"
+    )
+
 
 class Settings(BaseModel):
     redis: Redis = Field(
@@ -71,8 +76,13 @@ class Settings(BaseModel):
     compass: Compass = Field(
         description="All compass configuration", default_factory=Compass
     )
-    velocity: Velocity = Field(description="Velocity settings", default_factory=Velocity)
-    orchestrator: Ochestrator = Field(description = "The background ochestrator settings", default_factory=Ochestrator)
+    velocity: Velocity = Field(
+        description="Velocity settings", default_factory=Velocity
+    )
+    orchestrator: Ochestrator = Field(
+        description="The background ochestrator settings", default_factory=Ochestrator
+    )
+
 
 @lru_cache(maxsize=1)
 def get_settings():
