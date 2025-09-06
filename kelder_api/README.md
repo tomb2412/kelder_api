@@ -55,7 +55,9 @@ w- Docs are available at: http://localhost:8000/docs#/ or http://raspberrypi.loc
 - Component NEO-6M GPS [data sheet](https://components101.com/sites/default/files/component_datasheet/NEO6MV2%20GPS%20Module%20Datasheet.pdf)
 - NMEA GPRMB data: [GPRMB structure](https://aprs.gids.nl/nmea/#rmc)
 - pynmea2 parsing data: [git hub](https://github.com/Knio/pynmea2)
-- Minicom command to see serial stream: `sudo minicom -b 9600 -o -D /dev/ttyAMA0`
+- Minicom command to see serial stream: 
+    - to see which divice: `ls /dev/ttyAMA* /dev/ttyS* /dev/ttyUSB*`
+    - `sudo minicom -b 9600 -o -D /dev/ttyAMA0`
 
 # The Ultasound
 

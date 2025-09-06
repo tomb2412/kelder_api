@@ -71,3 +71,4 @@ class BackgroundTaskManager:
             vessel_state = self.calculate_new_state()
 
             # TODO: Logic triggered when vessel changes state: record trip, save trip ect
+

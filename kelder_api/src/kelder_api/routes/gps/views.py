@@ -1,19 +1,20 @@
 import logging
 
-from fastapi import APIRouter
-# import redis
+from fastapi import APIRouter, Depends, Request
 
-from src.kelder_api.components.gps.service import ReadGPSCoords
+from src.kelder_api.app.getters import get_gps_interface
+from src.kelder_api.components.gps_new.interface import GPSInterface
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["Core Sensing"])
 
-# r = redis.Redis(host="redis", port=6379, decode_responses=True)
-
+def get_dependancy(request: Request) -> GPSInterface:
+    return get_gps_interface(request.app)
 
 @router.get("/gps_coords")
-async def getGpCoords():
+async def getGpCoords(gps_interface: GPSInterface = Depends(get_dependancy)):
     logger.info("Requesting GPS data")
-    gps_data = await ReadGPSCoords()
+    gps_data = await gps_interface.read_gps_latest(active=True)
+    logger.info(f"Successfully read gps data: {gps_data}")
     return gps_data

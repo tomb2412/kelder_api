@@ -1,5 +1,5 @@
 # import board
-import adafruit_lis2mdl
+# import adafruit_lis2mdl
 import logging
 import numpy as np
 import math

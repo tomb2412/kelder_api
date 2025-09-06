@@ -1,13 +1,18 @@
 import logging
-from typing import Union
 from datetime import datetime
+
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.gps_new.interface import GPSInterface
+from src.kelder_api.components.compass_new.interface import CompassInterface
+from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.routes.health.views import router as health_route
 from src.kelder_api.routes.gps.views import router as gps_route
-from src.kelder_api.routes.bilge_depth.views import router as bilge_depth_route
+# from src.kelder_api.routes.bilge_depth.views import router as bilge_depth_route
 from src.kelder_api.routes.compass.views import router as compass_router
 
 # Allow requests from frontend's origin
@@ -28,7 +33,28 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    redis_client = RedisClient()
+    gps_interface = GPSInterface(redis_client)
+    compass_interface = CompassInterface(redis_client)
+
+    app.state.redis_client = redis_client
+    app.state.gps_interface = gps_interface
+    app.state.compass_interface = compass_interface
+    app.state.velocity_calculator = VelocityCalculator(
+        gps_interface=gps_interface, redis_client=redis_client
+    )
+
+    yield  
+
+    # Shutdown
+    del app.state.redis_client
+    del app.state.gps_interface
+    del app.state.velocity_calculator
+
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -40,12 +66,5 @@ app.add_middleware(
 
 app.include_router(health_route)
 app.include_router(gps_route)
-app.include_router(bilge_depth_route)
+# app.include_router(bilge_depth_route)
 app.include_router(compass_router)
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Clean up Redis connections on shutdown."""
-    logger.info("Shutting down Redis client...")
-    await redis_client.close()
