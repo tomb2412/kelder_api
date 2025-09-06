@@ -11,7 +11,9 @@ from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.compass_new.interface import CompassInterface
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.routes.health.views import router as health_route
+from src.kelder_api.routes.velocity.views import router as velocity_route
 from src.kelder_api.routes.gps.views import router as gps_route
+from src.kelder_api.routes.redis.views import router as redis_route
 # from src.kelder_api.routes.bilge_depth.views import router as bilge_depth_route
 from src.kelder_api.routes.compass.views import router as compass_router
 
@@ -23,7 +25,7 @@ origins = [
 ]
 
 logging.basicConfig(
-    filename=f"/app/logs/{datetime.now().strftime('%Y-%m-%d')}_kelder_api.log",
+    # filename=f"/app/logs/{datetime.now().strftime('%Y-%m-%d')}_kelder_api.log",
     encoding="utf-8",
     format="API - {levelname} - {asctime} - {message}",
     style="{",
@@ -68,3 +70,5 @@ app.include_router(health_route)
 app.include_router(gps_route)
 # app.include_router(bilge_depth_route)
 app.include_router(compass_router)
+app.include_router(velocity_route)
+app.include_router(redis_route)

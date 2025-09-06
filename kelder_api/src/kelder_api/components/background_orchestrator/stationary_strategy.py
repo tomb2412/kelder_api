@@ -1,4 +1,7 @@
+import logging
 from typing import List, Dict
+
+logger = logging.getLogger(__name__)
 
 class StationaryStrategy:
     """
@@ -19,11 +22,17 @@ class StationaryStrategy:
     @classmethod
     async def execute(self, components: Dict[str, dict]) -> None:
         for sensor in self.required_sensors():
-            await getattr(
-                components[sensor]["instance"], components[sensor]["method"]
-            )()
+            try:
+                await getattr(
+                    components[sensor]["instance"], components[sensor]["method"]
+                )()
+            except Exception as error:
+                logger.error(f"Exception occured processing {sensor}: {error}")
 
         for calculator in self.required_calculators():
-            await getattr(
-                components[calculator]["instance"], components[calculator]["method"]
-            )()
+            try:
+                await getattr(
+                    components[calculator]["instance"], components[calculator]["method"]
+                )()
+            except Exception as error:
+                logger.error(f"Exception occured processing {calculator}: {error}")

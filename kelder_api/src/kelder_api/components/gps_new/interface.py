@@ -68,8 +68,8 @@ class GPSInterface:
             if writer and not writer.is_closing():
                 try:
                     writer.close()
-                    await writer.is_closed()
-                    logger.debug(f"GPS serial connection closed on port {self.PORT}")
+                    await writer.wait_closed()
+                    # logger.debug(f"GPS serial connection closed on port {self.PORT}")
 
                 except Exception as error:
                     logger.error(
@@ -78,12 +78,15 @@ class GPSInterface:
                     raise
 
     def _set_gprmc_sentence(self, nmea_data: NMEASentence):
+        # logger.debug("GPRMC sentence identified")
         self.gprmc_recommended_course = GPRMCRecommendedCourse.from_nmea(nmea_data)
 
     def _set_gpgsa_sentence(self, nmea_data: NMEASentence):
+        # logger.debug("GPGSA sentence identified")
         self.gpgsa_active_satellites = GPGSAActiveSatellites.from_nmea(nmea_data)
 
     def _set_gpgsv_sentence(self, nmea_data: NMEASentence):
+        # logger.debug("GPGSV sentence identified")
         self.gpgsv_satellites_in_view.from_nmea(nmea_data)
 
     async def write_gps(
@@ -176,7 +179,14 @@ class GPSInterface:
         ]
 
     def _parse_serial_gps_string(self, sentence) -> None:
-        data_type = sentence[1:6]
+        if "GPRMC" in sentence:
+            data_type = "GPRMC"
+        elif "GPGSA" in sentence:
+            data_type = "GPGSA"
+        elif "GPGSV" in sentence:
+            data_type = "GPGSV"
+        else:
+            return None
         try:
             self.sentence_models[data_type](pynmea2.parse(sentence))
         except KeyError as error:
@@ -191,12 +201,11 @@ class GPSInterface:
         self, mock_sentence_stream: List[str] | None = None
     ) -> None:
         """Public method to open the serial connection, and processes the datastream until a gps measurement is identified"""
-
+        logger.debug("GPS reading in progress")
         # Clear the satellites in view and other sentense data before reading the serial stream
         self.gpgsv_satellites_in_view = GPGSVSatellitesInView()
         self.gprmc_recommended_course = None
         self.gpgsa_active_satellites = None
-
         gps_data_identified = False
 
         if mock_sentence_stream:
@@ -213,10 +222,11 @@ class GPSInterface:
             else:
                 async with self._get_serial_connection() as serial_reader:
                     newsentence = await serial_reader.readline()
+                    
                 newsentence = newsentence.decode("utf-8", errors="ignore").strip()
-
-            if newsentence.startswith("$") or "," in newsentence:
-                self._parse_serial_gps_string(newsentence)
+                # logger.debug(f"Serial reader returned parsed sentence: {newsentence}")
+            
+            self._parse_serial_gps_string(newsentence)
 
             # track sentences complete
             if (

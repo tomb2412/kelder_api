@@ -66,7 +66,7 @@ class Velocity(BaseSettings):
     )
     max_delay_seconds: int = Field(
         description="Maximum latency between a gps measurement without a quality warning",
-        default=30,
+        default=200,
     )
 
     model_config = model_config

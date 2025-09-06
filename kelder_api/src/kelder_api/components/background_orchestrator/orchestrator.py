@@ -1,3 +1,5 @@
+import time
+
 from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.gps_new.interface import GPSInterface
@@ -53,22 +55,26 @@ class BackgroundTaskManager:
             },
         }
 
-    async def calculate_new_state(self) -> VesselState:
+    async def calculate_new_state(self, vessel_state: VesselState) -> VesselState:
         """A general method to define the vessels new state each iteration"""
-        velocity = self.components["VELOCITY"].read_velocity_latest(active=True)
-
-        if velocity.speed_over_ground >= self.settings.sog_threshold:
-            return VesselState.UNDERWAY
-        else:
-            return VesselState.STATIONARY
+        velocity = await self.components["VELOCITY"]["instance"].read_velocity_latest(active=True)
+        try:
+            if velocity.speed_over_ground >= self.settings.sog_threshold:
+                return VesselState.UNDERWAY
+            else:
+                return VesselState.STATIONARY
+        except:
+            return vessel_state
 
     async def run(self):
         vessel_state = VesselState.STATIONARY
         while True:
             # Run the strategy matching the vessel state
             await self.strategies[vessel_state](components = self.components)
-
-            vessel_state = self.calculate_new_state()
+            
+            time.sleep(5)
+            # vessel_state = await self.calculate_new_state(vessel_state)
+        
 
             # TODO: Logic triggered when vessel changes state: record trip, save trip ect
 

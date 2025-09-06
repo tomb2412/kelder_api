@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import logging
-from typing import List
+from typing import List, Tuple
 import numpy as np
 
 from src.kelder_api.components.redis_client.redis_client import RedisClient
@@ -27,24 +27,30 @@ class VelocityCalculator:
         self.velocity_calculation_type = get_settings().velocity.velocity_calculation_type
         self.num_gps_measurements = get_settings().velocity.gps_velocity_history
 
-    async def _get_gps_data(self, now: datetime) -> List[GPSRedisData]:
+    async def _get_gps_data(self, end_datetime: datetime | None = None) -> Tuple[List[GPSRedisData], datetime]:
         """Private method which retrieves gps data through n latest measurements or last n seconds"""
+        
         if self.velocity_calculation_type == CalculationType.LENGTH:
             return await self.gps_interface.read_gps_history_length(
                 length=self.num_gps_measurements, active=True
             )
         else:
-            start_datetime = now - timedelta(seconds=self.num_gps_measurements)
+            if end_datetime is None:
+                end_datetime = datetime.now().replace(microsecond=0)
+            start_datetime = end_datetime - timedelta(seconds=self.num_gps_measurements)
+            print(f"The time range is:\n   {start_datetime}\n   {end_datetime}")
             return await self.gps_interface.read_gps_history_time_series(
-                start_datetime, active=True
-            )
+                start_datetime, end_datetime=end_datetime, active=True
+            ), end_datetime
 
     async def calculate_gps_velocity(
-        self, datetime_now: datetime = datetime.now()
+        self, datetime_now: datetime | None = None
     ) -> GPSVelocity:
         """Calculates a speed over ground in knots from gps history, returns an error if less than 2 measurements"""
-        gps_history = await self._get_gps_data(datetime_now)
+        gps_history, datetime_now = await self._get_gps_data(datetime_now)
         gps_points = len(gps_history)
+
+        logger.info(f"Identified {gps_points} gps_points in the last {self.num_gps_measurements}")
 
         if gps_points <= 1:
             message = (
