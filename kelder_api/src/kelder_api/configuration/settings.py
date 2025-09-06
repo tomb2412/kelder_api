@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 from pydantic_settings import BaseSettings
 from pydantic import BaseModel, Field
 from src.kelder_api.components.velocity.models import CalculationType
@@ -51,9 +53,12 @@ class Velocity(BaseSettings):
     )
 
 
-class Compass(BaseModel):
+class Compass(BaseSettings):
     pass
 
+
+class Ochestrator(BaseSettings):
+    sog_threshold: int = Field("The >= speed over ground which sets the VesselState as underway")
 
 class Settings(BaseModel):
     redis: Redis = Field(
@@ -67,3 +72,8 @@ class Settings(BaseModel):
         description="All compass configuration", default_factory=Compass
     )
     velocity: Velocity = Field(description="Velocity settings", default_factory=Velocity)
+    orchestrator: Ochestrator = Field(description = "The background ochestrator settings", default_factory=Ochestrator)
+
+@lru_cache(maxsize=1)
+def get_settings():
+    return Settings()
