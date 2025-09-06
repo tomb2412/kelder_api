@@ -105,7 +105,4 @@ class Settings(BaseModel):
 
 @lru_cache(maxsize=1)
 def get_settings():
-    print(os.getcwd())
-    print(os.listdir())
-    print(str(Path(__file__).resolve().parent.parent))
     return Settings()
