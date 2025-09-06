@@ -13,6 +13,7 @@ RUN pip install --no-cache-dir "poetry==2.1.0"
 
 WORKDIR /code
 COPY ./pyproject.toml /code/pyproject.toml
+COPY ./README.md /code/README.md
 
 ENV PYTHONFAULTHANDLER=1 \
     PYTHONUNBUFFERED=1 \
@@ -27,12 +28,11 @@ ENV PYTHONFAULTHANDLER=1 \
     POETRY_HOME='/usr/local' \
     POETRY_VERSION=2.1.0
 
-# Creating folders, and files for a project:
-COPY ./README.md /code/README.md
-COPY . /code
-
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-root
+
+# Creating folders, and files for a project:
+COPY . /code
 
 EXPOSE 80
 
