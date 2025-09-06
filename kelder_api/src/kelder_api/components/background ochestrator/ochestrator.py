@@ -65,9 +65,8 @@ class BackgroundTaskManager:
         vessel_state = VesselState.STATIONARY
         while True:
             # Run the strategy matching the vessel state
-            # previous_vessel_state = vessel_state
             await self.strategies[vessel_state].execute(self.components)
 
             vessel_state = self.calculate_new_state()
 
-            # Logic triggered when vessel changes state: record trip, save trip ect
+            # TODO: Logic triggered when vessel changes state: record trip, save trip ect
