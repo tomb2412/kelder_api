@@ -1,8 +1,19 @@
-from agents import Agent
+from agents import Agent, FunctionTool
 
+from functools import partial
+
+from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.passage_plan.tools import save_passage_plan
+from src.kelder_api.components.passage_plan.models import PassagePlan
 
-def get_passage_planner() -> Agent:
+def get_passage_planner(redis_client: RedisClient) -> Agent:
+    save_passage_plan_tool = FunctionTool(
+         name="Save_the_passage_plan",
+         description="Use this tool when the passage plan is complete and ready to display to the user",
+         params_pydantic_model=PassagePlan,
+         on_invoke_tool=partial(save_passage_plan, redis_client=redis_client),
+      )
+
     passage_plan_agent = Agent(
         name = "Passage Planner",
         instructions="""You are a navigation assistant trained in RYA Day Skipper passage planning.  
@@ -26,7 +37,7 @@ When asked to produce a passage plan:
    **"✅ Your passage plan has been prepared and saved."** 
 """,
     model="gpt-5-mini",
-    tools = [save_passage_plan]
+    tools = [save_passage_plan_tool]
     )
 
     return passage_plan_agent

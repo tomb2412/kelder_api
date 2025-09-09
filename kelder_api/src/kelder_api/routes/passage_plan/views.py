@@ -16,6 +16,7 @@ def get_dependancy(request: Request) -> RedisClient:
 async def GetPassagePlan(redis_client: RedisClient = Depends(get_dependancy)):
     logger.info("Requesting a passage plan")
     try:
+        
         plan = (await redis_client.read_set("PASSAGE_PLAN"))[0]
     except IndexError:
         plan = "something else"

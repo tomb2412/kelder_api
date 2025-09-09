@@ -13,7 +13,7 @@ from agents import Runner
 from starlette.responses import StreamingResponse
 from openai.types.responses import ResponseTextDeltaEvent
 
-from src.kelder_api.routes.inference.models import InferenceRequest, Message
+from src.kelder_api.routes.inference.models import InferenceRequest
 from src.kelder_api.routes.inference.agents import get_agent
 
 logger = logging.getLogger(__name__)

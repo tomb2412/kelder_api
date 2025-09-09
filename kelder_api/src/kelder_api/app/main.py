@@ -6,10 +6,13 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+# Component import
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.compass_new.interface import CompassInterface
 from src.kelder_api.components.velocity.service import VelocityCalculator
+
+# Routes
 from src.kelder_api.routes.health.views import router as health_route
 from src.kelder_api.routes.velocity.views import router as velocity_route
 from src.kelder_api.routes.gps.views import router as gps_route
@@ -18,6 +21,10 @@ from src.kelder_api.routes.redis.views import router as redis_route
 from src.kelder_api.routes.compass.views import router as compass_router
 from src.kelder_api.routes.inference.views import router as agent_routes
 from src.kelder_api.routes.passage_plan.views import router as passage_plan_routes
+
+# Tools (which use components)
+from src.kelder_api.components.passage_plan.tools import get_save_passage_plan_tool
+
 
 # Allow requests from frontend's origin
 origins = [

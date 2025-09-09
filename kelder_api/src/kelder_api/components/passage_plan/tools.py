@@ -1,18 +1,24 @@
 import logging
 
-from agents import function_tool
+from pydantic import BaseModel
 
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.passage_plan.models import PassagePlan
 
 logger = logging.getLogger(__name__)
 
-@function_tool
-async def save_passage_plan(passage_plan: PassagePlan):
+
+async def save_passage_plan(passage_plan: PassagePlan, redis_client: "RedisClient"):
     """
     Save a full passage plan with all navigational details.
     """
-    redis_client = RedisClient()
-    await redis_client.write_set("PASSAGE_PLAN", passage_plan)
+    try:
+        await redis_client.write_set("PASSAGE_PLAN", passage_plan)
+        print("working")
+        logger.debug("Passage plan created and saved")
 
-    logger.debug("Passage plan created and saved")
+        return {"status": "Success"}
+
+    except Exception as error:
+        return {"status": "Failed", "reason": str(error)}
+    

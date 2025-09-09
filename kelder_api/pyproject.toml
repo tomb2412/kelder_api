@@ -6,7 +6,7 @@ authors = [
     {name = "Your Name",email = "you@example.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<4.0"
 dependencies = [
     "fastapi (>=0.115.11,<0.116.0)",
     "pydantic (>=2.10.6,<3.0.0)",
@@ -28,7 +28,8 @@ dependencies = [
     "adafruit-blinka (>=8.58.1,<9.0.0)",
     #"rpi-gpio (>=0.7.1,<0.8.0)",
     "openai (>=1.106.1,<2.0.0)",
-    "openai-agents (==0.0.15)"
+    "openai-agents (==0.0.15)",
+    "pydantic-ai (>=1.0.2,<2.0.0)"
 ]
 
 [tool.poetry]

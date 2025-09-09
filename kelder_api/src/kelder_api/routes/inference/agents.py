@@ -1,8 +1,12 @@
-from agents import Agent
+from agents import Agent, FunctionTool
 
-from src.kelder_api.components.passage_plan.passage_plan_agent import get_passage_planner
+from src.kelder_api.components.redis_client.redis_client import RedisClient
 
-def get_agent() -> Agent:
+def get_agent(redis_client: RedisClient) -> Agent:
+
+    # Initialise necessary modules at runtime
+    from src.kelder_api.components.passage_plan.passage_plan_agent import get_passage_planner
+
     tidal_agent = Agent(
         name = "Tidal Agent",
         instructions = """You are an experienced sailor with excellent knowledge of tidal hights and tidal streams.
@@ -23,12 +27,11 @@ def get_agent() -> Agent:
             tool_name = "Tidal_Planner",
             tool_description="Decides on the optimum departure times considering only tidal factors on a passage."
         ),
-        get_passage_planner().as_tool(
+        get_passage_planner(redis_client).as_tool(
             tool_name = "Passage_Planner",
             tool_description = "Writes and saves a passage plan to the passage plan card on the dashboard"
         )
     ]
-    print(tools)
 
     agent = Agent(
         name="First Mate",
@@ -50,11 +53,11 @@ Your role is to help the skipper make safe decisions while keeping answers **sho
 - If asked *“Plan a route to Plymouth”*:  
   → Call the **Passage Planner** tool. Then confirm:  
   > "✅ Passage plan prepared. Departure at 1000 UTC with fair tide. Hazards noted near Bramble Bank."  
-
 - If asked *“What’s the tide at Cowes?”*:  
   → Call the **Tidal Agent**. Then reply:  
   > "🌊 High water at 0930 UTC (4.2m). Low water at 1600 UTC (1.1m). Tidal stream turns west at 1230."  
 
+  
 - If asked something general like *“Is it safe to sail now?”*:  
   → Use available tools as needed and reply briefly, highlighting **safety risks first**.  
 
@@ -66,3 +69,4 @@ Always be **polite, concise, and safety-minded**.
     )
 
     return agent
+

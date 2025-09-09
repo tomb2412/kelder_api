@@ -39,12 +39,14 @@ class DepartureETA(BaseModel):
 
 
 class PassagePlan(BaseModel):
-    timestamp: datetime = Field(description="The timestamp the passage plan was created")
-    title: str = Field(..., description="Title of the passage plan, e.g. 'Cowes to Plymouth'")
-    tides: TideInfo
-    weather: WeatherInfo
-    course_to_steer: List[Waypoint] = Field(..., description="List of waypoints forming the course to steer")
-    pilotage: PilotageInfo
-    ports_of_refuge: Optional[List[PortOfRefuge]] = Field(default_factory=list, description="Alternative harbours or ports along the route")
-    navigational_hazards: List[str] = Field(..., description="Hazards along the route")
-    departure_and_eta: DepartureETA
+    timestamp: datetime
+    test: str
+    # timestamp: datetime = Field(description="The timestamp the passage plan was created")
+    # title: str = Field(..., description="Title of the passage plan, e.g. 'Cowes to Plymouth'")
+    # tides: TideInfo
+    # weather: WeatherInfo
+    # course_to_steer: List[Waypoint] = Field(..., description="List of waypoints forming the course to steer")
+    # pilotage: PilotageInfo
+    # ports_of_refuge: Optional[List[PortOfRefuge]] = Field(default_factory=list, description="Alternative harbours or ports along the route")
+    # navigational_hazards: List[str] = Field(..., description="Hazards along the route")
+    # departure_and_eta: DepartureETA
