@@ -29,7 +29,9 @@ dependencies = [
     #"rpi-gpio (>=0.7.1,<0.8.0)",
     "openai (>=1.106.1,<2.0.0)",
     "openai-agents (==0.0.15)",
-    "pydantic-ai (>=1.0.2,<2.0.0)"
+    "pydantic-ai (>=1.0.2,<2.0.0)",
+    "httpx>=0.28.1",
+    "async-lru>=2.0.5",
 ]
 
 [tool.poetry]
