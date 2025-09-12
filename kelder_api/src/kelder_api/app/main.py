@@ -22,9 +22,6 @@ from src.kelder_api.routes.compass.views import router as compass_router
 from src.kelder_api.routes.inference.views import router as agent_routes
 from src.kelder_api.routes.passage_plan.views import router as passage_plan_routes
 
-# Tools (which use components)
-from src.kelder_api.components.passage_plan.tools import get_save_passage_plan_tool
-
 
 # Allow requests from frontend's origin
 origins = [

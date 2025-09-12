@@ -1,30 +1,22 @@
-from agents import Agent, FunctionTool
-
-from functools import partial
+from pydantic_ai import Agent, RunContext
 
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.passage_plan.tools import save_passage_plan
 from src.kelder_api.components.passage_plan.models import PassagePlan
 
-def get_passage_planner(redis_client: RedisClient) -> Agent:
-    save_passage_plan_tool = FunctionTool(
-         name="Save_the_passage_plan",
-         description="Use this tool when the passage plan is complete and ready to display to the user",
-         params_pydantic_model=PassagePlan,
-         on_invoke_tool=partial(save_passage_plan, redis_client=redis_client),
-      )
-
+def get_passage_planner() -> Agent:
     passage_plan_agent = Agent(
-        name = "Passage Planner",
-        instructions="""You are a navigation assistant trained in RYA Day Skipper passage planning.  
+        "gpt-5-mini",
+        system_prompt="""You are a navigation assistant trained in yatch passage planning.  
 When asked to produce a passage plan:  
 
-1. Create a full passage plan in line with RYA Day Skipper standards.  
-   - Tides & currents  
-   - Weather forecast  
-   - Course to steer (waypoints, bearings, distances, ETA)  
+1. Create a full passage plan in line with following standards.  
+   - Title: departure to desination. e.g "Cowes to Plymouth"
+   - Tides: Use the tidal tool to identify daytime high and low water, local time.
+   - Weather: Use the tool to fetch weather data.
+   - Course to steer: select relevant waypoints, never hallucinate coordinates. 
    - Pilotage (departure & arrival)  
-   - Ports of refuge  
+   - Ports of refuge 
    - Navigational hazards (shoals, overfalls, traffic, restricted zones)  
    - Departure time & ETA  
 
@@ -36,8 +28,12 @@ When asked to produce a passage plan:
 4. After saving, respond to the user with only a confirmation such as:  
    **"✅ Your passage plan has been prepared and saved."** 
 """,
-    model="gpt-5-mini",
-    tools = [save_passage_plan_tool]
-    )
+   deps_type=RedisClient,
+   output_type=PassagePlan
+   )
+    
+    @passage_plan_agent.tool
+    async def save_passage_plan_tool(ctx: RunContext[RedisClient], passage_plan: PassagePlan) -> bool:
+        return await save_passage_plan(passage_plan, ctx.deps)
 
     return passage_plan_agent

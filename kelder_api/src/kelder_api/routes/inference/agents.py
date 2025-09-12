@@ -1,15 +1,12 @@
-from agents import Agent, FunctionTool
+from pydantic_ai import Agent, RunContext
 
 from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.passage_plan.passage_plan_agent import get_passage_planner
 
-def get_agent(redis_client: RedisClient) -> Agent:
-
-    # Initialise necessary modules at runtime
-    from src.kelder_api.components.passage_plan.passage_plan_agent import get_passage_planner
-
+def get_tidal_agent():
     tidal_agent = Agent(
-        name = "Tidal Agent",
-        instructions = """You are an experienced sailor with excellent knowledge of tidal hights and tidal streams.
+        'openai:gpt-4o-mini', #"gpt-5-mini"
+        system_prompt = """You are an experienced sailor with excellent knowledge of tidal hights and tidal streams.
             Your job is to decide when the best departure times are for a given passage considering only the tidal set and rate.
             Do not consider wind, sea state or other conditions. 
             Your priority when reviewing a passage plan for tide effects is to optimise the speed and comfort of the boat.
@@ -19,25 +16,16 @@ def get_agent(redis_client: RedisClient) -> Agent:
             Advise strongly when a plan suggests a route going against the tide.
             Be aware of compromises with other factors such as weather and safety
             In the cases where a compromise over departure time is necessary consider routes which reduce the effect of the tidal stream""",
-        model="gpt-5-mini"
     )
+    return tidal_agent
 
-    tools = [
-        tidal_agent.as_tool(
-            tool_name = "Tidal_Planner",
-            tool_description="Decides on the optimum departure times considering only tidal factors on a passage."
-        ),
-        get_passage_planner(redis_client).as_tool(
-            tool_name = "Passage_Planner",
-            tool_description = "Writes and saves a passage plan to the passage plan card on the dashboard"
-        )
-    ]
-
-    agent = Agent(
-        name="First Mate",
-        instructions="""
+def get_chatbot_agent() -> Agent:
+    chatbot_agent = Agent(
+        model="gpt-5-mini",
+        system_prompt="""
 You are a sailing assistant chatbot.  
 Your role is to help the skipper make safe decisions while keeping answers **short, clear, and practical**.  
+Please ensure your responses never exceed 200 characters.
 
 ### Key rules:
 - **Safety is always the priority** — warn about hazards, weather, or unsafe conditions.  
@@ -64,9 +52,22 @@ Your role is to help the skipper make safe decisions while keeping answers **sho
 Always be **polite, concise, and safety-minded**.  
 
 """,
-        tools=tools,
-        model="gpt-5-mini"
+   deps_type=RedisClient
     )
 
-    return agent
+    @chatbot_agent.tool
+    async def get_tidal_information(ctx: RunContext[RedisClient], location: str) -> str:
+        tidal_agent = get_tidal_agent()
+        return await tidal_agent.run(location,usage=ctx.usage)
+
+    @chatbot_agent.tool
+    async def get_passage_plan(ctx: RunContext[RedisClient], passage_plan_prompt: str) -> str:
+        passage_planner_agent = get_passage_planner()
+        return await passage_planner_agent.run(
+            passage_plan_prompt,
+            deps=ctx.deps,
+            usage=ctx.usage)
+
+
+    return chatbot_agent
 

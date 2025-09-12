@@ -17,9 +17,10 @@ class WeatherInfo(BaseModel):
 class Waypoint(BaseModel):
     name: Optional[str] = Field(None, description="Name of the waypoint")
     coordinates: str = Field(..., description="Lat/Long in degrees and minutes (e.g. '50°46.0’N, 001°06.0’W')")
-    bearing: Optional[str] = Field(None, description="Bearing in degrees true")
-    distance_nm: Optional[float] = Field(None, description="Distance in nautical miles")
-    eta: Optional[str] = Field(None, description="Estimated time of arrival (UTC or local)")
+    # TODO: Calculate these, with some validation - maybe a tool?
+    # bearing: Optional[str] = Field(None, description="Bearing in degrees true")
+    # distance_nm: Optional[float] = Field(None, description="Distance in nautical miles")
+    # eta: Optional[str] = Field(None, description="Estimated time of arrival (UTC or local)")
 
 
 class PilotageInfo(BaseModel):
@@ -39,14 +40,12 @@ class DepartureETA(BaseModel):
 
 
 class PassagePlan(BaseModel):
-    timestamp: datetime
-    test: str
-    # timestamp: datetime = Field(description="The timestamp the passage plan was created")
-    # title: str = Field(..., description="Title of the passage plan, e.g. 'Cowes to Plymouth'")
-    # tides: TideInfo
-    # weather: WeatherInfo
-    # course_to_steer: List[Waypoint] = Field(..., description="List of waypoints forming the course to steer")
-    # pilotage: PilotageInfo
-    # ports_of_refuge: Optional[List[PortOfRefuge]] = Field(default_factory=list, description="Alternative harbours or ports along the route")
-    # navigational_hazards: List[str] = Field(..., description="Hazards along the route")
-    # departure_and_eta: DepartureETA
+    timestamp: datetime = Field(description="The timestamp the passage plan was created")
+    title: str = Field(..., description="Title of the passage plan, e.g. 'Cowes to Plymouth'")
+    tides: TideInfo
+    weather: WeatherInfo
+    course_to_steer: List[Waypoint] = Field(..., description="List of waypoints forming the course to steer")
+    pilotage: PilotageInfo
+    ports_of_refuge: Optional[List[PortOfRefuge]] = Field(default_factory=list, description="Alternative harbours or ports along the route")
+    navigational_hazards: List[str] = Field(..., description="Hazards along the route")
+    departure_and_eta: DepartureETA

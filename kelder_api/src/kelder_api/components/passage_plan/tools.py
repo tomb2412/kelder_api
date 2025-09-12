@@ -8,17 +8,16 @@ from src.kelder_api.components.passage_plan.models import PassagePlan
 logger = logging.getLogger(__name__)
 
 
-async def save_passage_plan(passage_plan: PassagePlan, redis_client: "RedisClient"):
+async def save_passage_plan(passage_plan: PassagePlan, redis_client: "RedisClient") -> bool:
     """
     Save a full passage plan with all navigational details.
     """
     try:
         await redis_client.write_set("PASSAGE_PLAN", passage_plan)
-        print("working")
         logger.debug("Passage plan created and saved")
 
-        return {"status": "Success"}
+        return True
 
     except Exception as error:
-        return {"status": "Failed", "reason": str(error)}
+        return False
     
