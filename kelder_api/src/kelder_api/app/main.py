@@ -21,7 +21,7 @@ from src.kelder_api.routes.redis.views import router as redis_route
 from src.kelder_api.routes.compass.views import router as compass_router
 from src.kelder_api.routes.inference.views import router as agent_routes
 from src.kelder_api.routes.passage_plan.views import router as passage_plan_routes
-
+from src.kelder_api.routes.tidal_measurements.views import router as tidal_routes
 
 # Allow requests from frontend's origin
 origins = [
@@ -80,3 +80,4 @@ app.include_router(velocity_route)
 app.include_router(redis_route)
 app.include_router(agent_routes)
 app.include_router(passage_plan_routes)
+app.include_router(tidal_routes)

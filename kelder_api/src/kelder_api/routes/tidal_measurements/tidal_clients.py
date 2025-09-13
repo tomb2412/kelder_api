@@ -4,7 +4,7 @@ import logging
 from typing import List
 from datetime import date
 
-from src.kelder_api.components.tidal_measurements.models import TideInfo
+from src.kelder_api.routes.tidal_measurements.models import TideInfo
 
 PORTSMOUTH_STATION_ID = "0065"
 COWES_STATION_ID = "0060"
@@ -49,7 +49,7 @@ async def get_tide_predictions(date: date) -> List[TideInfo]:
 
     for tidal_event in response.json():
         tidal_events.append(TideInfo(
-            event_type = tidal_event["EventType"], # TODO this isn't working 
+            event = tidal_event["EventType"],
             datetime_stamp = tidal_event["DateTime"],
             height_of_tide = tidal_event["Height"]
         ))
