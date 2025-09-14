@@ -1,5 +1,5 @@
-# import board
-# import adafruit_lis2mdl
+import board
+import adafruit_lis2mdl
 import logging
 import numpy as np
 import math
@@ -18,7 +18,7 @@ class CompassInterface:
     TODO: support calibration feature
     """
 
-    def __init__(self, redis_client: RedisClient, fake_transport: bool = False):
+    def __init__(self, redis_client: RedisClient, fake_transport: bool = True):
         self.redis_client = redis_client
         if fake_transport:
             self.i2c_board = board.I2C()
