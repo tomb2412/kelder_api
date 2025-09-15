@@ -60,9 +60,12 @@ w- Docs are available at: http://localhost:8000/docs#/ or http://raspberrypi.loc
     - `sudo minicom -b 9600 -o -D /dev/ttyAMA0`
 
 # The Ultasound
-
+ - [Wiring guide](https://gpiozero.readthedocs.io/en/stable/recipes.html#distance-sensor)
+ - [Module docs](https://gpiozero.readthedocs.io/en/stable/api_input.html#distancesensor-hc-sr04)
  - install package: `sudo apt install python3-gpiozero python3-rpi.gpio`
  - Enable gpio through the interface options `sudo raspi-config` -> Go to Interface Options -> Enable GPIO
+ - Resistor guide:
+    - 
 
 
  # The Compass
