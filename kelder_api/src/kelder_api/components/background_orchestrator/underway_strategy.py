@@ -1,6 +1,8 @@
 import logging
 from typing import List, Dict
 
+from src.kelder_api.components.background_orchestrator.enums import VesselState
+
 logger = logging.getLogger(__name__)
 
 class UnderwayStrategy:
@@ -17,10 +19,10 @@ class UnderwayStrategy:
 
     def required_calculators() -> List[str]:
         """Defines which calcuations are required and in what order"""
-        return ["VELOCITY"]
+        return ["VELOCITY", "LOG"]
 
     @classmethod
-    async def execute(self, components: Dict[str, dict]) -> None:
+    async def execute(self, components: Dict[str, dict], previous_vessel_state: VesselState) -> None:
         for sensor in self.required_sensors():
             await getattr(
                 components[sensor]["instance"], components[sensor]["method"]
@@ -30,3 +32,8 @@ class UnderwayStrategy:
             await getattr(
                 components[calculator]["instance"], components[calculator]["method"]
             )()
+
+        if previous_vessel_state == VesselState.Stationary:
+            logger.info("Journey finishing")
+            await components["LOG"]["instance"].finish_journey()
+            

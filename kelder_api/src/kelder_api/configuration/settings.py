@@ -6,7 +6,6 @@ from pydantic import BaseModel, Field
 
 from src.kelder_api.components.velocity.models import CalculationType
 
-import os
 
 model_config = SettingsConfigDict(
         env_file=str(Path(__file__).resolve().parent.parent.parent.parent / ".env"),
@@ -71,8 +70,13 @@ class Velocity(BaseSettings):
 
     model_config = model_config
 
+class LogTracker(BaseSettings):
+    time_window_length: int = Field(description="The number of gps history measurements to retrieve in the log calculation, or seconds history",
+        default = 60)
+    tack_bearing_tolerance: int = Field(description="The bearing tolerance before a new tack is calculated", default = 15)
 
 class Compass(BaseSettings):
+    # TODO: remove?
     model_config = model_config
 
 
@@ -101,6 +105,7 @@ class Settings(BaseModel):
     orchestrator: Orchestrator = Field(
         description="The background ochestrator settings", default_factory=Orchestrator
     )
+    log_tracker: LogTracker = Field(description="All log tracking config", default_factory=LogTracker)
 
 
 @lru_cache(maxsize=1)

@@ -5,6 +5,7 @@ from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.compass_new.interface import CompassInterface
 from src.kelder_api.components.velocity.service import VelocityCalculator
+from src.kelder_api.components.log.service import LogTracker
 from src.kelder_api.components.background_orchestrator.stationary_strategy import (
     StationaryStrategy,
 )
@@ -43,6 +44,12 @@ class BackgroundTaskManager:
             gps_interface=gps_interface, redis_client=self.redis_client
         )
 
+        log_tracker = LogTracker(
+            gps_interface = gps_interface,
+            redis_client = self.redis_client,
+            velocity_calculator = velocity_calculator
+        )
+
         return {
             "GPS": {"instance": gps_interface, "method": "stream_serial_data"},
             "COMPASS": {
@@ -52,6 +59,10 @@ class BackgroundTaskManager:
             "VELOCITY": {
                 "instance": velocity_calculator,
                 "method": "calculate_gps_velocity",
+            },
+            "LOG": {
+                "instance": log_tracker,
+                "method": "increment_log",
             },
         }
 
@@ -69,12 +80,13 @@ class BackgroundTaskManager:
     async def run(self):
         vessel_state = VesselState.STATIONARY
         while True:
+            previous_vessel_state = vessel_state
             # Run the strategy matching the vessel state
-            await self.strategies[vessel_state](components = self.components)
+            await self.strategies[vessel_state](
+                components = self.components,
+                previous_vessel_state = previous_vessel_state
+            )
             
-            time.sleep(5)
-            # vessel_state = await self.calculate_new_state(vessel_state)
+            vessel_state = await self.calculate_new_state(vessel_state)
         
-
-            # TODO: Logic triggered when vessel changes state: record trip, save trip ect
 

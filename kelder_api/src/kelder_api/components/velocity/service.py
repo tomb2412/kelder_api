@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 import logging
 from typing import List, Tuple
-import numpy as np
 
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.gps_new.interface import GPSInterface
@@ -38,7 +37,6 @@ class VelocityCalculator:
             if end_datetime is None:
                 end_datetime = datetime.now().replace(microsecond=0)
             start_datetime = end_datetime - timedelta(seconds=self.num_gps_measurements)
-            print(f"The time range is:\n   {start_datetime}\n   {end_datetime}")
             return await self.gps_interface.read_gps_history_time_series(
                 start_datetime, end_datetime=end_datetime, active=True
             ), end_datetime

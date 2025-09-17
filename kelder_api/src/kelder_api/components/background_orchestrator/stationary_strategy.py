@@ -1,6 +1,8 @@
 import logging
 from typing import List, Dict
 
+from src.kelder_api.components.background_orchestrator.enums import VesselState
+
 logger = logging.getLogger(__name__)
 
 class StationaryStrategy:
@@ -20,7 +22,7 @@ class StationaryStrategy:
         return ["VELOCITY"]
 
     @classmethod
-    async def execute(self, components: Dict[str, dict]) -> None:
+    async def execute(self, components: Dict[str, dict], previous_vessel_state: VesselState) -> None:
         for sensor in self.required_sensors():
             try:
                 await getattr(

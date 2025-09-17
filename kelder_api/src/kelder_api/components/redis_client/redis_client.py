@@ -2,7 +2,7 @@ from redis.asyncio import Redis, ConnectionPool
 from typing import AsyncGenerator, Optional
 from contextlib import asynccontextmanager
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, date
 from typing import List
 import json
 
@@ -102,3 +102,29 @@ class RedisClient:
             results = [json.loads(measurement) for measurement, _ in sensor_data]
             times = [timestamp for _, timestamp in sensor_data]
             return results
+            
+    async def write_stream(self, key: str, data: BaseModel,  datetime: datetime = datetime.now()):
+        key = f"{key}{datetime.date().strftime("%d%m%Y")}"
+
+        async with self.get_connection() as redis:
+            try:
+                await redis.xadd(key, data.model_dump())
+            except Exception as error:
+                logger.error(
+                    f"Redis exception raised writing to stream {key}, with {error}"
+                )
+                raise error
+    
+    async def read_stream(self, key: str, datetime: datetime = datetime.now()):
+        """Method to read the current days stream."""
+        key = f"{key}{datetime.date().strftime("%d%m%Y")}"
+
+        async with self.get_connection() as redis:
+            try:
+                return await redis.xrange(key, "-", "+")
+            except Exception as error:
+                logger.error(
+                    f"Redis exception raised reading from stream {key}, with {error}"
+                )
+                raise error
+    
