@@ -1101,6 +1101,7 @@ dependencies = [
     { name = "pynmea2" },
     { name = "pyserial-asyncio" },
     { name = "redis" },
+    { name = "rpi-gpio" },
     { name = "ruff" },
     { name = "sudo" },
     { name = "uvicorn" },
@@ -1132,6 +1133,7 @@ requires-dist = [
     { name = "pynmea2", specifier = ">=1.19.0,<2.0.0" },
     { name = "pyserial-asyncio", specifier = ">=0.6,<0.7" },
     { name = "redis", specifier = ">=5.2.1,<6.0.0" },
+    { name = "rpi-gpio", specifier = ">=0.7.1,<0.8.0" },
     { name = "ruff", specifier = ">=0.11.9,<0.12.0" },
     { name = "sudo", specifier = ">=1.0.0,<2.0.0" },
     { name = "uvicorn", specifier = ">=0.34.0,<0.35.0" },
@@ -2260,6 +2262,12 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/04/2e/30b5ea18c01379da6272a92825dd7e53dc9d15c88a19e97932d35d430ef7/rpds_py-0.27.1-cp314-cp314t-win32.whl", hash = "sha256:d5fa0ee122dc09e23607a28e6d7b150da16c662e66409bbe85230e4c85bb528a", size = 217385, upload-time = "2025-08-27T12:15:01.937Z" },
     { url = "https://files.pythonhosted.org/packages/32/7d/97119da51cb1dd3f2f3c0805f155a3aa4a95fa44fe7d78ae15e69edf4f34/rpds_py-0.27.1-cp314-cp314t-win_amd64.whl", hash = "sha256:6567d2bb951e21232c2f660c24cf3470bb96de56cdcb3f071a83feeaff8a2772", size = 230097, upload-time = "2025-08-27T12:15:03.961Z" },
 ]
+
+[[package]]
+name = "rpi-gpio"
+version = "0.7.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/c4/0f/10b524a12b3445af1c607c27b2f5ed122ef55756e29942900e5c950735f2/RPi.GPIO-0.7.1.tar.gz", hash = "sha256:cd61c4b03c37b62bba4a5acfea9862749c33c618e0295e7e90aa4713fb373b70", size = 29090, upload-time = "2022-02-06T15:15:06.022Z" }
 
 [[package]]
 name = "rsa"
