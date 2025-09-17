@@ -1,6 +1,6 @@
 import logging
 from fastapi import APIRouter
-from datetime import datetime
+from datetime import datetime, timezone
 
 from src.kelder_api.routes.tidal_measurements.tidal_clients import (
     get_height_of_tide_now,
@@ -22,12 +22,12 @@ async def get_height_of_tide():
 @router.get("/get_tidal_predictions")
 async def get_tidal_events():
     logger.debug("Tideal predictions requested")
-    return await get_tide_predictions(datetime.now().date())
+    return await get_tide_predictions(datetime.now(timezone.utc).date())
 
 @router.get("/get_next_tidal_event")
 async def get_next_tidal_event():
     logger.debug("Next highwater")
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     tidal_events = await get_tide_predictions(now.date())
 
     for tidal_event in tidal_events:

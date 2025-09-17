@@ -31,7 +31,7 @@ origins = [
 ]
 
 logging.basicConfig(
-    # filename=f"/app/logs/{datetime.now().strftime('%Y-%m-%d')}_kelder_api.log",
+    # filename=f"/app/logs/{datetime.now(timezone.utc).strftime('%Y-%m-%d')}_kelder_api.log",
     encoding="utf-8",
     format="API - {levelname} - {asctime} - {message}",
     style="{",

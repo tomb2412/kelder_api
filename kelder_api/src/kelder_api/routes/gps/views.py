@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, Request
 
@@ -28,8 +28,8 @@ async def getGpCoords(gps_interface: GPSInterface = Depends(get_dependancy)):
 
 @router.get("/gps_coords_timeseries")
 async def getGpCoords(
-    start_datetime: datetime = datetime.now() - timedelta(seconds=get_settings().velocity.gps_velocity_history),
-    end_datetime: datetime = datetime.now(),
+    start_datetime: datetime = datetime.now(timezone.utc) - timedelta(seconds=get_settings().velocity.gps_velocity_history),
+    end_datetime: datetime = datetime.now(timezone.utc),
     gps_interface: GPSInterface = Depends(get_dependancy),
     ):
     """Defualts to velocity history params"""

@@ -1097,6 +1097,7 @@ dependencies = [
     { name = "openai-agents" },
     { name = "pydantic" },
     { name = "pydantic-ai" },
+    { name = "pydantic-extra-types" },
     { name = "pydantic-settings" },
     { name = "pynmea2" },
     { name = "pyserial-asyncio" },
@@ -1129,6 +1130,7 @@ requires-dist = [
     { name = "openai-agents", specifier = "==0.0.15" },
     { name = "pydantic", specifier = ">=2.10.6,<3.0.0" },
     { name = "pydantic-ai", specifier = ">=1.0.2,<2.0.0" },
+    { name = "pydantic-extra-types", specifier = ">=2.10.5" },
     { name = "pydantic-settings", specifier = ">=2.9.1,<3.0.0" },
     { name = "pynmea2", specifier = ">=1.19.0,<2.0.0" },
     { name = "pyserial-asyncio", specifier = ">=0.6,<0.7" },
@@ -1907,6 +1909,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/3c/62/1cd84d70362f2afaaacd1ae102ba46012156ec41c76762d7242bb9705b89/pydantic_evals-1.0.2.tar.gz", hash = "sha256:071bc4b80e1ced065ebcea53e03f06eca868266658a56dfb98ca78976f9022c8", size = 45489, upload-time = "2025-09-09T00:38:38.99Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a5/ff/63d8a76e50455b3d755cc940a5cc3f00d26c2a3636930f26f2b0e8f89fc4/pydantic_evals-1.0.2-py3-none-any.whl", hash = "sha256:48ea9510bc66ca2052298cd5a587306fa450f615d3e6542cbb021168b4cfc375", size = 54598, upload-time = "2025-09-09T00:38:27.82Z" },
+]
+
+[[package]]
+name = "pydantic-extra-types"
+version = "2.10.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/7e/ba/4178111ec4116c54e1dc7ecd2a1ff8f54256cdbd250e576882911e8f710a/pydantic_extra_types-2.10.5.tar.gz", hash = "sha256:1dcfa2c0cf741a422f088e0dbb4690e7bfadaaf050da3d6f80d6c3cf58a2bad8", size = 138429, upload-time = "2025-06-02T09:31:52.713Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/70/1a/5f4fd9e7285f10c44095a4f9fe17d0f358d1702a7c74a9278c794e8a7537/pydantic_extra_types-2.10.5-py3-none-any.whl", hash = "sha256:b60c4e23d573a69a4f1a16dd92888ecc0ef34fb0e655b4f305530377fa70e7a8", size = 38315, upload-time = "2025-06-02T09:31:51.229Z" },
 ]
 
 [[package]]

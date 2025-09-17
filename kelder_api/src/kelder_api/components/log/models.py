@@ -9,16 +9,16 @@ from src.kelder_api.components.velocity.utils import (
 )
 
 class LegData(BaseModel):
-    "The leg tracks the start time and position of a tack, and the last COG. All GPS for consistancy"
+    """The leg tracks the start time and position of a tack, and the last COG. All GPS for consistancy"""
     start_datetime: datetime = Field(description="The start datetime of the leg")
-    start_coords: List[Latitude, Longitude] = Field(description="The lat and lon of the leg start coords")
+    start_coords: List[str] = Field(description="The lat and lon of the leg start coords")
     course_over_ground: float = Field(description="The average cog (from gps) of the boat for tack detection")
 
 class JourneyData(BaseModel):
     timestamp: datetime = Field(description = "The start datetime of the journey, named follows redis convention")
     end_datetime: datetime  = Field(description = "The end datetime of the journey")
-    start_coords: List[Latitude, Longitude] = Field(description="The lat and lon of the leg start coords")
-    end_coords: List[Latitude, Longitude] = Field(description="The lat and lon of the leg start coords")
+    start_coords: List[str] = Field(description="The lat and lon of the leg start coords")
+    end_coords: List[str] = Field(description="The lat and lon of the leg start coords")
 
     @computed_field
     @property

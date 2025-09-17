@@ -6,7 +6,7 @@ import logging
 import pynmea2
 import serial
 from pynmea2 import NMEASentence
-from datetime import datetime
+from datetime import datetime, timezone
 
 from time import time
 
@@ -141,7 +141,7 @@ class GPSInterface:
     async def read_gps_history_time_series(
         self,
         start_datetime: datetime,
-        end_datetime: datetime = datetime.now(),
+        end_datetime: datetime = datetime.now(timezone.utc),
         active: bool = False,
     ) -> List[GPSRedisData]:
         """Retrieves the gps measurement within a datetime range"""

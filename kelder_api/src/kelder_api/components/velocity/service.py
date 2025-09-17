@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import logging
 from typing import List, Tuple
 
@@ -35,7 +35,7 @@ class VelocityCalculator:
             )
         else:
             if end_datetime is None:
-                end_datetime = datetime.now().replace(microsecond=0)
+                end_datetime = datetime.now(timezone.utc).replace(microsecond=0)
             start_datetime = end_datetime - timedelta(seconds=self.num_gps_measurements)
             return await self.gps_interface.read_gps_history_time_series(
                 start_datetime, end_datetime=end_datetime, active=True

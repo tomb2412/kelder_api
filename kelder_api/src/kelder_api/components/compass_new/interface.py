@@ -3,7 +3,7 @@ import adafruit_lis2mdl
 import logging
 import numpy as np
 import math
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 
 from src.kelder_api.components.redis_client.redis_client import RedisClient
@@ -25,7 +25,7 @@ class CompassInterface:
 
     async def read_heading_from_compass(
         self,
-        now: datetime = datetime.now(),
+        now: datetime = datetime.now(timezone.utc),
         fake_measurements: List[float] | None = None,
     ):
         try:
@@ -114,7 +114,7 @@ class CompassInterface:
     async def read_heading_history_timeseries(
         self,
         start_datetime: datetime,
-        end_datetime: datetime = datetime.now(),
+        end_datetime: datetime = datetime.now(timezone.utc),
         active: bool = False,
     ) -> List[CompassRedisData]:
         logger.debug(f"Reading compass data between {start_datetime} to {end_datetime}")

@@ -1,9 +1,9 @@
 import logging
-from datetime import datetime, timedelta
-from typing import List, Tuple
+from datetime import datetime, timezone
+from typing import Tuple
 
 from src.kelder_api.components.velocity.service import VelocityCalculator
-from src.kelder_api.componented.velocity.models import GPSVelocity
+from src.kelder_api.components.velocity.models import GPSVelocity
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.gps_new.interface import GPSInterface
@@ -35,12 +35,15 @@ class LogTracker:
         """Private method to retrieve the latest gps and velocity data for the trip."""
         gps_data =  await self.gps_interface.read_gps_latest(active=True)
         velocity_data = await self.velocity_calculator.read_velocity_latest(active=True)
-        
-        inter_measurement_latency = abs((gps_data.timestamp - velocity_data.timestamp).total_seconds())
-        overall_measurement_latency = abs((gps_data.timestamp - datetime.now()).total_seconds())
 
-        if inter_measurement_latency <= self.settings.time_window_length or overall_measurement_latency <= self.settings.time_window_length:
-            message = ("The time difference of the gps and velocity exceeded the allowed %s seconds"%self.settings.time_window_length)
+        inter_measurement_latency = abs((gps_data.timestamp - velocity_data.timestamp.replace(tzinfo=timezone.utc)).total_seconds())
+        overall_measurement_latency = abs((gps_data.timestamp - datetime.now(timezone.utc)).total_seconds())
+
+        if inter_measurement_latency >= self.settings.time_window_length or overall_measurement_latency >= self.settings.time_window_length:
+            message = (f"The time difference of the gps and velocity exceeded the allowed {self.settings.time_window_length} seconds:"
+                       f"\nlatency between measurements: {inter_measurement_latency}"
+                       f"\nlatency from measurements: {overall_measurement_latency}"
+            )
             logger.error(message)
             raise DataValidationError(message)
 

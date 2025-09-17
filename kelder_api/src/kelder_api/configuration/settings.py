@@ -72,7 +72,7 @@ class Velocity(BaseSettings):
 
 class LogTracker(BaseSettings):
     time_window_length: int = Field(description="The number of gps history measurements to retrieve in the log calculation, or seconds history",
-        default = 60)
+        default = 9000000)
     tack_bearing_tolerance: int = Field(description="The bearing tolerance before a new tack is calculated", default = 15)
 
 class Compass(BaseSettings):
