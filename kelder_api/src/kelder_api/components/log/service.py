@@ -119,6 +119,7 @@ class LogTracker:
             # If the course has continues. Increment the latest cog
             else:
                 self.leg_data.course_over_ground = velocity_data.course_over_ground
+        logger.info(f"Log distance: {self.journey_data.disance_travelled}")
 
     async def finish_jouney(self):
         "Writes and clears the cached journey data."
