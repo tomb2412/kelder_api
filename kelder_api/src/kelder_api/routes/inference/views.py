@@ -6,8 +6,9 @@ from fastapi import Request
 
 from dotenv import load_dotenv
 import os
+
 load_dotenv(override=True)
-openai_api_key = os.getenv('OPENAI_API_KEY')
+openai_api_key = os.getenv("OPENAI_API_KEY")
 
 from fastapi import APIRouter
 from pydantic_ai.messages import ModelResponse, TextPart
@@ -20,11 +21,14 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["Agentic"])
 
+
 @router.post("/chat_stream")
 async def StreamChatResponse(request: Request):
     # read incoming request body minimally / adapt if you already get `request.message` differently
     body = await request.json()
-    user_prompt = body.get("message")  # keep this minimal; adjust if your payload shape differs
+    user_prompt = body.get(
+        "message"
+    )  # keep this minimal; adjust if your payload shape differs
 
     logger.info("Requesting inference")
     chatbot_agent = get_chatbot_agent()

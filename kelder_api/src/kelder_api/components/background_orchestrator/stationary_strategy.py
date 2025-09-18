@@ -5,6 +5,7 @@ from src.kelder_api.components.background_orchestrator.enums import VesselState
 
 logger = logging.getLogger(__name__)
 
+
 class StationaryStrategy:
     """
     A logic flow determinging the sensing and calculating performed each iteration
@@ -22,7 +23,9 @@ class StationaryStrategy:
         return ["VELOCITY"]
 
     @classmethod
-    async def execute(self, components: Dict[str, dict], previous_vessel_state: VesselState) -> None:
+    async def execute(
+        self, components: Dict[str, dict], previous_vessel_state: VesselState
+    ) -> None:
         for sensor in self.required_sensors():
             try:
                 await getattr(

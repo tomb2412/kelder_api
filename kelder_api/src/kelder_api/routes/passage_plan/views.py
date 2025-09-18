@@ -9,16 +9,17 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["Agentic"])
 
+
 def get_dependancy(request: Request) -> RedisClient:
     return get_redis_client(request.app)
+
 
 @router.get("/passage_plan")
 async def GetPassagePlan(redis_client: RedisClient = Depends(get_dependancy)):
     logger.info("Requesting a passage plan")
     try:
-        
         plan = (await redis_client.read_set("PASSAGE_PLAN"))[0]
     except IndexError:
         plan = "something else"
-    
+
     return {"passage_plan": plan}

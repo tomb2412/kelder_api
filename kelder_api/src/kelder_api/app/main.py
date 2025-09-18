@@ -11,12 +11,15 @@ from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.compass_new.interface import CompassInterface
 from src.kelder_api.components.velocity.service import VelocityCalculator
+from src.kelder_api.components.log.service import LogTracker
 
 # Routes
 from src.kelder_api.routes.health.views import router as health_route
 from src.kelder_api.routes.velocity.views import router as velocity_route
 from src.kelder_api.routes.gps.views import router as gps_route
 from src.kelder_api.routes.redis.views import router as redis_route
+from src.kelder_api.routes.log.views import router as log_route
+
 # from src.kelder_api.routes.bilge_depth.views import router as bilge_depth_route
 from src.kelder_api.routes.compass.views import router as compass_router
 from src.kelder_api.routes.inference.views import router as agent_routes
@@ -41,26 +44,35 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
     redis_client = RedisClient()
     gps_interface = GPSInterface(redis_client)
     compass_interface = CompassInterface(redis_client)
+    velocity_calculator = VelocityCalculator(
+        gps_interface=gps_interface, redis_client=redis_client
+    )
+    log_tracker = LogTracker(
+        gps_interface=gps_interface,
+        redis_client=redis_client,
+        velocity_calculator=velocity_calculator,
+    )
 
     app.state.redis_client = redis_client
     app.state.gps_interface = gps_interface
     app.state.compass_interface = compass_interface
-    app.state.velocity_calculator = VelocityCalculator(
-        gps_interface=gps_interface, redis_client=redis_client
-    )
+    app.state.velocity_calculator = velocity_calculator
+    app.state.log_tracker = log_tracker
 
-    yield  
+    yield
 
     # Shutdown
     del app.state.redis_client
     del app.state.gps_interface
     del app.state.velocity_calculator
+
 
 app = FastAPI(lifespan=lifespan)
 
@@ -81,3 +93,4 @@ app.include_router(redis_route)
 app.include_router(agent_routes)
 app.include_router(passage_plan_routes)
 app.include_router(tidal_routes)
+app.include_router(log_route)

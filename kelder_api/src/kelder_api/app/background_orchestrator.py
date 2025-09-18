@@ -1,7 +1,9 @@
 import asyncio
 import logging
 
-from src.kelder_api.components.background_orchestrator.orchestrator import BackgroundTaskManager
+from src.kelder_api.components.background_orchestrator.orchestrator import (
+    BackgroundTaskManager,
+)
 
 """
  TODO - Catch the i2c board not found error - in read compass

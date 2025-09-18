@@ -33,7 +33,6 @@ class BackgroundTaskManager:
 
         self.settings = get_settings().orchestrator
 
-
     def register_components(self):
         # Initialise sensors
         gps_interface = GPSInterface(self.redis_client)
@@ -45,9 +44,9 @@ class BackgroundTaskManager:
         )
 
         log_tracker = LogTracker(
-            gps_interface = gps_interface,
-            redis_client = self.redis_client,
-            velocity_calculator = velocity_calculator
+            gps_interface=gps_interface,
+            redis_client=self.redis_client,
+            velocity_calculator=velocity_calculator,
         )
 
         return {
@@ -68,7 +67,9 @@ class BackgroundTaskManager:
 
     async def calculate_new_state(self, vessel_state: VesselState) -> VesselState:
         """A general method to define the vessels new state each iteration"""
-        velocity = await self.components["VELOCITY"]["instance"].read_velocity_latest(active=True)
+        velocity = await self.components["VELOCITY"]["instance"].read_velocity_latest(
+            active=True
+        )
         try:
             if velocity.speed_over_ground >= self.settings.sog_threshold:
                 return VesselState.UNDERWAY
@@ -83,10 +84,7 @@ class BackgroundTaskManager:
             previous_vessel_state = vessel_state
             # Run the strategy matching the vessel state
             await self.strategies[vessel_state](
-                components = self.components,
-                previous_vessel_state = previous_vessel_state
+                components=self.components, previous_vessel_state=previous_vessel_state
             )
-            
-            vessel_state = await self.calculate_new_state(vessel_state)
-        
 
+            vessel_state = await self.calculate_new_state(vessel_state)

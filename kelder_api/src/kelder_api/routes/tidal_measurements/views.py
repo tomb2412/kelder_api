@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 from src.kelder_api.routes.tidal_measurements.tidal_clients import (
     get_height_of_tide_now,
-    get_tide_predictions
+    get_tide_predictions,
 )
 
 THREE_HOURS_IN_SECONDS = 10800
@@ -24,6 +24,7 @@ async def get_tidal_events():
     logger.debug("Tideal predictions requested")
     return await get_tide_predictions(datetime.now(timezone.utc).date())
 
+
 @router.get("/get_next_tidal_event")
 async def get_next_tidal_event():
     logger.debug("Next highwater")
@@ -31,7 +32,10 @@ async def get_next_tidal_event():
     tidal_events = await get_tide_predictions(now.date())
 
     for tidal_event in tidal_events:
-        if abs((tidal_event.datetime_stamp - now).total_seconds()) <= THREE_HOURS_IN_SECONDS:
+        if (
+            abs((tidal_event.datetime_stamp - now).total_seconds())
+            <= THREE_HOURS_IN_SECONDS
+        ):
             return tidal_event
-    
+
     # TODO: what to return or raise?

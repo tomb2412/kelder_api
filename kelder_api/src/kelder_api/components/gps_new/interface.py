@@ -222,10 +222,10 @@ class GPSInterface:
             else:
                 async with self._get_serial_connection() as serial_reader:
                     newsentence = await serial_reader.readline()
-                    
+
                 newsentence = newsentence.decode("utf-8", errors="ignore").strip()
                 # logger.debug(f"Serial reader returned parsed sentence: {newsentence}")
-            
+
             self._parse_serial_gps_string(newsentence)
 
             # track sentences complete

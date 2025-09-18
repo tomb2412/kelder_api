@@ -8,7 +8,9 @@ from src.kelder_api.components.passage_plan.models import PassagePlan
 logger = logging.getLogger(__name__)
 
 
-async def save_passage_plan(passage_plan: PassagePlan, redis_client: "RedisClient") -> bool:
+async def save_passage_plan(
+    passage_plan: PassagePlan, redis_client: "RedisClient"
+) -> bool:
     """
     Save a full passage plan with all navigational details.
     """
@@ -20,4 +22,3 @@ async def save_passage_plan(passage_plan: PassagePlan, redis_client: "RedisClien
 
     except Exception as error:
         return False
-    

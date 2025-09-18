@@ -23,12 +23,16 @@ class VelocityCalculator:
         self.gps_interface = gps_interface
         self.redis_client = redis_client
 
-        self.velocity_calculation_type = get_settings().velocity.velocity_calculation_type
+        self.velocity_calculation_type = (
+            get_settings().velocity.velocity_calculation_type
+        )
         self.num_gps_measurements = get_settings().velocity.gps_velocity_history
 
-    async def _get_gps_data(self, end_datetime: datetime | None = None) -> Tuple[List[GPSRedisData], datetime]:
+    async def _get_gps_data(
+        self, end_datetime: datetime | None = None
+    ) -> Tuple[List[GPSRedisData], datetime]:
         """Private method which retrieves gps data through n latest measurements or last n seconds"""
-        
+
         if self.velocity_calculation_type == CalculationType.LENGTH:
             return await self.gps_interface.read_gps_history_length(
                 length=self.num_gps_measurements, active=True
@@ -49,7 +53,9 @@ class VelocityCalculator:
         gps_history, datetime_now = await self._get_gps_data(datetime_now)
         gps_points = len(gps_history)
 
-        logger.info(f"Identified {gps_points} gps_points in the last {self.num_gps_measurements}")
+        logger.info(
+            f"Identified {gps_points} gps_points in the last {self.num_gps_measurements}"
+        )
 
         if gps_points <= 1:
             message = (

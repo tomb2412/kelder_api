@@ -8,10 +8,11 @@ from src.kelder_api.components.velocity.models import CalculationType
 
 
 model_config = SettingsConfigDict(
-        env_file=str(Path(__file__).resolve().parent.parent.parent.parent / ".env"),
-        env_file_encoding="utf-8",
-        extra = "allow"
-    )
+    env_file=str(Path(__file__).resolve().parent.parent.parent.parent / ".env"),
+    env_file_encoding="utf-8",
+    extra="allow",
+)
+
 
 class SleepTimes(BaseSettings):
     UNDER_WAY_SLEEP: float = Field(
@@ -70,10 +71,16 @@ class Velocity(BaseSettings):
 
     model_config = model_config
 
+
 class LogTracker(BaseSettings):
-    time_window_length: int = Field(description="The number of gps history measurements to retrieve in the log calculation, or seconds history",
-        default = 60)
-    tack_bearing_tolerance: int = Field(description="The bearing tolerance before a new tack is calculated", default = 15)
+    time_window_length: int = Field(
+        description="The number of gps history measurements to retrieve in the log calculation, or seconds history",
+        default=60,
+    )
+    tack_bearing_tolerance: int = Field(
+        description="The bearing tolerance before a new tack is calculated", default=15
+    )
+
 
 class Compass(BaseSettings):
     # TODO: remove?
@@ -83,10 +90,11 @@ class Compass(BaseSettings):
 class Orchestrator(BaseSettings):
     sog_threshold: float = Field(
         description="The >= speed over ground which sets the VesselState as underway",
-        default=0.2
+        default=0.2,
     )
 
     model_config = model_config
+
 
 class Settings(BaseModel):
     redis: Redis = Field(
@@ -105,7 +113,9 @@ class Settings(BaseModel):
     orchestrator: Orchestrator = Field(
         description="The background ochestrator settings", default_factory=Orchestrator
     )
-    log_tracker: LogTracker = Field(description="All log tracking config", default_factory=LogTracker)
+    log_tracker: LogTracker = Field(
+        description="All log tracking config", default_factory=LogTracker
+    )
 
 
 @lru_cache(maxsize=1)
