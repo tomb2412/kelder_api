@@ -15,9 +15,9 @@ def get_dependancy(request: Request) -> LogTracker:
     return get_log_tracker(request.app)
 
 
-@router.get("/get_current_journey")
+@router.get("/get_journey")
 async def getCurrentJourney(
-    log_tracker: LogTracker = Depends(get_log_tracker),
+    log_tracker: LogTracker = Depends(get_dependancy),
 ) -> JourneyData:
     logger.info("Current journey request recieved.")
     return log_tracker.journey_data

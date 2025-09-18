@@ -22,7 +22,7 @@ router = APIRouter(tags=["Agentic"])
 
 @router.post("/chat_stream")
 async def StreamChatResponse(request: Request):
-    # read incoming request body minimally / adapt if you already get `request.message` differently
+    # read incoming request body minimally / adapt if you already get `request.message`
     body = await request.json()
     user_prompt = body.get(
         "message"
@@ -51,7 +51,11 @@ async def StreamChatResponse(request: Request):
                     first_chunk = False
 
                 # send delta parts
-                yield f"data: {json.dumps({'type': 'text-delta', 'id': text_id, 'delta': delta})}\n\n"
+                yield f"data: {json.dumps({
+                    'type': 'text-delta',
+                    'id': text_id,
+                    'delta': delta
+                })}\n\n"
 
                 # cooperative scheduling (optional but typical)
                 await asyncio.sleep(0)
@@ -65,7 +69,8 @@ async def StreamChatResponse(request: Request):
         stream_chat(),
         media_type="text/event-stream",  # SSE
         headers={
-            "x-vercel-ai-ui-message-stream": "v1",  # required by Vercel UI data-stream protocol
+            # required by Vercel UI data-stream protocol
+            "x-vercel-ai-ui-message-stream": "v1",  
             "Cache-Control": "no-cache",
             "Connection": "keep-alive",
         },

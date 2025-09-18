@@ -131,16 +131,25 @@ class VelocityCalculator:
             active  filter invalid velocity measurments (None)
         """
         logger.debug("Reading latest velocity measurement")
-        if active:
-            velocities = await self.redis_client.read_set("VELOCITY")
-            latest_active_velocity = [
-                active_sog
-                for active_sog in velocities
-                if active_sog["speed_over_ground"] is not None
-            ][0]
-            return GPSVelocity(**latest_active_velocity)
-        else:
-            return GPSVelocity(**(await self.redis_client.read_set("VELOCITY"))[0])
+        try:
+            if active:
+                velocities = await self.redis_client.read_set("VELOCITY")
+                latest_active_velocity = [
+                    active_sog
+                    for active_sog in velocities
+                    if active_sog["speed_over_ground"] is not None
+                ][0]
+                return GPSVelocity(**latest_active_velocity)
+            else:
+                return GPSVelocity(**(await self.redis_client.read_set("VELOCITY"))[0])
+        except IndexError:
+            logger.info("No velocity data found in redis")
+            return GPSVelocity(
+                timestamp = datetime.now(timezone.utc),
+                speed_over_ground=None,
+                course_over_ground=None,
+                number_of_measurements=0
+            )
 
     async def read_velocity_all(self, active: bool = False) -> List[GPSVelocity]:
         logger.debug("Reading all velocity measurement")

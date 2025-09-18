@@ -3,8 +3,6 @@ import math
 from datetime import datetime, timezone
 from typing import List
 
-import adafruit_lis2mdl
-import board
 import numpy as np
 
 from src.kelder_api.components.compass_new.models import CompassRedisData
@@ -22,7 +20,12 @@ class CompassInterface:
     def __init__(self, redis_client: RedisClient, fake_transport: bool = True):
         self.redis_client = redis_client
         if fake_transport:
-            self.i2c_board = board.I2C()
+            try:
+                import adafruit_lis2mdl
+                import board
+                self.i2c_board = board.I2C()      
+            except Exception as error:
+                logger.error("No board detected")      
 
     async def read_heading_from_compass(
         self,
