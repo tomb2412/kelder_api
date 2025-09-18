@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 
-from src.kelder_api.components.redis_client.redis_client import RedisClient
-from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.compass_new.interface import CompassInterface
-from src.kelder_api.components.velocity.service import VelocityCalculator
+from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.log.service import LogTracker
+from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.velocity.service import VelocityCalculator
 
 
 def get_redis_client(app: FastAPI) -> RedisClient:

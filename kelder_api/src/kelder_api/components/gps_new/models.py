@@ -1,7 +1,8 @@
-from pydantic import BaseModel, Field, computed_field
 from datetime import datetime
+from typing import Dict, List
+
+from pydantic import BaseModel, Field, computed_field
 from pynmea2 import NMEASentence
-from typing import List, Dict
 
 from src.kelder_api.components.gps_new.types import (
     GPSStatus,

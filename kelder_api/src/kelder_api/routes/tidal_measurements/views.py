@@ -1,6 +1,7 @@
 import logging
-from fastapi import APIRouter
 from datetime import datetime, timezone
+
+from fastapi import APIRouter
 
 from src.kelder_api.routes.tidal_measurements.tidal_clients import (
     get_height_of_tide_now,

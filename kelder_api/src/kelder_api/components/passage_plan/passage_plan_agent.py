@@ -1,8 +1,8 @@
 from pydantic_ai import Agent, RunContext
 
-from src.kelder_api.components.redis_client.redis_client import RedisClient
-from src.kelder_api.components.passage_plan.tools import save_passage_plan
 from src.kelder_api.components.passage_plan.models import PassagePlan
+from src.kelder_api.components.passage_plan.tools import save_passage_plan
+from src.kelder_api.components.redis_client.redis_client import RedisClient
 
 
 def get_passage_planner() -> Agent:

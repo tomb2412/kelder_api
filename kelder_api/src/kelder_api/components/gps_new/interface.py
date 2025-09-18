@@ -1,23 +1,23 @@
-from typing import AsyncGenerator, Dict, List
-from contextlib import asynccontextmanager
-import serial_asyncio
 import asyncio
 import logging
+from contextlib import asynccontextmanager
+from datetime import datetime, timezone
+from time import time
+from typing import AsyncGenerator, Dict, List
+
 import pynmea2
 import serial
+import serial_asyncio
 from pynmea2 import NMEASentence
-from datetime import datetime, timezone
 
-from time import time
-
-from src.kelder_api.components.redis_client.redis_client import RedisClient
-from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.components.gps_new.models import (
-    GPGSVSatellitesInView,
     GPGSAActiveSatellites,
+    GPGSVSatellitesInView,
     GPRMCRecommendedCourse,
     GPSRedisData,
 )
+from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.configuration.settings import get_settings
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +55,7 @@ class GPSInterface:
             )
             yield reader
 
-        except serial.SerialException as error:
+        except serial.SerialException:
             logger.error(
                 "Serial connection to the GPS or port cannot be established. Potentially due to containers with incorrect access. \n {error}"
             )
@@ -71,7 +71,7 @@ class GPSInterface:
                     await writer.wait_closed()
                     # logger.debug(f"GPS serial connection closed on port {self.PORT}")
 
-                except Exception as error:
+                except Exception:
                     logger.error(
                         f"Failed to properly close the gps serial connection on port {self.PORT}"
                     )
@@ -189,7 +189,7 @@ class GPSInterface:
             return None
         try:
             self.sentence_models[data_type](pynmea2.parse(sentence))
-        except KeyError as error:
+        except KeyError:
             logger.debug(f"Could not parse unsupported NMEA sentence: {data_type}")
         except Exception as error:
             logger.error(

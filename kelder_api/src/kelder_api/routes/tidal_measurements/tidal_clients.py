@@ -1,8 +1,9 @@
-from httpx import AsyncClient
-from async_lru import alru_cache
 import logging
-from typing import List
 from datetime import date
+from typing import List
+
+from async_lru import alru_cache
+from httpx import AsyncClient
 
 from src.kelder_api.routes.tidal_measurements.models import TideInfo
 
@@ -24,7 +25,7 @@ async def get_height_of_tide_now() -> TideInfo:
     https://environment.data.gov.uk/flood-monitoring/tidegauge/index.html#filter=7
     https://ntslf.org/tides/datum
     """
-    logger.debug(f"Requesting current height of water")
+    logger.debug("Requesting current height of water")
     async with AsyncClient() as client:
         response = await client.get(
             f"https://environment.data.gov.uk/flood-monitoring/id/stations/{PORTSMOUTH_STATION_ID_ENV_AGENCY}/readings.json?today&_sorted"

@@ -1,9 +1,7 @@
 import logging
 
-from pydantic import BaseModel
-
-from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.passage_plan.models import PassagePlan
+from src.kelder_api.components.redis_client.redis_client import RedisClient
 
 logger = logging.getLogger(__name__)
 
@@ -20,5 +18,5 @@ async def save_passage_plan(
 
         return True
 
-    except Exception as error:
+    except Exception:
         return False

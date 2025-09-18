@@ -1,11 +1,10 @@
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import BaseModel, Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from src.kelder_api.components.velocity.models import CalculationType
-
 
 model_config = SettingsConfigDict(
     env_file=str(Path(__file__).resolve().parent.parent.parent.parent / ".env"),

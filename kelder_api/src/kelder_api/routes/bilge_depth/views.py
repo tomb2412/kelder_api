@@ -1,10 +1,10 @@
 import logging
+
+from fastapi import APIRouter
+
 from src.kelder_api.components.ultrasound.service import (
     getBilgeDepth as getBilgeDepthService,
 )
-from random import randint
-
-from fastapi import APIRouter
 
 router = APIRouter(tags=["Core Sensing"])
 

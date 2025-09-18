@@ -2,15 +2,14 @@ import logging
 from datetime import datetime, timezone
 from typing import Tuple
 
-from src.kelder_api.components.velocity.service import VelocityCalculator
-from src.kelder_api.components.velocity.models import GPSVelocity
-from src.kelder_api.components.redis_client.redis_client import RedisClient
-from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.gps_new.interface import GPSInterface
-from src.kelder_api.configuration.settings import get_settings
-from src.kelder_api.components.log.models import LegData, JourneyData
+from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.log.exceptions import DataValidationError
-from src.kelder_api.components.compass_new.models import CompassRedisData
+from src.kelder_api.components.log.models import JourneyData, LegData
+from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.velocity.models import GPSVelocity
+from src.kelder_api.components.velocity.service import VelocityCalculator
+from src.kelder_api.configuration.settings import get_settings
 
 logger = logging.getLogger(__name__)
 

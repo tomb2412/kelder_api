@@ -2,8 +2,8 @@ import logging
 
 from fastapi import APIRouter, Depends, Request
 
-from src.kelder_api.components.compass_new.interface import CompassInterface
 from src.kelder_api.app.getters import get_compass_interface
+from src.kelder_api.components.compass_new.interface import CompassInterface
 
 logger = logging.getLogger(__name__)
 

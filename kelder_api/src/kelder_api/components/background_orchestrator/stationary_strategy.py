@@ -1,5 +1,5 @@
 import logging
-from typing import List, Dict
+from typing import Dict, List
 
 from src.kelder_api.components.background_orchestrator.enums import VesselState
 

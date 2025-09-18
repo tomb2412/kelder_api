@@ -1,14 +1,13 @@
-from redis.asyncio import Redis, ConnectionPool
-from typing import AsyncGenerator, Optional
-from contextlib import asynccontextmanager
-from pydantic import BaseModel
-from datetime import datetime, timezone
-from typing import List
 import json
+from contextlib import asynccontextmanager
+from datetime import datetime, timezone
+from logging import getLogger
+from typing import AsyncGenerator, List, Optional
+
+from pydantic import BaseModel
+from redis.asyncio import ConnectionPool, Redis
 
 from src.kelder_api.configuration.settings import get_settings
-
-from logging import getLogger
 
 logger = getLogger(__name__)
 

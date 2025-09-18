@@ -1,9 +1,9 @@
 from pydantic_ai import Agent, RunContext
 
-from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.passage_plan.passage_plan_agent import (
     get_passage_planner,
 )
+from src.kelder_api.components.redis_client.redis_client import RedisClient
 
 
 def get_tidal_agent():

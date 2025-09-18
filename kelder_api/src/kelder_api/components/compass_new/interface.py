@@ -1,13 +1,14 @@
-import board
-import adafruit_lis2mdl
 import logging
-import numpy as np
 import math
 from datetime import datetime, timezone
 from typing import List
 
-from src.kelder_api.components.redis_client.redis_client import RedisClient
+import adafruit_lis2mdl
+import board
+import numpy as np
+
 from src.kelder_api.components.compass_new.models import CompassRedisData
+from src.kelder_api.components.redis_client.redis_client import RedisClient
 
 logger = logging.getLogger(__name__)
 

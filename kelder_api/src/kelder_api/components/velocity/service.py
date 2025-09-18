@@ -1,19 +1,19 @@
-from datetime import datetime, timedelta, timezone
 import logging
+from datetime import datetime, timedelta, timezone
 from typing import List, Tuple
 
-from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.gps_new.interface import GPSInterface
-from src.kelder_api.components.velocity.models import GPSVelocity, CalculationType
-from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.components.gps_new.models import GPSRedisData
+from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.velocity.models import CalculationType, GPSVelocity
 from src.kelder_api.components.velocity.utils import (
-    haversine,
-    time_difference_seconds,
+    average_bearing,
     bearing_degrees,
     convert_to_decimal_degrees,
-    average_bearing,
+    haversine,
+    time_difference_seconds,
 )
+from src.kelder_api.configuration.settings import get_settings
 
 logger = logging.getLogger(__name__)
 

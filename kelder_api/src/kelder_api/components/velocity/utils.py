@@ -1,6 +1,7 @@
 import math
-import numpy as np
 from datetime import datetime
+
+import numpy as np
 
 EARTH_RADUIS = 6371
 

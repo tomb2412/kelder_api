@@ -3,9 +3,9 @@ from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, Request
 
-from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.app.getters import get_gps_interface
 from src.kelder_api.components.gps_new.interface import GPSInterface
+from src.kelder_api.configuration.settings import get_settings
 
 logger = logging.getLogger(__name__)
 

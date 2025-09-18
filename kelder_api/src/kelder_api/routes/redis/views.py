@@ -21,7 +21,7 @@ async def clearRedisSet(
     logger.info("Clearing the redis data")
     async with redis_client.get_connection() as redis:
         await redis.delete(f"sensor:ts:{sensor}")
-    logger.info(f"Successfully read cleared redis data")
+    logger.info("Successfully read cleared redis data")
     return {"status": "cleared"}
 
 

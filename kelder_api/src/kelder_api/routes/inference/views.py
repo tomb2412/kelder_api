@@ -1,20 +1,18 @@
-import logging
 import asyncio
 import json
+import logging
+import os
 from uuid import uuid4
-from fastapi import Request
 
 from dotenv import load_dotenv
-import os
+from fastapi import Request
 
 load_dotenv(override=True)
 openai_api_key = os.getenv("OPENAI_API_KEY")
 
 from fastapi import APIRouter
-from pydantic_ai.messages import ModelResponse, TextPart
 from starlette.responses import StreamingResponse
 
-from src.kelder_api.routes.inference.models import InferenceRequest
 from src.kelder_api.routes.inference.agents import get_chatbot_agent
 
 logger = logging.getLogger(__name__)

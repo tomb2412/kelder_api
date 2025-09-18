@@ -1,6 +1,7 @@
 # hc_sr04_pi5.py
-from gpiozero import DistanceSensor
 from time import sleep
+
+from gpiozero import DistanceSensor
 
 # GPIO Pins
 TRIG = 23

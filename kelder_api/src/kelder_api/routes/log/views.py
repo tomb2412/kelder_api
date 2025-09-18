@@ -1,11 +1,10 @@
 import logging
-from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, Request
 
-from src.kelder_api.components.log.service import LogTracker
-from src.kelder_api.components.log.models import JourneyData
 from src.kelder_api.app.getters import get_log_tracker
+from src.kelder_api.components.log.models import JourneyData
+from src.kelder_api.components.log.service import LogTracker
 
 logger = logging.getLogger(__name__)
 
