@@ -41,4 +41,4 @@ class UnderwayStrategy:
             logger.info("Journey finishing")
             await components["LOG"]["instance"].finish_journey()
 
-        asyncio.sleep(5)
+        await asyncio.sleep(5)

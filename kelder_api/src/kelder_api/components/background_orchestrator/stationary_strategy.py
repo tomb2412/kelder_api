@@ -43,4 +43,4 @@ class StationaryStrategy:
             except Exception as error:
                 logger.error(f"Exception occured processing {calculator}: {error}")
 
-        asyncio.sleep(10)
+        await asyncio.sleep(10)

@@ -55,9 +55,9 @@ class GPSInterface:
             )
             yield reader
 
-        except serial.SerialException:
+        except serial.SerialException as error:
             logger.error(
-                "Serial connection to the GPS or port cannot be established. Potentially due to containers with incorrect access. \n {error}"
+                f"Serial connection to the GPS or port cannot be established. Potentially due to containers with incorrect access. \n {error}"
             )
             raise
         except OSError as error:
