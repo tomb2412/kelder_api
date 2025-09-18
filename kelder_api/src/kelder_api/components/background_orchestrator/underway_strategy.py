@@ -37,7 +37,7 @@ class UnderwayStrategy:
                 components[calculator]["instance"], components[calculator]["method"]
             )()
 
-        if previous_vessel_state == VesselState.Stationary:
+        if previous_vessel_state == VesselState.STATIONARY:
             logger.info("Journey finishing")
             await components["LOG"]["instance"].finish_journey()
 

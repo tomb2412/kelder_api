@@ -18,7 +18,7 @@ COPY pyproject.toml uv.lock* README.md ./
 RUN uv sync --locked --no-install-project
 
 # Copy the rest of the source
-COPY . .
+COPY src/ src/
 
 # Install deps into venv (requires lockfile to be fresh)
 RUN uv sync --locked
