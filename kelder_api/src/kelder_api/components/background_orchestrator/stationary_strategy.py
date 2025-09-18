@@ -1,5 +1,6 @@
 import logging
 from typing import Dict, List
+import asyncio
 
 from src.kelder_api.components.background_orchestrator.enums import VesselState
 
@@ -41,3 +42,5 @@ class StationaryStrategy:
                 )()
             except Exception as error:
                 logger.error(f"Exception occured processing {calculator}: {error}")
+
+        asyncio.sleep(1)

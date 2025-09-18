@@ -1,5 +1,6 @@
 import logging
 from typing import Dict, List
+import asyncio
 
 from src.kelder_api.components.background_orchestrator.enums import VesselState
 
@@ -39,3 +40,5 @@ class UnderwayStrategy:
         if previous_vessel_state == VesselState.Stationary:
             logger.info("Journey finishing")
             await components["LOG"]["instance"].finish_journey()
+
+        asyncio.sleep(1)
