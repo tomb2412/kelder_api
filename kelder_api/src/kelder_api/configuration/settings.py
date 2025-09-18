@@ -57,7 +57,7 @@ class Velocity(BaseSettings):
     )
     gps_velocity_history: int = Field(
         description="Number of GPS measurements or number of seconds since now to average over in a velocity calculation",
-        default=10,
+        default=2,
     )
     max_velocity_temporal_change: int = Field(
         description="Maximum seconds between GPS measurements to give for a velocity measurement",
@@ -72,7 +72,7 @@ class Velocity(BaseSettings):
 
 class LogTracker(BaseSettings):
     time_window_length: int = Field(description="The number of gps history measurements to retrieve in the log calculation, or seconds history",
-        default = 9000000)
+        default = 60)
     tack_bearing_tolerance: int = Field(description="The bearing tolerance before a new tack is calculated", default = 15)
 
 class Compass(BaseSettings):

@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import List
 from pydantic import BaseModel, Field, computed_field
-from pydantic_extra_types.coordinate import Latitude, Longitude
 
 from src.kelder_api.components.velocity.utils import (
     convert_to_decimal_degrees,

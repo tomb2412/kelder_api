@@ -31,13 +31,22 @@ class LogTracker:
         self.start_journey = True
    
 
-    async def _get_sensor_data(self) -> Tuple[GPSRedisData, GPSVelocity]:
+    async def _get_sensor_data(self, now: datetime | None = None) -> Tuple[GPSRedisData, GPSVelocity]:
         """Private method to retrieve the latest gps and velocity data for the trip."""
-        gps_data =  await self.gps_interface.read_gps_latest(active=True)
-        velocity_data = await self.velocity_calculator.read_velocity_latest(active=True)
+        if now is None:
+            now = datetime.now(timezone.utc)
+        
+        try:
+            gps_data =  await self.gps_interface.read_gps_latest(active=True)
+            velocity_data = await self.velocity_calculator.read_velocity_latest(active=True)
+       
+        except IndexError:
+            message = "No data in gps and velocity dbs"
+            logger.error(message)
+            raise DataValidationError(message) 
 
         inter_measurement_latency = abs((gps_data.timestamp - velocity_data.timestamp.replace(tzinfo=timezone.utc)).total_seconds())
-        overall_measurement_latency = abs((gps_data.timestamp - datetime.now(timezone.utc)).total_seconds())
+        overall_measurement_latency = abs((gps_data.timestamp - now).total_seconds())
 
         if inter_measurement_latency >= self.settings.time_window_length or overall_measurement_latency >= self.settings.time_window_length:
             message = (f"The time difference of the gps and velocity exceeded the allowed {self.settings.time_window_length} seconds:"
@@ -49,13 +58,13 @@ class LogTracker:
 
         return gps_data, velocity_data
     
-    async def increment_log(self):
+    async def increment_log(self, now: datetime | None = None):
         """
         Private method which uses class wide variables to incement:
         - the total journey time and distance
         - the start time and position the current tack began. -> for drift range
         """
-        gps_data, velocity_data = await self._get_sensor_data()
+        gps_data, velocity_data = await self._get_sensor_data(now)
 
         # If there is no log history at the start of the journey
         if self.start_journey:
