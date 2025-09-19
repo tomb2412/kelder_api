@@ -109,7 +109,7 @@ class RedisClient:
 
         async with self.get_connection() as redis:
             try:
-                await redis.hset(key, mapping = data.model_dump())
+                await redis.hset(key, mapping = data.model_dump(mode="json"))
             except Exception as error:
                 logger.error(
                     f"Redis exception raised writing to stream {key}, with {error}"

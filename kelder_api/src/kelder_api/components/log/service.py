@@ -2,6 +2,8 @@ import logging
 from datetime import datetime, timezone
 from typing import Tuple
 
+from pydantic import ValidationError
+
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.log.exceptions import DataValidationError
@@ -87,13 +89,16 @@ class LogTracker:
         if self.start_journey:
             self.journey_data = JourneyData(
                 timestamp=gps_data.timestamp,
-                start_coords=[gps_data.latitude_nmea, gps_data.longitude_nmea],
+                start_latitude=gps_data.latitude_nmea,
+                start_longitude = gps_data.longitude_nmea,
                 end_datetime=gps_data.timestamp,
-                end_coords=[gps_data.latitude_nmea, gps_data.longitude_nmea],
+                end_latitude = gps_data.latitude_nmea,
+                end_longitude = gps_data.longitude_nmea
             )
             self.leg_data = LegData(
                 start_datetime=gps_data.timestamp,
-                start_coords=[gps_data.latitude_nmea, gps_data.longitude_nmea],
+                start_latitude=gps_data.latitude_nmea,
+                start_longitude = gps_data.longitude_nmea,
                 course_over_ground=velocity_data.course_over_ground,
             )
             self.start_journey = False
@@ -101,10 +106,8 @@ class LogTracker:
         else:
             # Increment the journey data endpoints
             self.journey_data.end_datetime = gps_data.timestamp
-            self.journey_data.end_coords = [
-                gps_data.latitude_nmea,
-                gps_data.longitude_nmea,
-            ]
+            self.journey_data.end_latitude = gps_data.latitude_nmea
+            self.journey_data.end_longitude = gps_data.longitude_nmea
 
             # If the bearing has changes beyond the tolerance reset the leg
             if (
@@ -113,17 +116,19 @@ class LogTracker:
             ):
                 self.leg_data = LegData(
                     start_datetime=gps_data.timestamp,
-                    start_coords=[gps_data.latitude_nmea, gps_data.longitude_nmea],
+                    start_latitude=gps_data.latitude_nmea,
+                    start_longitude = gps_data.longitude_nmea,
                     course_over_ground=velocity_data.course_over_ground,
                 )
             # If the course has continues. Increment the latest cog
             else:
                 self.leg_data.course_over_ground = velocity_data.course_over_ground
-        logger.info(f"Log distance: {self.journey_data.disance_travelled}")
-
+        
+        logger.info(f"Writing log distance: {self.journey_data.disance_travelled}")
+        await self.update_redis_set(self.journey_data, self.leg_data)
+        
     async def finish_jouney(self):
         "Writes and clears the cached journey data."
-        await self.redis_client.write_set("LOG", self.journey_data)
         del self.journey_data
         del self.leg_data
         self.start_journey = True
@@ -134,7 +139,15 @@ class LogTracker:
         await self.redis_client.write_hashed_set("LEG", leg_data)
     
     async def get_journey_set(self, datetime: datetime = datetime.now(timezone.utc)) -> JourneyData:
-        return JourneyData(**(await self.redis_client.read_hashed_set("JOURNEY", datetime)))
-    
-    async def get_leg_set(self, datetime: datetime = datetime.now(timezone.utc)) -> LegData:
-        return LegData(**(await self.redis_client.read_hashed_set("LEG", datetime)))
+        try:
+            return JourneyData(**(await self.redis_client.read_hashed_set("JOURNEY", datetime)))
+        except ValidationError:
+            logger.debug("No data in the leg set")
+            return None
+        
+    async def get_leg_set(self, datetime: datetime = datetime.now(timezone.utc)) -> LegData | None:
+        try:
+            return LegData(**(await self.redis_client.read_hashed_set("LEG", datetime)))
+        except ValidationError:
+            logger.debug("No data in the leg set")
+            return None

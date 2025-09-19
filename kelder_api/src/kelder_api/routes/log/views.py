@@ -1,7 +1,9 @@
 import logging
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, Request
+from http import HTTPStatus
+
+from fastapi import APIRouter, Depends, Request, HTTPException
 
 from src.kelder_api.app.getters import get_log_tracker
 from src.kelder_api.components.log.models import JourneyData
@@ -22,4 +24,9 @@ async def getCurrentJourney(
     datetime: datetime = datetime.now(timezone.utc)
 ) -> JourneyData:
     logger.info("Current journey request recieved.")
-    return await log_tracker.get_journey_set(datetime)
+    journey_data = await log_tracker.get_journey_set(datetime)
+
+    if journey_data:
+        return None
+    else:
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail = "No data in the set")

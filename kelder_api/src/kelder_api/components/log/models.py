@@ -13,7 +13,10 @@ class LegData(BaseModel):
     """The leg tracks the start time and position of a tack, and the last COG. All GPS for consistancy"""
 
     start_datetime: datetime = Field(description="The start datetime of the leg")
-    start_coords: List[str] = Field(
+    start_latitude: str = Field(
+        description="The lat and lon of the leg start coords"
+    )
+    start_logitude: str = Field(
         description="The lat and lon of the leg start coords"
     )
     course_over_ground: float = Field(
@@ -26,17 +29,24 @@ class JourneyData(BaseModel):
         description="The start datetime of the journey, named follows redis convention"
     )
     end_datetime: datetime = Field(description="The end datetime of the journey")
-    start_coords: List[str] = Field(
+    start_latitude: str = Field(
         description="The lat and lon of the leg start coords"
     )
-    end_coords: List[str] = Field(description="The lat and lon of the leg start coords")
-
+    start_longitude: str = Field(
+        description="The lat and lon of the leg start coords"
+    )
+    end_latitude: str = Field(
+        description="The lat and lon of the leg end coords"
+    )
+    end_longitude: str = Field(
+        description="The lat and lon of the leg end coords"
+    )
     @computed_field
     @property
     def disance_travelled(self) -> float:
-        latitude_start = convert_to_decimal_degrees(self.start_coords[0])
-        longitude_start = convert_to_decimal_degrees(self.start_coords[1])
-        latitude_end = convert_to_decimal_degrees(self.end_coords[0])
-        longitude_end = convert_to_decimal_degrees(self.end_coords[1])
+        latitude_start = convert_to_decimal_degrees(self.start_latitude)
+        longitude_start = convert_to_decimal_degrees(self.start_longitude)
+        latitude_end = convert_to_decimal_degrees(self.end_latitude)
+        longitude_end = convert_to_decimal_degrees(self.end_longitude)
 
         return haversine(latitude_start, latitude_end, longitude_start, longitude_end)
