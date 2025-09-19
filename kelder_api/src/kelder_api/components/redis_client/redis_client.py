@@ -102,21 +102,21 @@ class RedisClient:
             times = [timestamp for _, timestamp in sensor_data]
             return results
 
-    async def write_stream(
+    async def write_hashed_set(
         self, key: str, data: BaseModel, datetime: datetime = datetime.now(timezone.utc)
     ):
         key = f"{key}{datetime.date().strftime('%d%m%Y')}"
 
         async with self.get_connection() as redis:
             try:
-                await redis.xadd(key, data.model_dump())
+                await redis.hset(key, mapping = data.model_dump())
             except Exception as error:
                 logger.error(
                     f"Redis exception raised writing to stream {key}, with {error}"
                 )
                 raise error
 
-    async def read_stream(
+    async def read_hashed_set(
         self, key: str, datetime: datetime = datetime.now(timezone.utc)
     ):
         """Method to read the current days stream."""
@@ -124,7 +124,7 @@ class RedisClient:
 
         async with self.get_connection() as redis:
             try:
-                return await redis.xrange(key, "-", "+")
+                return await redis.hgetall(key)
             except Exception as error:
                 logger.error(
                     f"Redis exception raised reading from stream {key}, with {error}"

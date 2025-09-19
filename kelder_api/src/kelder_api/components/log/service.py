@@ -123,7 +123,18 @@ class LogTracker:
 
     async def finish_jouney(self):
         "Writes and clears the cached journey data."
-        self.redis_client.write_set("LOG", self.journey_data)
+        await self.redis_client.write_set("LOG", self.journey_data)
         del self.journey_data
         del self.leg_data
         self.start_journey = True
+
+    async def update_redis_set(self, journey_data: JourneyData, leg_data: LegData) -> None:
+        logger.debug('Writing the log and journey data')
+        await self.redis_client.write_hashed_set("JOURNEY", journey_data)
+        await self.redis_client.write_hashed_set("LEG", leg_data)
+    
+    async def get_journey_set(self, datetime: datetime = datetime.now(timezone.utc)) -> JourneyData:
+        return JourneyData(**(await self.redis_client.read_hashed_set("JOURNEY", datetime)))
+    
+    async def get_leg_set(self, datetime: datetime = datetime.now(timezone.utc)) -> LegData:
+        return LegData(**(await self.redis_client.read_hashed_set("LEG", datetime)))

@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, Request
 
@@ -18,6 +19,7 @@ def get_dependancy(request: Request) -> LogTracker:
 @router.get("/get_journey")
 async def getCurrentJourney(
     log_tracker: LogTracker = Depends(get_dependancy),
+    datetime: datetime = datetime.now(timezone.utc)
 ) -> JourneyData:
     logger.info("Current journey request recieved.")
-    return log_tracker.journey_data
+    return await log_tracker.get_journey_set(datetime)
