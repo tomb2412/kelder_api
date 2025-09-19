@@ -27,6 +27,6 @@ async def getCurrentJourney(
     journey_data = await log_tracker.get_journey_set(datetime)
 
     if journey_data:
-        return None
+        return journey_data
     else:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail = "No data in the set")
