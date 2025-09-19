@@ -16,7 +16,7 @@ class LegData(BaseModel):
     start_latitude: str = Field(
         description="The lat and lon of the leg start coords"
     )
-    start_logitude: str = Field(
+    start_longitude: str = Field(
         description="The lat and lon of the leg start coords"
     )
     course_over_ground: float = Field(
