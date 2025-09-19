@@ -145,10 +145,10 @@ class VelocityCalculator:
         except IndexError:
             logger.info("No velocity data found in redis")
             return GPSVelocity(
-                timestamp = datetime.now(timezone.utc),
+                timestamp=datetime.now(timezone.utc),
                 speed_over_ground=None,
                 course_over_ground=None,
-                number_of_measurements=0
+                number_of_measurements=0,
             )
 
     async def read_velocity_all(self, active: bool = False) -> List[GPSVelocity]:

@@ -1,6 +1,6 @@
+import asyncio
 import logging
 from typing import Dict, List
-import asyncio
 
 from src.kelder_api.components.background_orchestrator.enums import VesselState
 

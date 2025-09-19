@@ -51,11 +51,9 @@ async def StreamChatResponse(request: Request):
                     first_chunk = False
 
                 # send delta parts
-                yield f"data: {json.dumps({
-                    'type': 'text-delta',
-                    'id': text_id,
-                    'delta': delta
-                })}\n\n"
+                yield f"data: {
+                    json.dumps({'type': 'text-delta', 'id': text_id, 'delta': delta})
+                }\n\n"
 
                 # cooperative scheduling (optional but typical)
                 await asyncio.sleep(0)
@@ -70,7 +68,7 @@ async def StreamChatResponse(request: Request):
         media_type="text/event-stream",  # SSE
         headers={
             # required by Vercel UI data-stream protocol
-            "x-vercel-ai-ui-message-stream": "v1",  
+            "x-vercel-ai-ui-message-stream": "v1",
             "Cache-Control": "no-cache",
             "Connection": "keep-alive",
         },

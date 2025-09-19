@@ -1,6 +1,6 @@
+import asyncio
 import logging
 from typing import Dict, List
-import asyncio
 
 from src.kelder_api.components.background_orchestrator.enums import VesselState
 
@@ -42,7 +42,6 @@ class UnderwayStrategy:
                 )()
             except Exception as error:
                 logger.error(f"Exception occured processing {calculator}: {error}")
-
 
         if previous_vessel_state == VesselState.STATIONARY:
             logger.info("Journey finishing")

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Dict, List
 
-from pydantic import BaseModel, Field, computed_field
+from pydantic import BaseModel, Field, computed_field, field_validator
 from pynmea2 import NMEASentence
 
 from src.kelder_api.components.gps_new.types import (
@@ -9,6 +9,7 @@ from src.kelder_api.components.gps_new.types import (
     LatitudeHemisphere,
     LongitudeHemisphere,
 )
+from src.kelder_api.components.gps_new.utils import round_ddmm
 
 
 class GPRMCRecommendedCourse(BaseModel):
@@ -158,3 +159,9 @@ class GPSRedisData(BaseModel):
     satellites_in_view: Dict[int, SatelliteInfomation] = Field(
         description="The satellite information", default={}
     )
+
+    @field_validator("latitude_nmea", "longitude_nmea", mode="before")
+    def round_coordinates(cls, v, info):
+        # detect if field is lat (2 deg digits) or lon (3 deg digits)
+        deg_digits = 2 if info.field_name == "latitude_nmea" else 3
+        return round_ddmm(v, deg_digits)

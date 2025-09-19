@@ -1,4 +1,3 @@
-
 from src.kelder_api.components.background_orchestrator.enums import VesselState
 from src.kelder_api.components.background_orchestrator.stationary_strategy import (
     StationaryStrategy,

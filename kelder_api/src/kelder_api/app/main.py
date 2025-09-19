@@ -1,30 +1,29 @@
 import logging
-from datetime import datetime
-
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# Component import
-from src.kelder_api.components.redis_client.redis_client import RedisClient
-from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.compass_new.interface import CompassInterface
-from src.kelder_api.components.velocity.service import VelocityCalculator
+from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.log.service import LogTracker
 
-# Routes
-from src.kelder_api.routes.health.views import router as health_route
-from src.kelder_api.routes.velocity.views import router as velocity_route
-from src.kelder_api.routes.gps.views import router as gps_route
-from src.kelder_api.routes.redis.views import router as redis_route
-from src.kelder_api.routes.log.views import router as log_route
+# Component import
+from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.velocity.service import VelocityCalculator
 
 # from src.kelder_api.routes.bilge_depth.views import router as bilge_depth_route
 from src.kelder_api.routes.compass.views import router as compass_router
+from src.kelder_api.routes.gps.views import router as gps_route
+
+# Routes
+from src.kelder_api.routes.health.views import router as health_route
 from src.kelder_api.routes.inference.views import router as agent_routes
+from src.kelder_api.routes.log.views import router as log_route
 from src.kelder_api.routes.passage_plan.views import router as passage_plan_routes
+from src.kelder_api.routes.redis.views import router as redis_route
 from src.kelder_api.routes.tidal_measurements.views import router as tidal_routes
+from src.kelder_api.routes.velocity.views import router as velocity_route
 
 # Allow requests from frontend's origin
 origins = [
