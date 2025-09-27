@@ -1,5 +1,5 @@
 import logging
-from datetime import date
+from datetime import date, timezone
 from typing import List
 
 from async_lru import alru_cache
@@ -50,9 +50,9 @@ async def get_tide_predictions(date: date) -> List[TideInfo]:
     for tidal_event in response.json():
         tidal_events.append(
             TideInfo(
-                event=tidal_event["EventType"],
-                datetime_stamp=tidal_event["DateTime"],
+                datetime_stamp=tidal_event["DateTime"].replace(tzinfo=timezone.utc),
                 height_of_tide=tidal_event["Height"],
+                event=tidal_event["EventType"],
             )
         )
 

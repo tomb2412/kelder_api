@@ -30,7 +30,7 @@ async def get_tidal_events():
 async def get_next_tidal_event():
     logger.debug("Next highwater")
     now = datetime.now(timezone.utc)
-    tidal_events = await get_tide_predictions(now.date())
+    tidal_events = await get_tide_predictions(now.date(timezone.utc))
 
     for tidal_event in tidal_events:
         if (

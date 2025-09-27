@@ -1,35 +1,32 @@
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, Field
+from src.kelder_api.components.velocity.utils import (
+    convert_to_decimal_degrees,
+    haversine,
+    bearing_degrees
+)
 
-
-class TideInfo(BaseModel):
-    high_water: str = Field(..., description="High water times and heights (UTC)")
-    low_water: str = Field(..., description="Low water times and heights (UTC)")
-    streams: Optional[str] = Field(
-        None, description="Tidal stream directions, rates, and timings"
-    )
-
-
-class WeatherInfo(BaseModel):
-    wind: str = Field(..., description="Wind direction and strength")
-    visibility: str = Field(..., description="Visibility forecast")
-    sea_state: Optional[str] = Field(None, description="Sea state description")
+from pydantic import BaseModel, Field, computed_field
 
 
 class Waypoint(BaseModel):
     name: Optional[str] = Field(None, description="Name of the waypoint")
-    coordinates: str = Field(
-        ...,
-        description="Lat/Long in degrees and minutes (e.g. '50°46.0’N, 001°06.0’W')",
-    )
-    # TODO: Calculate these, with some validation - maybe a tool?
-    # bearing: Optional[str] = Field(None, description="Bearing in degrees true")
-    # distance_nm: Optional[float] = Field(None, description="Distance in nautical miles")
-    # eta: Optional[str] = Field(None, description="Estimated time of arrival (UTC or local)")
-
-
+    latitude: str = Field(description="Latitiude of waypoint in degrees and decimal minutes (e.g. '5046.03')")
+    latitude_hemisphere: str = Field(description="North or south hemisphere e.g 'N' or 'S'", default='N')
+    longitude: str = Field(description="Longitude of waypoint in degrees and decimal minutes (e.g. '00106.20')")
+    longitude_hemisphere: str = Field(description="East or west hemisphere of longitude", default = "W")
+    
+    @computed_field
+    @property
+    def latitude_decimal_degs(self) -> float:
+        return convert_to_decimal_degrees(self.latitude)
+    
+    @computed_field
+    @property
+    def longitude_decimal_degs(self) -> float:
+        return convert_to_decimal_degrees(self.longitude)
+    
 class PilotageInfo(BaseModel):
     departure: str = Field(..., description="Pilotage notes for departure harbour")
     arrival: str = Field(..., description="Pilotage notes for arrival harbour")
@@ -40,30 +37,55 @@ class PortOfRefuge(BaseModel):
     coordinates: str = Field(..., description="Lat/Long coordinates")
 
 
-class DepartureETA(BaseModel):
-    departure_time: str = Field(..., description="Planned departure time")
-    eta: str = Field(..., description="Estimated time of arrival")
-    justification: Optional[str] = Field(
-        None, description="Reasoning (tidal gate, daylight, etc.)"
-    )
-
-
 class PassagePlan(BaseModel):
     timestamp: datetime = Field(
         description="The timestamp the passage plan was created"
     )
-    title: str = Field(
-        ..., description="Title of the passage plan, e.g. 'Cowes to Plymouth'"
+    departure_place_name: str = Field(
+        ..., description="Place of departure for the passage plan, e.g. 'Cowes'"
     )
-    tides: TideInfo
-    weather: WeatherInfo
+    desination_place_name: str = Field(
+        ..., description="Desination of the passage plan, e.g. 'Southampton'"
+    )
     course_to_steer: List[Waypoint] = Field(
         ..., description="List of waypoints forming the course to steer"
     )
-    pilotage: PilotageInfo
-    ports_of_refuge: Optional[List[PortOfRefuge]] = Field(
-        default_factory=list,
-        description="Alternative harbours or ports along the route",
-    )
-    navigational_hazards: List[str] = Field(..., description="Hazards along the route")
-    departure_and_eta: DepartureETA
+
+    @computed_field
+    @property
+    def distance_between_waypoints(self) -> List[float]:
+        """Uses haversign between the waypoints"""
+        distances = []
+        for index in (len(self.course_to_steer)-1):
+            waypoint_start = self.course_to_steer[index]
+            waypoint_end = self.course_to_steer[index + 1]
+            distances.append(
+                haversine(
+                    latitude_start= waypoint_start.latitude,
+                    latitude_end= waypoint_end.latitude,
+                    longitude_start= waypoint_start.longitude,
+                    longitude_end= waypoint_end.longitude,
+                )
+            )
+
+        return distances
+    
+    @computed_field
+    @property
+    def bearing_between_waypoints(self) -> List[float]:
+        """Uses haversign between the waypoints"""
+        bearings = []
+        for index in (len(self.course_to_steer)-1):
+            waypoint_start = self.course_to_steer[index]
+            waypoint_end = self.course_to_steer[index + 1]
+            bearings.append(
+                bearing_degrees(
+                    latitude_start= waypoint_start.latitude,
+                    longitude_start= waypoint_start.longitude,
+                    latitude_end= waypoint_end.latitude,
+                    longitude_end= waypoint_end.longitude,
+                )
+            )
+
+        return bearings
+
