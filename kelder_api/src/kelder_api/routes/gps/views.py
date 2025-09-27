@@ -17,7 +17,7 @@ from src.kelder_api.routes.gps.models import GPSCard
 logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["GPS"])
-router_card = APIRouter(tags=["card routes"])
+router_card = APIRouter(tags=["Card routes"])
 
 def get_dependancy(request: Request) -> GPSInterface:
     return get_gps_interface(request.app)
@@ -80,11 +80,18 @@ async def getGpsCard(
     velocity_data = await velocity_calculator.read_velocity_latest(active=True)
     journey_data = await log_tracker.get_journey_set()
 
+    # TODO will this return the previous journeys stats?
+    if journey_data:
+        log = journey_data.distance_travelled
+    else: 
+        log = "error"
+
+
     return GPSCard(
         # TODO implement an error handling + add drift and DTW
-        timestamp = gps_data.timestamp,
+        timestamp = gps_data.timestamp.time(),
         latitude = gps_data.latitude_nmea,
         longitude = gps_data.longitude_nmea,
-        speed_over_ground = velocity_data.speed_over_ground,
-        log = journey_data.disance_travelled
+        speed_over_ground = velocity_data.speed_over_ground if velocity_data.speed_over_ground else "error",
+        log = log
     )
