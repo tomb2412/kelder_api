@@ -75,6 +75,7 @@ async def getGpsCard(
     velocity_calculator = components[1]
     log_tracker = components[2]
 
+    # TODO: This should be a time window, so the latest gps within say 1 hour
     gps_data = await gps_interface.read_gps_latest(active=True)
     velocity_data = await velocity_calculator.read_velocity_latest(active=True)
     journey_data = await log_tracker.get_journey_set()
