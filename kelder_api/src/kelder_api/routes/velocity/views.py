@@ -23,4 +23,5 @@ async def getGpCoords(
     logger.info(f"Successfully read velocity data: {velocity_data}")
     return velocity_data
 
+
 # TODO unify this logging and error catching for the front

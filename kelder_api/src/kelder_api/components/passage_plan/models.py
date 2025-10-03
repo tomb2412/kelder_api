@@ -12,10 +12,18 @@ from src.kelder_api.components.velocity.utils import (
 
 class Waypoint(BaseModel):
     name: Optional[str] = Field(None, description="Name of the waypoint")
-    latitude: str = Field(description="Latitiude of waypoint in degrees and decimal minutes (e.g. '5046.03')")
-    latitude_hemisphere: str = Field(description="North or south hemisphere e.g 'N' or 'S'", default='N')
-    longitude: str = Field(description="Longitude of waypoint in degrees and decimal minutes (e.g. '00106.20')")
-    longitude_hemisphere: str = Field(description="East or west hemisphere of longitude", default = "W")
+    latitude: str = Field(
+        description="Latitiude of waypoint in degrees and decimal minutes (e.g. '5046.03')"
+    )
+    latitude_hemisphere: str = Field(
+        description="North or south hemisphere e.g 'N' or 'S'", default="N"
+    )
+    longitude: str = Field(
+        description="Longitude of waypoint in degrees and decimal minutes (e.g. '00106.20')"
+    )
+    longitude_hemisphere: str = Field(
+        description="East or west hemisphere of longitude", default="W"
+    )
 
     @computed_field
     @property
@@ -26,6 +34,7 @@ class Waypoint(BaseModel):
     @property
     def longitude_decimal_degs(self) -> float:
         return convert_to_decimal_degrees(self.longitude)
+
 
 class PilotageInfo(BaseModel):
     departure: str = Field(..., description="Pilotage notes for departure harbour")
@@ -56,15 +65,15 @@ class PassagePlan(BaseModel):
     def distance_between_waypoints(self) -> List[float]:
         """Uses haversign between the waypoints"""
         distances = []
-        for index in (len(self.course_to_steer)-1):
+        for index in len(self.course_to_steer) - 1:
             waypoint_start = self.course_to_steer[index]
             waypoint_end = self.course_to_steer[index + 1]
             distances.append(
                 haversine(
-                    latitude_start= waypoint_start.latitude,
-                    latitude_end= waypoint_end.latitude,
-                    longitude_start= waypoint_start.longitude,
-                    longitude_end= waypoint_end.longitude,
+                    latitude_start=waypoint_start.latitude,
+                    latitude_end=waypoint_end.latitude,
+                    longitude_start=waypoint_start.longitude,
+                    longitude_end=waypoint_end.longitude,
                 )
             )
 
@@ -75,17 +84,16 @@ class PassagePlan(BaseModel):
     def bearing_between_waypoints(self) -> List[float]:
         """Uses haversign between the waypoints"""
         bearings = []
-        for index in (len(self.course_to_steer)-1):
+        for index in len(self.course_to_steer) - 1:
             waypoint_start = self.course_to_steer[index]
             waypoint_end = self.course_to_steer[index + 1]
             bearings.append(
                 bearing_degrees(
-                    latitude_start= waypoint_start.latitude,
-                    longitude_start= waypoint_start.longitude,
-                    latitude_end= waypoint_end.latitude,
-                    longitude_end= waypoint_end.longitude,
+                    latitude_start=waypoint_start.latitude,
+                    longitude_start=waypoint_start.longitude,
+                    latitude_end=waypoint_end.latitude,
+                    longitude_end=waypoint_end.longitude,
                 )
             )
 
         return bearings
-

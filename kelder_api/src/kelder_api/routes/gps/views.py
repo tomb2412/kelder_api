@@ -20,15 +20,20 @@ logger = logging.getLogger(__name__)
 router = APIRouter(tags=["GPS"])
 router_card = APIRouter(tags=["Card routes"])
 
+
 def get_dependancy(request: Request) -> GPSInterface:
     return get_gps_interface(request.app)
 
-def get_card_dependancies(request: Request) -> Tuple[GPSInterface, VelocityCalculator, LogTracker]:
+
+def get_card_dependancies(
+    request: Request,
+) -> Tuple[GPSInterface, VelocityCalculator, LogTracker]:
     gps_interface = get_gps_interface(request.app)
     velocity_calculator = get_velocity_calculator(request.app)
     log_tracker = get_log_tracker(request.app)
 
     return gps_interface, velocity_calculator, log_tracker
+
 
 @router.get("/gps_coords_latest")
 async def getGpsCoords(gps_interface: GPSInterface = Depends(get_dependancy)):
@@ -68,9 +73,12 @@ async def getGpsCoords(
     gps_data = await gps_interface.read_gps_history_length(length=length, active=True)
     return gps_data
 
+
 @router_card.get("/gps_card_data")
 async def getGpsCard(
-    components: Tuple[GPSInterface, VelocityCalculator, LogTracker] = Depends(get_card_dependancies)
+    components: Tuple[GPSInterface, VelocityCalculator, LogTracker] = Depends(
+        get_card_dependancies
+    ),
 ) -> GPSCard:
     gps_interface = components[0]
     velocity_calculator = components[1]
@@ -87,12 +95,13 @@ async def getGpsCard(
     else:
         log = "error"
 
-
     return GPSCard(
         # TODO implement an error handling + add drift and DTW
-        timestamp = gps_data.timestamp.time(),
-        latitude = gps_data.latitude_nmea,
-        longitude = gps_data.longitude_nmea,
-        speed_over_ground = velocity_data.speed_over_ground if velocity_data.speed_over_ground else "error",
-        log = log
+        timestamp=gps_data.timestamp.time(),
+        latitude=gps_data.latitude_nmea,
+        longitude=gps_data.longitude_nmea,
+        speed_over_ground=velocity_data.speed_over_ground
+        if velocity_data.speed_over_ground
+        else "error",
+        log=log,
     )
