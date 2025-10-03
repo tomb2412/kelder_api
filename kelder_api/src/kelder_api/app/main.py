@@ -14,7 +14,8 @@ from src.kelder_api.components.velocity.service import VelocityCalculator
 
 # from src.kelder_api.routes.bilge_depth.views import router as bilge_depth_route
 from src.kelder_api.routes.compass.views import router as compass_router
-from src.kelder_api.routes.gps.views import router as gps_route, router_card
+from src.kelder_api.routes.gps.views import router as gps_route
+from src.kelder_api.routes.gps.views import router_card
 
 # Routes
 from src.kelder_api.routes.health.views import router as health_route

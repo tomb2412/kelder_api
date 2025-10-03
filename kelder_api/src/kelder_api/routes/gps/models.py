@@ -1,6 +1,7 @@
+from datetime import time
+
 from pydantic import BaseModel, Field
 
-from datetime import time
 
 class GPSCard(BaseModel):
     timestamp: time | str = Field(description="The time the GPS measurement was taken")

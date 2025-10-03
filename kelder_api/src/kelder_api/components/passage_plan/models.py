@@ -1,13 +1,13 @@
 from datetime import datetime
 from typing import List, Optional
 
+from pydantic import BaseModel, Field, computed_field
+
 from src.kelder_api.components.velocity.utils import (
+    bearing_degrees,
     convert_to_decimal_degrees,
     haversine,
-    bearing_degrees
 )
-
-from pydantic import BaseModel, Field, computed_field
 
 
 class Waypoint(BaseModel):
@@ -16,17 +16,17 @@ class Waypoint(BaseModel):
     latitude_hemisphere: str = Field(description="North or south hemisphere e.g 'N' or 'S'", default='N')
     longitude: str = Field(description="Longitude of waypoint in degrees and decimal minutes (e.g. '00106.20')")
     longitude_hemisphere: str = Field(description="East or west hemisphere of longitude", default = "W")
-    
+
     @computed_field
     @property
     def latitude_decimal_degs(self) -> float:
         return convert_to_decimal_degrees(self.latitude)
-    
+
     @computed_field
     @property
     def longitude_decimal_degs(self) -> float:
         return convert_to_decimal_degrees(self.longitude)
-    
+
 class PilotageInfo(BaseModel):
     departure: str = Field(..., description="Pilotage notes for departure harbour")
     arrival: str = Field(..., description="Pilotage notes for arrival harbour")
@@ -69,7 +69,7 @@ class PassagePlan(BaseModel):
             )
 
         return distances
-    
+
     @computed_field
     @property
     def bearing_between_waypoints(self) -> List[float]:

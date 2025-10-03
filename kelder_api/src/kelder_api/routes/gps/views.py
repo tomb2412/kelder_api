@@ -1,16 +1,17 @@
 import logging
 from datetime import datetime, timedelta, timezone
-from fastapi import APIRouter, Depends, Request
 from typing import Tuple
+
+from fastapi import APIRouter, Depends, Request
 
 from src.kelder_api.app.getters import (
     get_gps_interface,
+    get_log_tracker,
     get_velocity_calculator,
-    get_log_tracker
 )
 from src.kelder_api.components.gps_new.interface import GPSInterface
-from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.components.log.service import LogTracker
+from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.routes.gps.models import GPSCard
 
@@ -83,7 +84,7 @@ async def getGpsCard(
     # TODO will this return the previous journeys stats?
     if journey_data:
         log = journey_data.distance_travelled
-    else: 
+    else:
         log = "error"
 
 
