@@ -82,7 +82,7 @@ def test_gps_redis_data_coordinate_rounding(latitude: str, longitude: str) -> No
 
 
 def test_gps_redis_data_invalid_coordinate_type_fails() -> None:
-    """Non-string coordinates should raise a validation error via the field validator."""
+    """Non-string coordinates should raise a type error."""
     with pytest.raises(TypeError):
         GPSRedisData(
             timestamp=datetime.now(timezone.utc),
@@ -148,7 +148,7 @@ async def test_read_gps_latest_uses_active_flag(
     sample_gps_payload: Dict[str, str | float | List[int]],
     active: bool,
 ) -> None:
-    """When active flag is set, delegate to the filtered helper before returning the newest item."""
+    """Active flag should delegate to the filtered helper before returning data."""
     if active:
         gps_interface.read_active_gps_measurements = AsyncMock(
             return_value=[GPSRedisData(**sample_gps_payload)]

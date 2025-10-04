@@ -15,11 +15,17 @@ model_config = SettingsConfigDict(
 
 class SleepTimes(BaseSettings):
     UNDER_WAY_SLEEP: float = Field(
-        description="Seconds between samples, when sailing + 1 second for reading ~ 6 seconds",
+        description=(
+            "Seconds between samples when sailing plus one second for reading "
+            "(~6 seconds total)"
+        ),
         default=1,
     )
     STATIONARY_SLEEP: float = Field(
-        description="Seconds between samples, when stationary + 1 second for reading ~ 6 seconds",
+        description=(
+            "Seconds between samples when stationary plus one second for reading "
+            "(~6 seconds total)"
+        ),
         default=5,
     )
 
@@ -52,19 +58,30 @@ class GPS(BaseSettings):
 
 class Velocity(BaseSettings):
     velocity_calculation_type: CalculationType = Field(
-        description="Method of retrieving GPS history in the velocity calculation",
+        description=(
+            "Method used to retrieve GPS history for the velocity calculation"
+        ),
         default=CalculationType.TIMESERIES,
     )
     gps_velocity_history: int = Field(
-        description="Number of GPS measurements or number of seconds since now to average over in a velocity calculation",
+        description=(
+            "GPS measurement count or seconds of history used in the velocity "
+            "calculation"
+        ),
         default=2,
     )
     max_velocity_temporal_change: int = Field(
-        description="Maximum seconds between GPS measurements to give for a velocity measurement",
+        description=(
+            "Maximum seconds allowed between GPS measurements when producing a "
+            "velocity reading"
+        ),
         default=15,
     )
     max_delay_seconds: int = Field(
-        description="Maximum latency between a gps measurement without a quality warning",
+        description=(
+            "Maximum latency between GPS measurements before flagging a quality "
+            "warning"
+        ),
         default=200,
     )
 
@@ -73,7 +90,10 @@ class Velocity(BaseSettings):
 
 class LogTracker(BaseSettings):
     time_window_length: int = Field(
-        description="The number of gps history measurements to retrieve in the log calculation, or seconds history",
+        description=(
+            "Number of GPS history measurements or seconds of history used for "
+            "log calculations"
+        ),
         default=60,
     )
     tack_bearing_tolerance: int = Field(
@@ -88,7 +108,9 @@ class Compass(BaseSettings):
 
 class Orchestrator(BaseSettings):
     sog_threshold: float = Field(
-        description="The >= speed over ground which sets the VesselState as underway",
+        description=(
+            "Speed over ground threshold that sets the vessel state to underway"
+        ),
         default=0.2,
     )
 
@@ -100,9 +122,12 @@ class Settings(BaseModel):
         description="Redis server connection config", default_factory=Redis
     )
     sleep_times: SleepTimes = Field(
-        description="Sleep times depending on ships motion", default_factory=SleepTimes
+        description="Sleep times depending on ships motion",
+        default_factory=SleepTimes,
     )
-    gps: GPS = Field(description="All gps configuration settings", default_factory=GPS)
+    gps: GPS = Field(
+        description="All GPS configuration settings", default_factory=GPS
+    )
     compass: Compass = Field(
         description="All compass configuration", default_factory=Compass
     )
@@ -110,7 +135,8 @@ class Settings(BaseModel):
         description="Velocity settings", default_factory=Velocity
     )
     orchestrator: Orchestrator = Field(
-        description="The background ochestrator settings", default_factory=Orchestrator
+        description="Background orchestrator settings",
+        default_factory=Orchestrator,
     )
     log_tracker: LogTracker = Field(
         description="All log tracking config", default_factory=LogTracker

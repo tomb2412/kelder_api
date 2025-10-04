@@ -57,7 +57,9 @@ class GPSInterface:
 
         except serial.SerialException as error:
             logger.error(
-                f"Serial connection to the GPS or port cannot be established. Potentially due to containers with incorrect access. \n {error}"
+                "Serial connection to the GPS or port cannot be established. "
+                "Potentially due to containers with incorrect access.\n%s",
+                error,
             )
             raise
         except OSError as error:
@@ -73,7 +75,8 @@ class GPSInterface:
 
                 except Exception:
                     logger.error(
-                        f"Failed to properly close the gps serial connection on port {self.PORT}"
+                        "Failed to properly close the GPS serial connection on port %s",
+                        self.PORT,
                     )
                     raise
 
@@ -134,7 +137,8 @@ class GPSInterface:
             return gps_history[0:length]
         except IndexError:
             logger.debug(
-                f"GPS history shorter than length requested. Returning length: {len(gps_history)}"
+                "GPS history shorter than length requested. Returning length: %s",
+                len(gps_history),
             )
             return gps_history
 
@@ -200,9 +204,9 @@ class GPSInterface:
     async def stream_serial_data(
         self, mock_sentence_stream: List[str] | None = None
     ) -> None:
-        """Public method to open the serial connection, and processes the datastream until a gps measurement is identified"""
+        """Open the serial connection and process sentences until a GPS fix is found."""
         logger.debug("GPS reading in progress")
-        # Clear the satellites in view and other sentense data before reading the serial stream
+        # Clear the satellites in view and other sentence data before reading the stream
         self.gpgsv_satellites_in_view = GPGSVSatellitesInView()
         self.gprmc_recommended_course = None
         self.gpgsa_active_satellites = None

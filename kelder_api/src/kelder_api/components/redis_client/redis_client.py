@@ -45,7 +45,7 @@ class RedisClient:
             logger.debug("Connected to redis through the pool")
             yield redis
         except Exception as error:
-            logger.error(f"Redis connection error: {error}")
+            logger.error("Redis connection error: %s", error)
             raise error
         finally:
             await redis.close()
@@ -58,7 +58,10 @@ class RedisClient:
                 await redis.set(key, value)
             except Exception as error:
                 logger.error(
-                    f"Redis exception raised setting the key-value pair: {key}:{value}, with {error}"
+                    "Redis exception raised setting key %s with value %s: %s",
+                    key,
+                    value,
+                    error,
                 )
                 raise error
 
@@ -68,7 +71,9 @@ class RedisClient:
                 return await redis.get(key)
             except Exception as error:
                 logger.error(
-                    f"Redis exception raised reading the value: {value}, because of: {error}"
+                    "Redis exception raised reading the value for key %s: %s",
+                    key,
+                    error,
                 )
                 raise error
 
@@ -98,9 +103,7 @@ class RedisClient:
                 withscores=True,
             )
 
-            results = [json.loads(measurement) for measurement, _ in sensor_data]
-            times = [timestamp for _, timestamp in sensor_data]
-            return results
+            return [json.loads(measurement) for measurement, _ in sensor_data]
 
     async def write_hashed_set(
         self, key: str, data: BaseModel, datetime: datetime = datetime.now(timezone.utc)

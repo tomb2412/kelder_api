@@ -67,8 +67,10 @@ class LogTracker:
             inter_measurement_latency >= self.settings.time_window_length
             or overall_measurement_latency >= self.settings.time_window_length
         ):
+            limit = self.settings.time_window_length
             message = (
-                f"The time difference of the gps and velocity exceeded the allowed {self.settings.time_window_length} seconds:"
+                "The time difference of the GPS and velocity exceeded the allowed "
+                f"{limit} seconds:"
                 f"\nlatency between measurements: {inter_measurement_latency}"
                 f"\nlatency from measurements: {overall_measurement_latency}"
             )

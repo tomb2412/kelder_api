@@ -73,7 +73,7 @@ class BackgroundTaskManager:
                 return VesselState.UNDERWAY
             else:
                 return VesselState.STATIONARY
-        except:
+        except Exception:
             return vessel_state
 
     async def run(self):

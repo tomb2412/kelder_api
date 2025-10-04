@@ -9,7 +9,7 @@ from src.kelder_api.components.velocity.utils import (
 
 
 class LegData(BaseModel):
-    """The leg tracks the start time and position of a tack, and the last COG. All GPS for consistancy"""
+    """Track the start metadata of a tack and the most recent course over ground."""
 
     start_datetime: datetime = Field(description="The start datetime of the leg")
     start_latitude: str = Field(description="The lat and lon of the leg start coords")

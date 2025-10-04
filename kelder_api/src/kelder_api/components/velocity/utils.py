@@ -24,7 +24,7 @@ def time_difference_seconds(time_start: datetime, time_end: datetime) -> datetim
 
 
 def bearing_degrees(latitude_start, longitude_start, latitude_end, longitude_end):
-    """Calculate initial bearing (forward azimuth) from point 1 to point 2. Coords in DD.DD"""
+    """Calculate the forward azimuth between two points given decimal degrees."""
     latitude_start, longitude_start, latitude_end, longitude_end = map(
         math.radians, [latitude_start, longitude_start, latitude_end, longitude_end]
     )

@@ -23,15 +23,14 @@ class VelocityCalculator:
         self.gps_interface = gps_interface
         self.redis_client = redis_client
 
-        self.velocity_calculation_type = (
-            get_settings().velocity.velocity_calculation_type
-        )
-        self.num_gps_measurements = get_settings().velocity.gps_velocity_history
+        velocity_settings = get_settings().velocity
+        self.velocity_calculation_type = velocity_settings.velocity_calculation_type
+        self.num_gps_measurements = velocity_settings.gps_velocity_history
 
     async def _get_gps_data(
         self, end_datetime: datetime | None = None
     ) -> Tuple[List[GPSRedisData], datetime]:
-        """Private method which retrieves gps data through n latest measurements or last n seconds"""
+        """Fetch GPS history using either fixed length or recent time window."""
 
         if self.velocity_calculation_type == CalculationType.LENGTH:
             return await self.gps_interface.read_gps_history_length(
@@ -49,20 +48,21 @@ class VelocityCalculator:
     async def calculate_gps_velocity(
         self, datetime_now: datetime | None = None
     ) -> GPSVelocity:
-        """Calculates a speed over ground in knots from gps history, returns an error if less than 2 measurements"""
+        """Calculate speed over ground in knots from recent GPS history."""
         gps_history, datetime_now = await self._get_gps_data(datetime_now)
         gps_points = len(gps_history)
 
         logger.info(
-            f"Identified {gps_points} gps_points in the last {self.num_gps_measurements}"
+            "Identified %s GPS points in the last %s measurements",
+            gps_points,
+            self.num_gps_measurements,
         )
 
         if gps_points <= 1:
-            message = (
-                "Insufficient GPS history for a velocity measurement, length: %s"
-                % gps_points
+            logger.warning(
+                "Insufficient GPS history for a velocity measurement; length: %s",
+                gps_points,
             )
-            logger.warning(message)
             speed_over_ground_avg = None
             course_over_ground_avg = None
         else:

@@ -32,7 +32,7 @@ class GPRMCRecommendedCourse(BaseModel):
     )
 
     @classmethod
-    def from_nmea(cls, nmea_data: NMEASentence) -> "GPSSerialGPRMC":
+    def from_nmea(cls, nmea_data: NMEASentence) -> "GPRMCRecommendedCourse":
         return cls(
             timestamp=datetime.combine(nmea_data.datestamp, nmea_data.timestamp),
             status=GPSStatus.ACTIVE if nmea_data.status == "A" else GPSStatus.VOID,
@@ -57,7 +57,7 @@ class GPGSAActiveSatellites(BaseModel):
     hdop: float = Field(description="Horizontal dilution of position")
 
     @classmethod
-    def from_nmea(cls, nmea_data: NMEASentence) -> "GPSSerialGPGSA":
+    def from_nmea(cls, nmea_data: NMEASentence) -> "GPGSAActiveSatellites":
         satilite_prns = [
             getattr(nmea_data, sat_prn[1])
             for sat_prn in nmea_data.fields
