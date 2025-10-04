@@ -28,10 +28,10 @@ jobs:
         uv sync --all-extras --dev
 
     - name: Run lint
-      run: ruff check . --exclude tests/notebooks
+      run: uv run ruff check . --exclude tests/notebooks
 
     - name: Run format check
-      run: ruff format --check . --exclude tests/notebooks
+      run: uv run ruff format --check . --exclude tests/notebooks
 
     - name: Run tests
-      run: pytest
+      run: uv run pytest
