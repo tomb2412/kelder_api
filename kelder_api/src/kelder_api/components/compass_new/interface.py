@@ -19,13 +19,16 @@ class CompassInterface:
 
     def __init__(self, redis_client: RedisClient, fake_transport: bool = True):
         self.redis_client = redis_client
+        self._lis2mdl_cls = None
         if fake_transport:
             try:
-                import adafruit_lis2mdl
-                import board
-                self.i2c_board = board.I2C()      
-            except Exception as error:
-                logger.error("No board detected")      
+                import board  # type: ignore[import]
+                from adafruit_lis2mdl import LIS2MDL  # type: ignore[import]
+
+                self.i2c_board = board.I2C()
+                self._lis2mdl_cls = LIS2MDL
+            except Exception:
+                logger.error("No board detected")
 
     async def read_heading_from_compass(
         self,
@@ -38,12 +41,15 @@ class CompassInterface:
                 magnetic_field_vector = fake_measurements
                 raise ValueError
             else:
-                magnetic_field_vector = adafruit_lis2mdl.LIS2MDL(
-                    self.i2c_board
-                ).magnetic
-            logger.debug("successfully connected to the compass and taken reading")
+                if self._lis2mdl_cls is None:
+                    raise ValueError("Compass hardware unavailable")
+
+                magnetic_field_vector = self._lis2mdl_cls(self.i2c_board).magnetic
+            logger.debug("Successfully connected to the compass and taken reading")
         except ValueError:
-            message = "Connection to the I2C board has failed. Check board status light and wiring."
+            message = (
+                "Connection to the I2C board has failed. Check status light and wiring."
+            )
             logging.error(message)
             heading = None
         else:

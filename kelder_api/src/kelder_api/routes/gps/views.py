@@ -36,21 +36,21 @@ def get_card_dependancies(
 
 
 @router.get("/gps_coords_latest")
-async def getGpsCoords(gps_interface: GPSInterface = Depends(get_dependancy)):
+async def get_gps_coords_latest(gps_interface: GPSInterface = Depends(get_dependancy)):
     logger.info("Requesting GPS data")
     gps_data = await gps_interface.read_gps_latest(active=True)
     return gps_data
 
 
 @router.get("/gps_coords_all")
-async def getGpsCoords(gps_interface: GPSInterface = Depends(get_dependancy)):
+async def get_gps_coords_all(gps_interface: GPSInterface = Depends(get_dependancy)):
     logger.info("Requesting GPS data")
     gps_data = await gps_interface.read_gps_all_history(active=True)
     return gps_data
 
 
 @router.get("/gps_coords_timeseries")
-async def getGpsCoords(
+async def get_gps_coords_timeseries(
     start_datetime: datetime = datetime.now(timezone.utc)
     - timedelta(seconds=get_settings().velocity.gps_velocity_history),
     end_datetime: datetime = datetime.now(timezone.utc),
@@ -65,7 +65,7 @@ async def getGpsCoords(
 
 
 @router.get("/gps_coords_length")
-async def getGpsCoords(
+async def get_gps_coords_length(
     length: int = get_settings().velocity.gps_velocity_history,
     gps_interface: GPSInterface = Depends(get_dependancy),
 ):
@@ -75,7 +75,7 @@ async def getGpsCoords(
 
 
 @router_card.get("/gps_card_data")
-async def getGpsCard(
+async def get_gps_card(
     components: Tuple[GPSInterface, VelocityCalculator, LogTracker] = Depends(
         get_card_dependancies
     ),

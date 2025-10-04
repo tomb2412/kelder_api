@@ -16,9 +16,7 @@ class GPSVelocity(BaseModel):
         description="Timestamp from when the velocity was taken"
     )
     speed_over_ground: float | None = Field(
-        description=(
-            "Average speed over ground in knots; None when data is unreliable"
-        )
+        description=("Average speed over ground in knots; None when data is unreliable")
     )
     course_over_ground: float | None = Field(
         description="Average true bearing of the GPS course in degrees"

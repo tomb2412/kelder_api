@@ -79,8 +79,7 @@ class Velocity(BaseSettings):
     )
     max_delay_seconds: int = Field(
         description=(
-            "Maximum latency between GPS measurements before flagging a quality "
-            "warning"
+            "Maximum latency between GPS measurements before flagging a quality warning"
         ),
         default=200,
     )
@@ -125,9 +124,7 @@ class Settings(BaseModel):
         description="Sleep times depending on ships motion",
         default_factory=SleepTimes,
     )
-    gps: GPS = Field(
-        description="All GPS configuration settings", default_factory=GPS
-    )
+    gps: GPS = Field(description="All GPS configuration settings", default_factory=GPS)
     compass: Compass = Field(
         description="All compass configuration", default_factory=Compass
     )

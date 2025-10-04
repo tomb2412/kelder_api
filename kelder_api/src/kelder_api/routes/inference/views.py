@@ -1,16 +1,9 @@
 import asyncio
 import json
 import logging
-import os
 from uuid import uuid4
 
-from dotenv import load_dotenv
-from fastapi import Request
-
-load_dotenv(override=True)
-openai_api_key = os.getenv("OPENAI_API_KEY")
-
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from starlette.responses import StreamingResponse
 
 from src.kelder_api.routes.inference.agents import get_chatbot_agent
@@ -47,7 +40,9 @@ async def StreamChatResponse(request: Request):
             async for delta in stream_response.stream_text(delta=True):
                 # send a text-start event on the first chunk
                 if first_chunk:
-                    yield f"data: {json.dumps({'type': 'text-start', 'id': text_id})}\n\n"
+                    yield f"data: {
+                        json.dumps({'type': 'text-start', 'id': text_id})
+                    }\n\n"
                     first_chunk = False
 
                 # send delta parts
