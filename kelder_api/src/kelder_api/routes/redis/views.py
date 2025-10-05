@@ -31,6 +31,7 @@ async def getRedisSetSize(
 ):
     logger.info("Sizing the redis data")
     async with redis_client.get_connection() as redis:
+        # TODO: what is the difference between size and len(list_gps)
         size = await redis.zcard(f"sensor:ts:{sensor}")
         list_gps = await redis.zrevrangebyscore(
             "sensor:ts:{sensor}",

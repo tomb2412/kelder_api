@@ -49,6 +49,7 @@ async def get_tide_predictions(date: date) -> List[TideInfo]:
 
     for tidal_event in response.json():
         tidal_events.append(
+            # TypeError: str.replace() takes no keyword arguments
             TideInfo(
                 datetime_stamp=tidal_event["DateTime"].replace(tzinfo=timezone.utc),
                 height_of_tide=tidal_event["Height"],

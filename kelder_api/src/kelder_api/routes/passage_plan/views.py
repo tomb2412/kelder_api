@@ -20,6 +20,7 @@ async def GetPassagePlan(redis_client: RedisClient = Depends(get_dependancy)):
     try:
         plan = (await redis_client.read_set("PASSAGE_PLAN"))[0]
     except IndexError:
+        # TODO: What should be returned here?
         plan = "something else"
 
     return {"passage_plan": plan}

@@ -23,6 +23,7 @@ async def get_height_of_tide():
 @router.get("/get_tidal_predictions")
 async def get_tidal_events():
     logger.debug("Tideal predictions requested")
+    # BUG: TypeError: datetime.date() takes no arguments (1 given)
     return await get_tide_predictions(datetime.now(timezone.utc).date())
 
 
