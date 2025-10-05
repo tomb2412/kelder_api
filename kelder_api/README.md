@@ -57,7 +57,7 @@ w- Docs are available at: http://localhost:8000/docs#/ or http://raspberrypi.loc
 - pynmea2 parsing data: [git hub](https://github.com/Knio/pynmea2)
 - Minicom command to see serial stream: 
     - to see which divice: `ls /dev/ttyAMA* /dev/ttyS* /dev/ttyUSB*`
-    - `sudo minicom -b 9600 -o -D /dev/ttyAMA0`
+    - `sudo minicom -b 9600 -o -D /dev/ttyS0`
 
 # The Ultasound
  - [Wiring guide](https://gpiozero.readthedocs.io/en/stable/recipes.html#distance-sensor)
@@ -81,3 +81,8 @@ w- Docs are available at: http://localhost:8000/docs#/ or http://raspberrypi.loc
  # The Cellular Modem
 
  - [Clipper HAT Mini](https://learn.pimoroni.com/article/getting-started-with-clipper-hat)
+ - See the minicom port: `ls -l /dev/ttyAMA* /dev/serial*`
+ - Usefull commands: enter minicom: `minicom -b 115200 -D /dev/ttyAMA2`
+    - `AT` -> "OK"
+    - `ATI` -> 
+    - `AT+CPIN?` -> SIM inserted and ready
