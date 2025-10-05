@@ -40,3 +40,4 @@ async def get_next_tidal_event():
             return tidal_event
 
     # TODO: what to return or raise?
+    return {}

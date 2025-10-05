@@ -9,4 +9,4 @@ lint:
 format:
 	ruff format . --exclude tests/notebooks
 
-all: lint format test
+all: format lint test
