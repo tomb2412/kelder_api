@@ -16,6 +16,7 @@ from src.kelder_api.configuration.settings import get_settings
 
 logger = logging.getLogger(__name__)
 
+
 class BackgroundTaskManager:
     """Task manager to sequence sensor measurements and calculations."""
 
@@ -81,7 +82,7 @@ class BackgroundTaskManager:
     async def run(self):
         vessel_state = VesselState.STATIONARY
         while True:
-            logger.info("Current vessel state: %s" %vessel_state)
+            logger.info("Current vessel state: %s" % vessel_state)
             previous_vessel_state = vessel_state
             # Run the strategy matching the vessel state
             await self.strategies[vessel_state](

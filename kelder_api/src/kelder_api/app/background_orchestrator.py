@@ -5,7 +5,6 @@ from src.kelder_api.components.background_orchestrator.orchestrator import (
     BackgroundTaskManager,
 )
 
-
 logger = logging.getLogger(__name__)
 logging.basicConfig(
     # filename=(

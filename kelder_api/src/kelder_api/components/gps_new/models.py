@@ -4,13 +4,14 @@ from typing import Dict, List
 from pydantic import BaseModel, Field, computed_field, field_validator
 from pynmea2 import NMEASentence
 
+from src.kelder_api.components.gps_new.exceptions import GPSParsingException
 from src.kelder_api.components.gps_new.types import (
     GPSStatus,
     LatitudeHemisphere,
     LongitudeHemisphere,
 )
 from src.kelder_api.components.gps_new.utils import round_ddmm
-from src.kelder_api.components.gps_new.exceptions import GPSParsingException
+
 
 class GPRMCRecommendedCourse(BaseModel):
     """
@@ -90,10 +91,16 @@ class SatelliteInfomation(BaseModel):
 
     @field_validator("elevation", "azimuth", mode="before")
     def round_coordinates(cls, value, info):
-        if value != "":
-            message = ("Failed to parse satellite information. %s = %s" %(info.field_name, value))
-            raise GPSParsingException()
-        
+        if value != "" and isinstance(value, str):
+            message = "Failed to parse satellite information. %s = %s" % (
+                info.field_name,
+                value,
+            )
+            raise GPSParsingException(message)
+        else:
+            return value
+
+
 class GPGSVSatellitesInView(BaseModel):
     """
     Tracks satellites in veiw data from the serial datastream

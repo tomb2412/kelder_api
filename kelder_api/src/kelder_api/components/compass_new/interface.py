@@ -91,8 +91,7 @@ class CompassInterface:
                 return CompassRedisData(**heading_history[0])
             except IndexError:
                 return CompassRedisData(
-                    timestamp = datetime.now(tz=timezone.utc),
-                    heading = None
+                    timestamp=datetime.now(tz=timezone.utc), heading=None
                 )
 
     async def read_heading_history_all(
