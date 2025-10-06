@@ -14,7 +14,6 @@ logger = logging.getLogger(__name__)
 class CompassInterface:
     """
     General compass interface between the board and redis server
-    TODO: support calibration feature
     """
 
     def __init__(self, redis_client: RedisClient, fake_transport: bool = True):
@@ -88,8 +87,13 @@ class CompassInterface:
                 ][0]
             )
         else:
-            # TODO: Add in index error catch - return empty model?
-            return CompassRedisData(**heading_history[0])
+            try:
+                return CompassRedisData(**heading_history[0])
+            except IndexError:
+                return CompassRedisData(
+                    timestamp = datetime.now(tz=timezone.utc),
+                    heading = None
+                )
 
     async def read_heading_history_all(
         self, active: bool = False

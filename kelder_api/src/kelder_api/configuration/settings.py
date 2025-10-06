@@ -49,9 +49,6 @@ class GPS(BaseSettings):
         description="Baudrate for the GPS transmission", default=9600
     )
     gps_timeout: float = Field(description="UART timeout period", default=1)
-    velocity_threshold: float = Field(
-        description="speed in kts exceeding to define underway", default=1.5
-    )
 
     model_config = model_config
 
@@ -101,7 +98,6 @@ class LogTracker(BaseSettings):
 
 
 class Compass(BaseSettings):
-    # TODO: remove?
     model_config = model_config
 
 
@@ -110,7 +106,7 @@ class Orchestrator(BaseSettings):
         description=(
             "Speed over ground threshold that sets the vessel state to underway"
         ),
-        default=0.2,
+        default=0.5,
     )
 
     model_config = model_config

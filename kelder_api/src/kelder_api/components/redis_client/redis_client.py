@@ -52,7 +52,6 @@ class RedisClient:
             logger.debug("Closed redis connection")
 
     async def write_value(self, key: str, value: str, expiration: Optional[int] = None):
-        """TODO: sort out expiration set"""
         async with self.get_connection() as redis:
             try:
                 await redis.set(key, value)

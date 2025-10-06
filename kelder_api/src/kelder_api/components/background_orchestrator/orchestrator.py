@@ -1,3 +1,5 @@
+import logging
+
 from src.kelder_api.components.background_orchestrator.enums import VesselState
 from src.kelder_api.components.background_orchestrator.stationary_strategy import (
     StationaryStrategy,
@@ -12,6 +14,7 @@ from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.configuration.settings import get_settings
 
+logger = logging.getLogger(__name__)
 
 class BackgroundTaskManager:
     """Task manager to sequence sensor measurements and calculations."""
@@ -26,7 +29,6 @@ class BackgroundTaskManager:
         self.strategies = {
             VesselState.UNDERWAY: UnderwayStrategy.execute,
             VesselState.STATIONARY: StationaryStrategy.execute,
-            # TODO: add other strategies like achored, moored, motoring
         }
 
         self.settings = get_settings().orchestrator
@@ -79,6 +81,7 @@ class BackgroundTaskManager:
     async def run(self):
         vessel_state = VesselState.STATIONARY
         while True:
+            logger.info("Current vessel state: %s" %vessel_state)
             previous_vessel_state = vessel_state
             # Run the strategy matching the vessel state
             await self.strategies[vessel_state](

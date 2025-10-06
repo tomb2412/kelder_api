@@ -5,11 +5,6 @@ from src.kelder_api.components.background_orchestrator.orchestrator import (
     BackgroundTaskManager,
 )
 
-"""
- TODO - Catch the i2c board not found error - in read compass
- TODO - Compass configuration
- TODO - Move drift history length to config
-"""
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(

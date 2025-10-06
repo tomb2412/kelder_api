@@ -1,0 +1,2 @@
+class GPSParsingException(Exception):
+    pass

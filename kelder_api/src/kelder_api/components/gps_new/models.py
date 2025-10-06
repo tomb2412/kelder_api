@@ -10,7 +10,7 @@ from src.kelder_api.components.gps_new.types import (
     LongitudeHemisphere,
 )
 from src.kelder_api.components.gps_new.utils import round_ddmm
-
+from src.kelder_api.components.gps_new.exceptions import GPSParsingException
 
 class GPRMCRecommendedCourse(BaseModel):
     """
@@ -78,17 +78,22 @@ class SatelliteInfomation(BaseModel):
     """Individual satellite data from the satellites in view sentence"""
 
     prn: int = Field(description="The PRN number identifying the satellite")
-    elevation: int = Field(
+    elevation: int | str = Field(
         description="The elevation in degrees (0-90) above the horizon"
     )
-    azimuth: int = Field(
+    azimuth: int | str = Field(
         description="Azimuth in degrees (0-359), relative to true north"
     )
     snr: float | None = Field(
         description="Signal to noise ratio (0-99 dB-Hz). Blank/None if not tracked "
     )
 
-
+    @field_validator("elevation", "azimuth", mode="before")
+    def round_coordinates(cls, value, info):
+        if value != "":
+            message = ("Failed to parse satellite information. %s = %s" %(info.field_name, value))
+            raise GPSParsingException()
+        
 class GPGSVSatellitesInView(BaseModel):
     """
     Tracks satellites in veiw data from the serial datastream

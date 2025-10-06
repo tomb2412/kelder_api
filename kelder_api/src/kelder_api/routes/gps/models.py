@@ -13,7 +13,6 @@ class GPSCard(BaseModel):
     log: float | str = Field(
         description="The distance travelled in current trip nautical miles"
     )
-    # TODO Remove these defaults and insert real figures
     drift: float = Field(
         description="Component of velocity perpendicular to heading / knts", default=1.2
     )

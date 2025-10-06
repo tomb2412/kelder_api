@@ -195,14 +195,6 @@ class GPSInterface:
             self.sentence_models[data_type](pynmea2.parse(sentence))
         except KeyError:
             logger.debug(f"Could not parse unsupported NMEA sentence: {data_type}")
-        # TODO: accept a pydantic validation potentially from
-        #          error: 2 validation errors for SatelliteInfomation
-        # worker-1    | elevation
-        # worker-1    |   Input should be a valid integer, unable to parse string as an
-        #  integer [type=int_parsing, input_value='', input_type=str]
-        # worker-1    | azimuth
-        # worker-1    |   Input should be a valid integer, unable to parse string as an
-        #    integer [type=int_parsing, input_value='', input_type=str]
         except Exception as error:
             logger.error(
                 f"Failed to parse the nmea string:\nstring: {sentence}\nerror: {error}"

@@ -86,3 +86,11 @@ w- Docs are available at: http://localhost:8000/docs#/ or http://raspberrypi.loc
     - `AT` -> "OK"
     - `ATI` -> 
     - `AT+CPIN?` -> SIM inserted and ready
+
+# Future features:
+ - [] Fix the chatbot and define global waypoints
+ - [] Introduce drift and dtx status
+ - [] Compass calibrator
+ - [] Redis set expiration and TTL
+ - [] Build in new vessel states: achored, moored, motoring
+ - [] Custom logger with an ochestration, and redis level. SMS notifations for KO?
