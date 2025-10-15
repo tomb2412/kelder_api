@@ -1,18 +1,24 @@
 from __future__ import annotations as _annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import List, Tuple
 
 from pydantic_graph import BaseNode, End, GraphRunContext
 
-
 from src.kelder_api.components.agentic_workflow.models import (
-    State
+    State,
+    GeneratePassagePlan,
 )
 from src.kelder_api.components.agentic_workflow.agents.chatbot import(
     chatbot_agent,
     ChatResponse,
-    TidalSearch,
-    BuildPassageRoute
 )
+from src.kelder_api.components.agentic_workflow.agents.reasoning import (
+    reasoning_agent,
+    Node,
+    OchestrationPlan,
+    NodeType
+)
+from src.kelder_api.components.agentic_workflow.utils import clean_user_message
 
 @dataclass
 class FakeResult:
@@ -20,25 +26,56 @@ class FakeResult:
 
 @dataclass
 class ChatBotAgent(BaseNode[State]):
+    description: str
     async def run(self, ctx: GraphRunContext[State]) -> ResponseEvaluatorNode:
-        # Conditional return logic        
+        prompt = f"The users message: {ctx.state.user_message}"
+        if ctx.state.workflow_plan != []:
+            prompt += f"\nIn response we have the following processes:"
+            for node in ctx.state.workflow_plan:
+                prompt += f"-Ran: {node.node_type}." 
 
+        # Conditional return logic        
         if ctx.state.fake_transport:
             result = FakeResult(output=ChatResponse("Mock response"))
         else:
             # defaults in graph initialisation
-            result = chatbot_agent.run(
-                ctx.state.user_message,
+            result = await chatbot_agent.run(
+                prompt,
                 message_history = ctx.state.message_history
             )
-            ctx.state.message_history += result.new_messages()
+            print(f"The message being added: {clean_user_message(result.new_messages(), ctx.state.user_message)}")
+            print(f"The chatbot response is {result.output}")
+            
+            ctx.state.message_history += clean_user_message(result.new_messages(), ctx.state.user_message)
 
-        return chatbot_end_nodes[type(result.output)](result.output)
+        return ResponseEvaluatorNode(result.output)
+
+@dataclass
+class ReasoningAgent(BaseNode[State]):
+
+    async def run(self, ctx: GraphRunContext[State]) -> ChatBotAgent | BuildPassageNode | TidalSearchNode:
+        if ctx.state.workflow_plan == []:
+            if ctx.state.fake_transport:
+                result = FakeResult(output=ChatResponse("Mock response"))
+            else:
+                result = await reasoning_agent.run(
+                    ctx.state.user_message,
+                    message_history = ctx.state.message_history
+                )
+                print(f"The reasoning agent output: {result.output}")
+            ctx.state.workflow_plan = result.output.plan
+            ctx.state.job_count = 0
+
+        ctx.state.job_count += 1
+        return chatbot_end_nodes[ctx.state.workflow_plan[ctx.state.job_count-1].node_type](
+            ctx.state.workflow_plan[ctx.state.job_count-1].node_input
+        )
 
 
 @dataclass
 class BuildPassageNode(BaseNode[State]):
-    async def run(self, ctx: GraphRunContext[State]):
+    passage_plan_description: GeneratePassagePlan
+    async def run(self, ctx: GraphRunContext[State]) -> ReasoningAgent:
         pass
 
 
@@ -46,16 +83,18 @@ class BuildPassageNode(BaseNode[State]):
 class ResponseEvaluatorNode(BaseNode[State]):
     input: str
     async def run(self, ctx: GraphRunContext[State]) -> End[str]:
+        ctx.state.workflow_plan = []
+        ctx.state.job_count = 0
         return End(self.input)
 
 
 @dataclass
 class TidalSearchNode(BaseNode[State]):
-    async def run(self, ctx: GraphRunContext[State]):
+    async def run(self, ctx: GraphRunContext[State]) -> ReasoningAgent:
         pass
 
 chatbot_end_nodes = {
-    ChatResponse: ResponseEvaluatorNode,
-    # BuildPassageRoute: BuildPassageNode,
-    # TidalSearch: TidalSearchNode,
+    NodeType.CHAT: ChatBotAgent,
+    NodeType.PASSAGE_PLAN: BuildPassageNode,
+    NodeType.TIDAL_SEARCH: TidalSearchNode,
 }

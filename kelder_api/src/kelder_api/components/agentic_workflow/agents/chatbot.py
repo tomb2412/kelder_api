@@ -1,10 +1,14 @@
 import textwrap
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from pydantic_ai import Agent
 
-# TODO: class to initialise all the agents and then expopse runtime inference methods
+from src.kelder_api.components.agentic_workflow.models import(
+    GeneratePassagePlan
+)
 
+# TODO: class to initialise all the agents and then expopse runtime inference methods
+# TODO: I need to remove orchestration properties from this prompt - ONLY return the ResponseEvaluatorNode
 @dataclass
 class ChatResponse:
     message: str
@@ -13,12 +17,6 @@ class ChatResponse:
 class TidalSearch:
     location: str
     justification: str
-
-@dataclass
-class BuildPassageRoute:
-    start_location: str
-    end_location: str
-    extra_considerations: str
 
 prompt = textwrap.dedent(
     """

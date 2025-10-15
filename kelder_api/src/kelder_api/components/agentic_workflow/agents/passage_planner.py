@@ -1,7 +1,11 @@
 import textwrap
-from dataclasses import dataclass
 
-from pydantic_ai import Agent
+from pydantic_ai import Agent, RunContext
+
+from src.kelder_api.components.passage_plan.models import PassagePlan
+from src.kelder_api.components.passage_plan.tools import save_passage_plan
+from src.kelder_api.components.redis_client.redis_client import RedisClient
+
 
 system_prompt = textwrap.dedent(
 """
@@ -30,6 +34,12 @@ When asked to produce a passage plan:
 
 passage_plan_agent = Agent(
     "gpt-5-mini",
-    system_prompt=system_prompt
+    system_prompt=system_prompt,
     output_type=PassagePlan,
 )
+
+@passage_plan_agent.tool
+async def save_passage_plan_tool(
+    ctx: RunContext[RedisClient], passage_plan: PassagePlan
+) -> bool:
+    return await save_passage_plan(passage_plan, ctx.deps)
