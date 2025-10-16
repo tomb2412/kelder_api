@@ -1,5 +1,6 @@
 from pydantic_ai.models import ModelRequest, ModelResponse
 
+
 def clean_user_message(new_messages, users_message):
     cleaned_messages = []
 

@@ -1,24 +1,25 @@
-
 from pydantic_graph import Graph
 
 from src.kelder_api.components.agentic_workflow.models import State
 from src.kelder_api.components.agentic_workflow.nodes import (
-    ChatBotAgent,
-    ResponseEvaluatorNode,
-    ReasoningAgent,
-    TidalSearchNode,
     BuildPassageNode,
+    ChatBotAgent,
+    ReasoningAgent,
+    ResponseEvaluatorNode,
+    TidalSearchNode,
 )
+
 
 class AgentWorkflow:
     def __init__(self, fake_transport: bool = False):
-        self.state = State(fake_transport = fake_transport)
-        self.graph = Graph(nodes = (
-            ChatBotAgent, 
-            ResponseEvaluatorNode,
-            ReasoningAgent,
-            TidalSearchNode,
-            BuildPassageNode,
+        self.state = State(fake_transport=fake_transport)
+        self.graph = Graph(
+            nodes=(
+                ChatBotAgent,
+                ResponseEvaluatorNode,
+                ReasoningAgent,
+                TidalSearchNode,
+                BuildPassageNode,
             )
         )
 

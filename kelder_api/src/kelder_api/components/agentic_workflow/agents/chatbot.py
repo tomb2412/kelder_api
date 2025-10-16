@@ -3,20 +3,20 @@ from dataclasses import dataclass
 
 from pydantic_ai import Agent
 
-from src.kelder_api.components.agentic_workflow.models import(
-    GeneratePassagePlan
-)
 
 # TODO: class to initialise all the agents and then expopse runtime inference methods
-# TODO: I need to remove orchestration properties from this prompt - ONLY return the ResponseEvaluatorNode
+# TODO: I need to remove orchestration properties from this prompt -
+# ONLY return the ResponseEvaluatorNode
 @dataclass
 class ChatResponse:
     message: str
+
 
 @dataclass
 class TidalSearch:
     location: str
     justification: str
+
 
 prompt = textwrap.dedent(
     """
@@ -46,6 +46,6 @@ prompt = textwrap.dedent(
 
 chatbot_agent = Agent(
     model="gpt-5-mini",
-    output_type= ChatResponse,# | TidalSearch | BuildPassageRoute,
+    output_type=ChatResponse,  # | TidalSearch | BuildPassageRoute,
     system_prompt=prompt,
 )

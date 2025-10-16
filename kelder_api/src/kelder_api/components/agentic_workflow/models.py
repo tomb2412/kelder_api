@@ -5,12 +5,14 @@ from pydantic import BaseModel
 from pydantic_ai.messages import ModelMessage
 
 from src.kelder_api.components.agentic_workflow.agents.reasoning import Node
+
 """
-Feautures: 
+Feautures:
 - Waypoint / passage plan
 - Weather and tides
 
 """
+
 
 @dataclass
 class Waypoint:
@@ -19,6 +21,7 @@ class Waypoint:
     latitude_hemisphere: str = field()
     longitude: str = field()
     longitude_hemisphere: str = field()
+
 
 @dataclass
 class PassagePlan:
@@ -38,9 +41,9 @@ class GeneratePassagePlan(BaseModel):
 class State:
     user_message: str | None = field(default=None)
     message_history: list[ModelMessage] = field(default_factory=list)
-    
+
     workflow_plan: List[Node] = field(default_factory=list)
     job_count: int = 0
 
-    passage_plan: PassagePlan | None = field(default = None)
-    fake_transport: bool = field(default = False)
+    passage_plan: PassagePlan | None = field(default=None)
+    fake_transport: bool = field(default=False)

@@ -5,7 +5,6 @@ from typing import List
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent
 
-
 # TODO: I think we need a reasoning node - if we follow the orchestration.
 # TODO: how will the model manage dates?
 # TODO: conflicting prompt with same node more than once
@@ -15,31 +14,46 @@ from pydantic_ai import Agent
 class NodeType(StrEnum):
     CHAT = "chat"
     PASSAGE_PLAN = "passage_plan"
-    TIDAL_SEARCH =  "tidal_search"
+    TIDAL_SEARCH = "tidal_search"
+
 
 class Node(BaseModel):
-    node_type: NodeType = Field(description="The node which will be called in the output.")
+    node_type: NodeType = Field(
+        description="The node which will be called in the output."
+    )
     condifence: int = Field(
-        description="Out of 10, considering the users response how condifent that this node is required."
-        )
-    justification: str = Field(description="Please provide a consise, very short reason why this node is required.")
-    node_input: str = Field(description="The input description of what the node needs to do.")
+        description="Out of 10, confidence level that this node is required."
+    )
+    justification: str = Field(
+        description="A consise, very short reason why this node is required."
+    )
+    node_input: str = Field(
+        description="The input description of what the node needs to do."
+    )
+
 
 class OchestrationPlan(BaseModel):
-    plan: List[Node] = Field(description="Please provide a list of Nodes to call, within the workflow.")
-    description: str = Field(description="Very short and consise description of the workflow")
+    plan: List[Node] = Field(
+        description="Please provide a list of Nodes to call, within the workflow."
+    )
+    description: str = Field(
+        description="Very short and consise description of the workflow"
+    )
+
 
 prompt = textwrap.dedent(
     """
     You are an orchestration agent within a graph-based workflow.
 
-    Your task is to analyse the user's request, determine which available nodes (tools) are required, 
-    and in what order they should be called to meet the user's goal.
+    Your task is to analyse the user's request, determine which available nodes (tools)
+    are required, and in what order they should be called to meet the user's goal.
 
     Available nodes:
     - chat: ends reasoning and generates the final user-facing message.
-    - passage_plan: plans or adjusts a sea passage, manages routes, waypoints, and saves results.
-    - tidal_search: retrieves tidal predictions such as high/low water times, heights, and current water levels.
+    - passage_plan: plans or adjusts a sea passage, manages routes, waypoints, and saves
+     results.
+    - tidal_search: retrieves tidal predictions such as high/low water times, heights,
+     and current water levels.
 
     Behaviours:
     - Break down the user request into clear workflow steps.
@@ -48,8 +62,10 @@ prompt = textwrap.dedent(
     - You may include multiple nodes or repeat nodes when justified.
     - Reuse existing data where possible; avoid redundant calls.
     - Always end with the 'chat' node.
-    - Always pass 'chat' node is required, pass the users message diectly in the description.
-    - If the request cannot be completed using available nodes, explain that clearly in the description.
+    - Always pass 'chat' node is required, pass the users message diectly in the
+     description.
+    - If the request cannot be completed using available nodes, explain that clearly
+     in the description.
 
 
     Example:
@@ -61,24 +77,28 @@ prompt = textwrap.dedent(
         "node_type": "passage_plan",
         "condifence": 10,
         "justification": "Required to generate the passage using tidal information."
-        "node_input": "Generate a passage plan to sail from Cowes to Southampton tomorrow."
+        "node_input": "Generate a passage plan to sail from Cowes to Southampton
+         tomorrow."
         },
         {
         "node_type": "chat",
         "condifence": 10,
         "justification": "Used to deliver the final route and explanation to the user."
-        "node_input": "The passage plan between cowes and southampton is ready for review on the dashboard."
+        "node_input": "The passage plan between cowes and southampton is ready for
+         review on the dashboard."
         }
     ],
-    "description": "Identify optimal tide times, plan the passage, then summarise the result."
+    "description": "Identify optimal tide times, plan the passage, then summarise the
+     result."
     }
 
-    Be concise, structured, and logical. Focus on which nodes are needed, why, and how confident you are in each choice.
+    Be concise, structured, and logical. Focus on which nodes are needed, why, and how
+     confident you are in each choice.
 """
 ).strip()
 
 reasoning_agent = Agent(
     model="gpt-5-mini",
-    output_type= OchestrationPlan,
+    output_type=OchestrationPlan,
     system_prompt=prompt,
 )
