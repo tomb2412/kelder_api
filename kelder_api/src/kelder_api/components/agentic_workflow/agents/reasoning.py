@@ -1,35 +1,16 @@
 import textwrap
-from enum import StrEnum
+
 from typing import List
 
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent
 
+from src.kelder_api.components.agentic_workflow.models import Node
+
 # TODO: I think we need a reasoning node - if we follow the orchestration.
 # TODO: how will the model manage dates?
 # TODO: conflicting prompt with same node more than once
 # TODO: add jobs to the list
-
-
-class NodeType(StrEnum):
-    CHAT = "chat"
-    PASSAGE_PLAN = "passage_plan"
-    TIDAL_SEARCH = "tidal_search"
-
-
-class Node(BaseModel):
-    node_type: NodeType = Field(
-        description="The node which will be called in the output."
-    )
-    condifence: int = Field(
-        description="Out of 10, confidence level that this node is required."
-    )
-    justification: str = Field(
-        description="A consise, very short reason why this node is required."
-    )
-    node_input: str = Field(
-        description="The input description of what the node needs to do."
-    )
 
 
 class OchestrationPlan(BaseModel):
@@ -79,6 +60,7 @@ prompt = textwrap.dedent(
         "justification": "Required to generate the passage using tidal information."
         "node_input": "Generate a passage plan to sail from Cowes to Southampton
          tomorrow."
+        "node_output": "null",
         },
         {
         "node_type": "chat",
@@ -86,6 +68,7 @@ prompt = textwrap.dedent(
         "justification": "Used to deliver the final route and explanation to the user."
         "node_input": "The passage plan between cowes and southampton is ready for
          review on the dashboard."
+        "node_output": "null",
         }
     ],
     "description": "Identify optimal tide times, plan the passage, then summarise the

@@ -1,10 +1,11 @@
 from dataclasses import dataclass, field
 from typing import List
+from enum import StrEnum
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from pydantic_ai.messages import ModelMessage
 
-from src.kelder_api.components.agentic_workflow.agents.reasoning import Node
+from src.kelder_api.components.agentic_workflow.agents.models import PassagePlan
 
 """
 Feautures:
@@ -12,20 +13,10 @@ Feautures:
 - Weather and tides
 
 """
-
-
-@dataclass
-class Waypoint:
-    name: str = field()
-    latitude: str = field()
-    latitude_hemisphere: str = field()
-    longitude: str = field()
-    longitude_hemisphere: str = field()
-
-
-@dataclass
-class PassagePlan:
-    waypoints: Waypoint | None = field(default=None)
+class NodeType(StrEnum):
+    CHAT = "chat"
+    PASSAGE_PLAN = "passage_plan"
+    TIDAL_SEARCH = "tidal_search"
 
 
 class GeneratePassagePlan(BaseModel):
@@ -36,6 +27,25 @@ class GeneratePassagePlan(BaseModel):
     destination_time: str | None = None
     extra_considerations: str | None = None
 
+
+
+class Node(BaseModel):
+    # TODO: Potentially node_type and node_input may lead to conflicting results?
+    node_type: NodeType = Field(
+        description="The node which will be called in the output."
+    )
+    condifence: int = Field(
+        description="Out of 10, confidence level that this node is required."
+    )
+    justification: str = Field(
+        description="A consise, very short reason why this node is required."
+    )
+    node_input: str | GeneratePassagePlan = Field(
+        description="The required input for the node type of what the node needs to do."
+    )
+    node_output: str | None = Field(
+        description="Completed by the tool as a summary of their tool."
+    )
 
 @dataclass
 class State:

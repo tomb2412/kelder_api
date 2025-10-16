@@ -1,5 +1,6 @@
 from __future__ import annotations as _annotations
 
+import logging
 from dataclasses import dataclass
 
 from pydantic_graph import BaseNode, End, GraphRunContext
@@ -8,16 +9,22 @@ from src.kelder_api.components.agentic_workflow.agents.chatbot import (
     ChatResponse,
     chatbot_agent,
 )
+from src.kelder_api.components.agentic_workflow.agents.passage_planner import (
+    passage_plan_agent,
+)
 from src.kelder_api.components.agentic_workflow.agents.reasoning import (
-    NodeType,
     reasoning_agent,
 )
 from src.kelder_api.components.agentic_workflow.models import (
     GeneratePassagePlan,
     State,
+    NodeType,
 )
 from src.kelder_api.components.agentic_workflow.utils import clean_user_message
 
+
+# TODO: they need the date!
+logger = logging.getLogger(__name__)
 
 @dataclass
 class FakeResult:
@@ -29,6 +36,7 @@ class ChatBotAgent(BaseNode[State]):
     description: str
 
     async def run(self, ctx: GraphRunContext[State]) -> ResponseEvaluatorNode:
+        logger.debug("Chatbot agent called")
         prompt = f"The users message: {ctx.state.user_message}"
         if ctx.state.workflow_plan != []:
             prompt += "\nIn response we have the following processes:"
@@ -57,6 +65,7 @@ class ReasoningAgent(BaseNode[State]):
     async def run(
         self, ctx: GraphRunContext[State]
     ) -> ChatBotAgent | BuildPassageNode | TidalSearchNode:
+        logger.debug("Reasoning agent called")
         if ctx.state.workflow_plan == []:
             if ctx.state.fake_transport:
                 result = FakeResult(output=ChatResponse("Mock response"))
@@ -67,11 +76,10 @@ class ReasoningAgent(BaseNode[State]):
                 print(f"The reasoning agent output: {result.output}")
             ctx.state.workflow_plan = result.output.plan
             ctx.state.job_count = 0
-
-        ctx.state.job_count += 1
+        
         return chatbot_end_nodes[
-            ctx.state.workflow_plan[ctx.state.job_count - 1].node_type
-        ](ctx.state.workflow_plan[ctx.state.job_count - 1].node_input)
+            ctx.state.workflow_plan[ctx.state.job_count].node_type
+        ](ctx.state.workflow_plan[ctx.state.job_count].node_input)
 
 
 @dataclass
@@ -79,8 +87,21 @@ class BuildPassageNode(BaseNode[State]):
     passage_plan_description: GeneratePassagePlan
 
     async def run(self, ctx: GraphRunContext[State]) -> ReasoningAgent:
-        pass
+        logger.debug("Passage planing agent called")
 
+        prompt = f"Users message: {ctx.state.user_message}" \
+            f"Task description: {self.passage_plan_description}"
+        if ctx.state.passage_plan:
+            prompt += f"Previous plan: {ctx.state.passage_plan}"
+        
+        result = await passage_plan_agent.run(
+            prompt, message_history=ctx.state.message_history
+        )
+        
+        ctx.state.workflow_plan[ctx.state.job_count].node_output = result.output
+        ctx.state.job_count += 1
+
+        return ReasoningAgent()
 
 @dataclass
 class ResponseEvaluatorNode(BaseNode[State]):
