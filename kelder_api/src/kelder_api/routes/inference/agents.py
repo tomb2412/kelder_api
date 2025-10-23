@@ -5,6 +5,7 @@ from pydantic_ai import Agent, RunContext
 from src.kelder_api.components.passage_plan.passage_plan_agent import (
     get_passage_planner,
 )
+from src.kelder_api.components.agentic_workflow.agents.tidal_agent import tidal_agent
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 
 
@@ -43,7 +44,6 @@ def get_chatbot_agent() -> Agent:
 
     @chatbot_agent.tool
     async def get_tidal_information(ctx: RunContext[RedisClient], location: str) -> str:
-        tidal_agent = get_tidal_agent()
         return await tidal_agent.run(location, usage=ctx.usage)
 
     @chatbot_agent.tool

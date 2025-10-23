@@ -1,5 +1,5 @@
 import logging
-from datetime import date, timezone
+from datetime import date
 from typing import List
 
 from async_lru import alru_cache

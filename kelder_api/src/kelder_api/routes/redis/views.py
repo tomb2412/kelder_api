@@ -34,7 +34,7 @@ async def getRedisSetSize(
         # TODO: what is the difference between size and len(list_gps)
         size = await redis.zcard(f"sensor:ts:{sensor}")
         list_gps = await redis.zrevrangebyscore(
-            "sensor:ts:{sensor}",
+            f"sensor:ts:{sensor}",
             max="+inf",
             min="-inf",
             withscores=True,

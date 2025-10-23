@@ -159,7 +159,7 @@ class AppRoute(Enum):
         "GET",
         "/get_redis_set_size",
         200,
-        {"GPS": 1, "list_length": 0},
+        {"GPS": 1, "list_length": 1},
         request_params={"sensor": "GPS"},
         setup=_reset_redis_sets,
     )
