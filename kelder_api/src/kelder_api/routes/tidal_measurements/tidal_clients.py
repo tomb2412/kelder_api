@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 async def get_height_of_tide_now() -> TideInfo:
     """
-    Average height of water in the last 15 mins.
+    Current height of water.
     https://environment.data.gov.uk/flood-monitoring/tidegauge/index.html#filter=7
     https://ntslf.org/tides/datum
     """
@@ -39,6 +39,7 @@ async def get_height_of_tide_now() -> TideInfo:
 
 @alru_cache(maxsize=1)
 async def get_tide_predictions(date: date) -> List[TideInfo]:
+    """Returns predicted tidal high and low water events for the next 7 days - Very reliable"""
     logger.debug(f"Requesting tidal prediction on: {date.strftime('%d/%m/%Y')}")
     tidal_events = []
     async with AsyncClient() as client:
@@ -51,7 +52,7 @@ async def get_tide_predictions(date: date) -> List[TideInfo]:
         tidal_events.append(
             # TypeError: str.replace() takes no keyword arguments
             TideInfo(
-                datetime_stamp=tidal_event["DateTime"].replace(tzinfo=timezone.utc),
+                datetime_stamp=tidal_event["DateTime"], # 2025-10-20T03:33:00
                 height_of_tide=tidal_event["Height"],
                 event=tidal_event["EventType"],
             )

@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import List
 from enum import StrEnum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, computed_field, Field
 from pydantic_ai.messages import ModelMessage
 
 from src.kelder_api.components.agentic_workflow.agents.models import PassagePlan
@@ -47,8 +47,8 @@ class Node(BaseModel):
         description="Completed by the tool as a summary of their tool."
     )
 
-@dataclass
-class State:
+#@dataclass
+class State(BaseModel):
     user_message: str | None = field(default=None)
     message_history: list[ModelMessage] = field(default_factory=list)
 
@@ -57,3 +57,8 @@ class State:
 
     passage_plan: PassagePlan | None = field(default=None)
     fake_transport: bool = field(default=False)
+
+    @computed_field
+    @property
+    def workflow_length(self) -> int:
+        return len(self.workflow_plan)

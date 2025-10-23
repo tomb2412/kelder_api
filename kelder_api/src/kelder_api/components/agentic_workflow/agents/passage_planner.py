@@ -1,13 +1,15 @@
+import asyncio
 import logging
 import textwrap
 
 from pydantic_ai import Agent, RunContext
 
 from src.kelder_api.components.agentic_workflow.agents.models import PassagePlan
-from src.kelder_api.components.passage_plan.tools import save_passage_plan
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 
 logger = logging.getLogger(__name__)
+
+# TODO - Move passage plan tool timeout to config
 
 async def save_passage_plan(
     passage_plan: PassagePlan, redis_client: "RedisClient"
@@ -15,13 +17,17 @@ async def save_passage_plan(
     """
     Save a full passage plan with all navigational details.
     """
+    
     try:
-        await redis_client.write_set("PASSAGE_PLAN", passage_plan)
-        logger.debug("Passage plan created and saved")
-
+        with asyncio.timeout(2):
+            await redis_client.write_set("PASSAGE_PLAN", passage_plan)
+            logger.debug("Passage plan created and saved")
         return True
 
+    except TimeoutError:
+        logger.error("The passage plan failed to save within the timeperiod")
     except Exception:
+        logger.error("Passage plan failed to save")
         return False
 
 
@@ -57,8 +63,9 @@ passage_plan_agent = Agent(
     output_type=PassagePlan,
 )
 
-@passage_plan_agent.tool
-async def save_passage_plan_tool(
-    ctx: RunContext[RedisClient], passage_plan: PassagePlan
-) -> bool:
-    return await save_passage_plan(passage_plan, ctx.deps)
+
+# @passage_plan_agent.tool
+# async def save_passage_plan_tool(
+#     ctx: RunContext[RedisClient], passage_plan: PassagePlan
+# ) -> bool:
+#     return await save_passage_plan(passage_plan, ctx.deps)

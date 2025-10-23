@@ -74,10 +74,10 @@ class PassagePlan(BaseModel):
             waypoint_end = self.course_to_steer[index + 1]
             distances.append(
                 haversine(
-                    latitude_start=waypoint_start.latitude,
-                    latitude_end=waypoint_end.latitude,
-                    longitude_start=waypoint_start.longitude,
-                    longitude_end=waypoint_end.longitude,
+                    latitude_start=waypoint_start.latitude_decimal_degs,
+                    latitude_end=waypoint_end.latitude_decimal_degs,
+                    longitude_start=waypoint_start.longitude_decimal_degs,
+                    longitude_end=waypoint_end.longitude_decimal_degs,
                 )
             )
 
@@ -93,10 +93,10 @@ class PassagePlan(BaseModel):
             waypoint_end = self.course_to_steer[index + 1]
             bearings.append(
                 bearing_degrees(
-                    latitude_start=waypoint_start.latitude,
-                    longitude_start=waypoint_start.longitude,
-                    latitude_end=waypoint_end.latitude,
-                    longitude_end=waypoint_end.longitude,
+                    latitude_start=waypoint_start.latitude_decimal_degs,
+                    longitude_start=waypoint_start.longitude_decimal_degs,
+                    latitude_end=waypoint_end.latitude_decimal_degs,
+                    longitude_end=waypoint_end.longitude_decimal_degs,
                 )
             )
 

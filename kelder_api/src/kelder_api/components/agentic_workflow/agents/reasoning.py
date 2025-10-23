@@ -7,11 +7,10 @@ from pydantic_ai import Agent
 
 from src.kelder_api.components.agentic_workflow.models import Node
 
-# TODO: I think we need a reasoning node - if we follow the orchestration.
 # TODO: how will the model manage dates?
 # TODO: conflicting prompt with same node more than once
 # TODO: add jobs to the list
-
+# TODO: Reasoning agent and the chat node seem not in sync
 
 class OchestrationPlan(BaseModel):
     plan: List[Node] = Field(
@@ -32,7 +31,8 @@ prompt = textwrap.dedent(
     Available nodes:
     - chat: ends reasoning and generates the final user-facing message.
     - passage_plan: plans or adjusts a sea passage, manages routes, waypoints, and saves
-     results.
+     results. This always requires - departure and destination locations, but you can assume
+     tomorrow if no date is given.
     - tidal_search: retrieves tidal predictions such as high/low water times, heights,
      and current water levels.
 
@@ -42,9 +42,6 @@ prompt = textwrap.dedent(
     - Assign a confidence score out of 10 for each node.
     - You may include multiple nodes or repeat nodes when justified.
     - Reuse existing data where possible; avoid redundant calls.
-    - Always end with the 'chat' node.
-    - Always pass 'chat' node is required, pass the users message diectly in the
-     description.
     - If the request cannot be completed using available nodes, explain that clearly
      in the description.
 
@@ -77,6 +74,8 @@ prompt = textwrap.dedent(
 
     Be concise, structured, and logical. Focus on which nodes are needed, why, and how
      confident you are in each choice.
+    
+    ** NEVER PRODUCE A PLAN WITHOUT A CHAT NODE AT THE END **
 """
 ).strip()
 
