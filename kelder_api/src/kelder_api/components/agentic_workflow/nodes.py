@@ -47,8 +47,6 @@ class ChatBotAgent(BaseNode[State]):
             for node in ctx.state.workflow_plan:
                 prompt += (f"-Ran: {node.node_type}." \
                            f" Result: {node.node_output}")
-
-    
         # defaults in graph initialisation
         result = await chatbot_agent.run(
             prompt, message_history=ctx.state.message_history
@@ -102,6 +100,11 @@ class BuildPassageNode(BaseNode[State]):
 
         if ctx.state.passage_plan:
             prompt += f"Previous plan: {ctx.state.passage_plan}"
+        if ctx.state.workflow_length > 0:
+            prompt += "\nIn response we have the following processes:"
+            for node in ctx.state.workflow_plan:
+                prompt += (f"-Ran: {node.node_type}." \
+                           f" Result: {node.node_output}")
 
         tidal_nodes = find_models(ctx.state.workflow_plan, NodeType.TIDAL_SEARCH)
         if len(tidal_nodes) > 0:
@@ -111,6 +114,7 @@ class BuildPassageNode(BaseNode[State]):
         result = await passage_plan_agent.run(prompt)
         print(f"The passage plan has been produced")
         ctx.state.workflow_plan[ctx.state.job_count].node_output = result.output
+        ctx.state.passage_plan = result.output
         ctx.state.job_count += 1
 
         print("returning to the reasoning agent")
