@@ -7,6 +7,7 @@ from pydantic_graph import BaseNode, End, GraphRunContext
 
 from src.kelder_api.components.agentic_workflow.agents.chatbot import (
     ChatResponse,
+    ReasoningInput,
     chatbot_agent,
 )
 from src.kelder_api.components.agentic_workflow.agents.passage_planner import (
@@ -19,7 +20,7 @@ from src.kelder_api.components.agentic_workflow.agents.tidal_agent import tidal_
 from src.kelder_api.components.agentic_workflow.models import (
     GeneratePassagePlan,
     State,
-    NodeType,
+    ReasoningEndNodes
 )
 from src.kelder_api.components.agentic_workflow.utils import (
     clean_user_message,
@@ -37,7 +38,6 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class ChatBotAgent(BaseNode[State]):
-    description: str
 
     async def run(self, ctx: GraphRunContext[State]) -> ResponseEvaluatorNode:
         logger.debug("Chatbot agent called")
@@ -47,22 +47,24 @@ class ChatBotAgent(BaseNode[State]):
             for node in ctx.state.workflow_plan:
                 prompt += (f"-Ran: {node.node_type}." \
                            f" Result: {node.node_output}")
+                
         # defaults in graph initialisation
         result = await chatbot_agent.run(
             prompt, message_history=ctx.state.message_history
         )
-        print(f"The chatbot response is {result.output}")
+        print(f"\nThe chatbot response is {result.output}\n")
 
         ctx.state.message_history += clean_user_message(
             result.new_messages(), ctx.state.user_message
         )
 
-        return ResponseEvaluatorNode(result.output)
+        return chatbot_end_nodes[type(result.output)](input = result.output.message)
 
 
 @dataclass
 class ReasoningAgent(BaseNode[State]):
     """TODO: add in the description of the workflow plan"""
+    input: str | None = None
     async def run(
         self, ctx: GraphRunContext[State]
     ) -> ChatBotAgent | BuildPassageNode | TidalSearchNode:
@@ -70,20 +72,21 @@ class ReasoningAgent(BaseNode[State]):
         print("Return to the reasoning agent")
 
         if ctx.state.workflow_length == 0: 
+            print(f"\n THE USERS MESSAGE: {ctx.state.user_message}")
             result = await reasoning_agent.run(
                 ctx.state.user_message, message_history=ctx.state.message_history
             )
-            print(f"The reasoning agent output: {result.output}")
+            print(f"\nThe reasoning agent output: {result.output}\n")
             ctx.state.workflow_plan = result.output.plan
             ctx.state.job_count = 0
         
         if ctx.state.job_count < ctx.state.workflow_length:
-            print(f"Current node: {ctx.state.workflow_plan[ctx.state.job_count].node_type}")
-            return chatbot_end_nodes[
+            print(f"\nCurrent node: {ctx.state.workflow_plan[ctx.state.job_count].node_type}\n")
+            return reasoning_end_nodes[
                 ctx.state.workflow_plan[ctx.state.job_count].node_type
             ](ctx.state.workflow_plan[ctx.state.job_count].node_input)
         else:
-            return ChatBotAgent(description="")
+            return ChatBotAgent()
 
 
 
@@ -106,7 +109,7 @@ class BuildPassageNode(BaseNode[State]):
                 prompt += (f"-Ran: {node.node_type}." \
                            f" Result: {node.node_output}")
 
-        tidal_nodes = find_models(ctx.state.workflow_plan, NodeType.TIDAL_SEARCH)
+        tidal_nodes = find_models(ctx.state.workflow_plan, ReasoningEndNodes.TIDAL_SEARCH)
         if len(tidal_nodes) > 0:
             prompt += f"Latest tidal analysis: {tidal_nodes[-1].node_output}"
         
@@ -148,7 +151,11 @@ class TidalSearchNode(BaseNode[State]):
         return ReasoningAgent()
 
 chatbot_end_nodes = {
-    NodeType.CHAT: ChatBotAgent,
-    NodeType.PASSAGE_PLAN: BuildPassageNode,
-    NodeType.TIDAL_SEARCH: TidalSearchNode,
+    ReasoningInput: ReasoningAgent,
+    ChatResponse: ResponseEvaluatorNode
+}
+
+reasoning_end_nodes = {
+    ReasoningEndNodes.PASSAGE_PLAN: BuildPassageNode,
+    ReasoningEndNodes.TIDAL_SEARCH: TidalSearchNode,
 }

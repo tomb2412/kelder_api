@@ -11,8 +11,8 @@ from src.kelder_api.components.agentic_workflow.nodes import (
 
 
 class AgentWorkflow:
-    def __init__(self, fake_transport: bool = False):
-        self.state = State(fake_transport=fake_transport)
+    def __init__(self):
+        self.state = State()
         self.graph = Graph(
             nodes=(
                 ChatBotAgent,
@@ -25,7 +25,7 @@ class AgentWorkflow:
 
     async def run(self, user_message: str) -> str:
         self.state.user_message = user_message
-        result = await self.graph.run(ReasoningAgent(), state=self.state)
+        result = await self.graph.run(ChatBotAgent(), state=self.state)
 
         response = result.output
         return response

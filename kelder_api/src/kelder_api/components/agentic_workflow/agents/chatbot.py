@@ -11,6 +11,9 @@ from pydantic_ai import Agent
 class ChatResponse:
     message: str
 
+@dataclass
+class ReasoningInput:
+    message: str
 
 @dataclass
 class TidalSearch:
@@ -26,6 +29,7 @@ prompt = textwrap.dedent(
     Rules:
     - Be brief and conversational; this is real-time assistance.
     - Never invent coordinates, tidal times, or other safety-critical data.
+    - If you need any external data - return the reasoning agent which will manage all tool calling.
 
     Examples:
     - "Plan a route to Plymouth" → run Passage Planner, then confirm the plan
@@ -33,14 +37,16 @@ prompt = textwrap.dedent(
     - "What’s the tide at Cowes?" → run Tidal Agent, then give the result.
     - "Is it safe to sail now?" → use relevant tools, report risks first.
 
-    Always stay concise, and respond as susinctly as possible.
-    Always include any assumptions made about location, or time (including UT or DST). 
+
+
+    Always stay concise, and respond as susinctly as possible, but keep a conversational friendilness.
+    Always include any assumptions made about location, or time (including UT or DST) but only if you quote in the response.
 
     """
 ).strip()
 
 chatbot_agent = Agent(
     model="gpt-5-mini",
-    output_type=ChatResponse,  # | TidalSearch | BuildPassageRoute,
+    output_type=ChatResponse | ReasoningInput,  # | TidalSearch | BuildPassageRoute,
     system_prompt=prompt,
 )

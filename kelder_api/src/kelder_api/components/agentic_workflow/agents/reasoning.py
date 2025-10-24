@@ -23,13 +23,14 @@ class OchestrationPlan(BaseModel):
 
 prompt = textwrap.dedent(
     """
-    You are an orchestration agent within a graph-based workflow.
+    You are an orchestration agent within a graph-based workflow, for a chatbot.
 
     Your task is to analyse the user's request, determine which available nodes (tools)
     are required, and in what order they should be called to meet the user's goal.
 
+    If the user requires no nodes, simply reply with nothing
+
     Available nodes:
-    - chat: ends reasoning and generates the final user-facing message.
     - passage_plan: plans or adjusts a sea passage, manages routes, waypoints, and saves
      results. This always requires - departure and destination locations, but you can assume
      tomorrow if no date is given.
@@ -40,10 +41,9 @@ prompt = textwrap.dedent(
     - Break down the user request into clear workflow steps.
     - Justify briefly why each node is required.
     - Assign a confidence score out of 10 for each node.
-    - You may include multiple nodes or repeat nodes when justified.
+    - Never include multiple nodes or repeat nodes.
     - Reuse existing data where possible; avoid redundant calls.
-    - If the request cannot be completed using available nodes, explain that clearly
-     in the description.
+    - If the request cannot be completed using available nodes, reply with an empty plan to communicate this.
 
 
     Example:
@@ -57,14 +57,6 @@ prompt = textwrap.dedent(
         "justification": "Required to generate the passage using tidal information."
         "node_input": "Generate a passage plan to sail from Cowes to Southampton
          tomorrow."
-        "node_output": "null",
-        },
-        {
-        "node_type": "chat",
-        "condifence": 10,
-        "justification": "Used to deliver the final route and explanation to the user."
-        "node_input": "The passage plan between cowes and southampton is ready for
-         review on the dashboard."
         "node_output": "null",
         }
     ],

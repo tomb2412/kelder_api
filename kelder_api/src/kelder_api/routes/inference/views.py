@@ -6,7 +6,8 @@ from uuid import uuid4
 from fastapi import APIRouter, Request
 from starlette.responses import StreamingResponse
 
-from src.kelder_api.routes.inference.agents import get_chatbot_agent
+from src.kelder_api.configuration.settings import get_settings
+from src.kelder_api.routes.inference.utils import error_stream, extract_user_prompt
 
 logger = logging.getLogger(__name__)
 
@@ -17,12 +18,17 @@ router = APIRouter(tags=["Agentic"])
 async def StreamChatResponse(request: Request):
     # read incoming request body minimally / adapt if you already get `request.message`
     body = await request.json()
-    user_prompt = body.get(
-        "message"
-    )  # keep this minimal; adjust if your payload shape differs
+    user_prompt = extract_user_prompt(body)
+
+    if not user_prompt:
+        message_id = str(uuid4())
+        return StreamingResponse(
+            error_stream("No user prompt provided", message_id=message_id),
+            media_type="text/event-stream",
+        )
 
     logger.info("Requesting inference")
-    chatbot_agent = get_chatbot_agent()
+    chunk_size = get_settings().inference.stream_chunk_size
 
     async def stream_chat():
         # generate unique IDs per message / text block
@@ -32,26 +38,22 @@ async def StreamChatResponse(request: Request):
         # Signal start of message (SSE JSON data)
         yield f"data: {json.dumps({'type': 'start', 'messageId': message_id})}\n\n"
 
-        # Use the async context manager pattern recommended by Pydantic-AI
-        async with chatbot_agent.run_stream(user_prompt) as stream_response:
-            first_chunk = True
+        agent_workflow = request.app.state.agent_workflow
 
-            # stream_text(delta=True) yields incremental text chunks (deltas)
-            async for delta in stream_response.stream_text(delta=True):
-                # send a text-start event on the first chunk
-                if first_chunk:
-                    yield f"data: {
-                        json.dumps({'type': 'text-start', 'id': text_id})
-                    }\n\n"
-                    first_chunk = False
+        try:
+            workflow_response = await agent_workflow.run(user_prompt)
+        except Exception as exc:  # pragma: no cover - defensive logging
+            logger.exception("Agent workflow failed: %s", exc)
+            for chunk in error_stream("Agent workflow failed", message_id=message_id):
+                yield chunk
+            return
 
-                # send delta parts
-                yield f"data: {
-                    json.dumps({'type': 'text-delta', 'id': text_id, 'delta': delta})
-                }\n\n"
-
-                # cooperative scheduling (optional but typical)
-                await asyncio.sleep(0)
+        # Stream the workflow response in chunks to match existing SSE expectations
+        yield f"data: {json.dumps({'type': 'text-start', 'id': text_id})}\n\n"
+        for index in range(0, len(workflow_response), chunk_size):
+            chunk = workflow_response[index : index + chunk_size]
+            yield f"data: {json.dumps({'type': 'text-delta', 'id': text_id, 'delta': chunk})}\n\n"
+            await asyncio.sleep(0)
 
         # stream finished — close the text block, send finish and termination markers
         yield f"data: {json.dumps({'type': 'text-end', 'id': text_id})}\n\n"

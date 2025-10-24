@@ -112,6 +112,14 @@ class Orchestrator(BaseSettings):
     model_config = model_config
 
 
+class Inference(BaseSettings):
+    stream_chunk_size: int = Field(
+        description="Number of characters per streamed SSE chunk",
+        default=10,
+    )
+    model_config = model_config
+
+
 class Settings(BaseModel):
     redis: Redis = Field(
         description="Redis server connection config", default_factory=Redis
@@ -133,6 +141,9 @@ class Settings(BaseModel):
     )
     log_tracker: LogTracker = Field(
         description="All log tracking config", default_factory=LogTracker
+    )
+    inference: Inference = Field(
+        description="Inference service configuration", default_factory=Inference
     )
 
 

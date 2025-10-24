@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from typing import List
-from enum import StrEnum
+from enum import Enum
 
 from pydantic import BaseModel, computed_field, Field
 from pydantic_ai.messages import ModelMessage
@@ -13,11 +13,11 @@ Feautures:
 - Weather and tides
 
 """
-class NodeType(StrEnum):
-    CHAT = "chat"
+
+
+class ReasoningEndNodes(Enum):
     PASSAGE_PLAN = "passage_plan"
     TIDAL_SEARCH = "tidal_search"
-
 
 class GeneratePassagePlan(BaseModel):
     # TODO: add Field descriptions
@@ -31,7 +31,7 @@ class GeneratePassagePlan(BaseModel):
 
 class Node(BaseModel):
     # TODO: Potentially node_type and node_input may lead to conflicting results?
-    node_type: NodeType = Field(
+    node_type: ReasoningEndNodes = Field(
         description="The node which will be called in the output."
     )
     condifence: int = Field(
@@ -56,7 +56,6 @@ class State(BaseModel):
     job_count: int = 0
 
     passage_plan: PassagePlan | None = field(default=None)
-    fake_transport: bool = field(default=False)
 
     @computed_field
     @property
