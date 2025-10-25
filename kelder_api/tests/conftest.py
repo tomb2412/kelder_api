@@ -12,6 +12,9 @@ from typing import Any, Dict, Iterable, Tuple
 import pytest
 from fastapi.testclient import TestClient
 
+import os
+os.environ.setdefault("OPENAI_API_KEY", "test-key")
+
 from src.kelder_api.components.compass_new.models import CompassRedisData
 from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.gps_new.types import GPSStatus
@@ -311,10 +314,16 @@ class FakeStream:
         yield "World"
 
 
-class FakeAgent:
-    def run_stream(self, prompt: str):
-        self.prompt = prompt
-        return FakeStream()
+class FakeAgentWorkflow:
+    def __init__(self, *_, **__):
+        self.state = SimpleNamespace(
+            message_history=[], workflow_plan=[], job_count=0, passage_plan=None
+        )
+
+    async def run(self, user_message: str, progress_callback=None):
+        if progress_callback is not None:
+            await progress_callback("chat")
+        return f"Echo: {user_message}"
 
 
 @pytest.fixture()
@@ -327,9 +336,10 @@ def app_client(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(main, "CompassInterface", DummyCompassInterface)
     monkeypatch.setattr(main, "VelocityCalculator", DummyVelocityCalculator)
     monkeypatch.setattr(main, "LogTracker", DummyLogTracker)
-    monkeypatch.setattr(
-        "src.kelder_api.routes.inference.views.get_chatbot_agent", lambda: FakeAgent()
-    )
+    from src.kelder_api.components.agentic_workflow import graph as graph_module
+
+    monkeypatch.setattr(graph_module, "AgentWorkflow", FakeAgentWorkflow)
+    monkeypatch.setattr(main, "AgentWorkflow", FakeAgentWorkflow)
 
     async def fake_height_of_tide():
         event_time = datetime.now(timezone.utc)

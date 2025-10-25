@@ -71,7 +71,7 @@ class ReasoningAgent(BaseNode[State]):
         self, ctx: GraphRunContext[State]
     ) -> ChatBotAgent | BuildPassageNode | TidalSearchNode:
         logger.debug("Reasoning agent called")
-        await notify_progress(ctx.state, "reasoning on tools")
+        await notify_progress(ctx.state, "reasoning")
         print("Return to the reasoning agent")
 
         if ctx.state.workflow_length == 0: 
@@ -100,7 +100,7 @@ class BuildPassageNode(BaseNode[State]):
 
     async def run(self, ctx: GraphRunContext[State]) -> ReasoningAgent:
         logger.debug("Passage planing agent called")
-        await notify_progress(ctx.state, "planning a passage")
+        await notify_progress(ctx.state, "passage_plan")
 
         prompt = f"Users message: {ctx.state.user_message}\n" \
             f"Task description: {self.passage_plan_description}"
@@ -145,7 +145,7 @@ class TidalSearchNode(BaseNode[State]):
     
     async def run(self, ctx: GraphRunContext[State]) -> ReasoningAgent:
         logger.debug("Tidal query agent called for %s" %self.input_prompt)
-        await notify_progress(ctx.state, "searching for tidal data")
+        await notify_progress(ctx.state, "tidal_search")
         prompt = f"Users message: {ctx.state.user_message}" \
             f"Task description: {self.input_prompt}"
 
