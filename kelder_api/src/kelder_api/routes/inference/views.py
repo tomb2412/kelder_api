@@ -52,7 +52,9 @@ async def StreamChatResponse(request: Request):
         yield f"data: {json.dumps({'type': 'text-start', 'id': text_id})}\n\n"
         for index in range(0, len(workflow_response), chunk_size):
             chunk = workflow_response[index : index + chunk_size]
-            yield f"data: {json.dumps({'type': 'text-delta', 'id': text_id, 'delta': chunk})}\n\n"
+            yield f"data: {
+                json.dumps({'type': 'text-delta', 'id': text_id, 'delta': chunk})
+            }\n\n"
             await asyncio.sleep(0)
 
         # stream finished — close the text block, send finish and termination markers

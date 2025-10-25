@@ -1,10 +1,11 @@
 from typing import List
 
 from src.kelder_api.components.agentic_workflow.models import (
-    ReasoningEndNodes,
     Node,
+    ReasoningEndNodes,
     State,
 )
+
 
 def clean_user_message(new_messages, users_message):
     # Preserve original messages while filtering out any None entries.

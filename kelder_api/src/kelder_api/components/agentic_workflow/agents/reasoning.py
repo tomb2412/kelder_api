@@ -1,5 +1,4 @@
 import textwrap
-
 from typing import List
 
 from pydantic import BaseModel, Field
@@ -11,6 +10,7 @@ from src.kelder_api.components.agentic_workflow.models import Node
 # TODO: conflicting prompt with same node more than once
 # TODO: add jobs to the list
 # TODO: Reasoning agent and the chat node seem not in sync
+
 
 class OchestrationPlan(BaseModel):
     plan: List[Node] = Field(
@@ -32,8 +32,8 @@ prompt = textwrap.dedent(
 
     Available nodes:
     - passage_plan: plans or adjusts a sea passage, manages routes, waypoints, and saves
-     results. This always requires - departure and destination locations, but you can assume
-     tomorrow if no date is given.
+     results. This always requires - departure and destination locations, but you can
+       assume tomorrow if no date is given.
     - tidal_search: retrieves tidal predictions such as high/low water times, heights,
      and current water levels.
 
@@ -43,7 +43,8 @@ prompt = textwrap.dedent(
     - Assign a confidence score out of 10 for each node.
     - Never include multiple nodes or repeat nodes.
     - Reuse existing data where possible; avoid redundant calls.
-    - If the request cannot be completed using available nodes, reply with an empty plan to communicate this.
+    - If the request cannot be completed using available nodes, reply with an empty
+      plan to communicate this.
 
 
     Example:
@@ -66,7 +67,7 @@ prompt = textwrap.dedent(
 
     Be concise, structured, and logical. Focus on which nodes are needed, why, and how
      confident you are in each choice.
-    
+
     ** NEVER PRODUCE A PLAN WITHOUT A CHAT NODE AT THE END **
 """
 ).strip()

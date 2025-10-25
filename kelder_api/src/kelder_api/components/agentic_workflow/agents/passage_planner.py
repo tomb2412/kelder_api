@@ -2,7 +2,7 @@ import asyncio
 import logging
 import textwrap
 
-from pydantic_ai import Agent, RunContext
+from pydantic_ai import Agent
 
 from src.kelder_api.components.agentic_workflow.agents.models import PassagePlan
 from src.kelder_api.components.redis_client.redis_client import RedisClient
@@ -11,13 +11,14 @@ logger = logging.getLogger(__name__)
 
 # TODO - Move passage plan tool timeout to config
 
+
 async def save_passage_plan(
     passage_plan: PassagePlan, redis_client: "RedisClient"
 ) -> bool:
     """
     Save a full passage plan with all navigational details.
     """
-    
+
     try:
         with asyncio.timeout(2):
             await redis_client.write_set("PASSAGE_PLAN", passage_plan)
@@ -52,8 +53,8 @@ system_prompt = textwrap.dedent(
         `save_passage_plan` tool.
 
     4. After saving, reply only with a confirmation and general plan overview such as
-        "✅ Your passage plan from <DEPARTURE> to <DESTINATION> has been prepared and saved
-        for tomorrow leaving at 9:30 am."
+        "✅ Your passage plan from <DEPARTURE> to <DESTINATION> has been prepared and
+          saved for tomorrow leaving at 9:30 am."
     """
 ).strip()
 

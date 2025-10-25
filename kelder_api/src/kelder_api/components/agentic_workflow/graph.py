@@ -11,7 +11,6 @@ from src.kelder_api.components.agentic_workflow.nodes import (
     TidalSearchNode,
 )
 
-
 ProgressCallback = Callable[[str], Awaitable[None]]
 
 

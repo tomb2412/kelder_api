@@ -1,8 +1,8 @@
-from dataclasses import dataclass, field
-from typing import Awaitable, Callable, List
+from dataclasses import field
 from enum import Enum
+from typing import Awaitable, Callable, List
 
-from pydantic import BaseModel, computed_field, Field
+from pydantic import BaseModel, Field, computed_field
 from pydantic_ai.messages import ModelMessage
 
 from src.kelder_api.components.agentic_workflow.agents.models import PassagePlan
@@ -19,6 +19,7 @@ class ReasoningEndNodes(Enum):
     PASSAGE_PLAN = "passage_plan"
     TIDAL_SEARCH = "tidal_search"
 
+
 class GeneratePassagePlan(BaseModel):
     # TODO: add Field descriptions
     departure_location: str
@@ -26,7 +27,6 @@ class GeneratePassagePlan(BaseModel):
     departure_time: str | None = None
     destination_time: str | None = None
     extra_considerations: str | None = None
-
 
 
 class Node(BaseModel):
@@ -47,7 +47,8 @@ class Node(BaseModel):
         description="Completed by the tool as a summary of their tool."
     )
 
-#@dataclass
+
+# @dataclass
 class State(BaseModel):
     user_message: str | None = field(default=None)
     message_history: list[ModelMessage] = field(default_factory=list)

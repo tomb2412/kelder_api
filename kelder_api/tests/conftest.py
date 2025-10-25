@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 from collections import defaultdict
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
@@ -12,7 +13,6 @@ from typing import Any, Dict, Iterable, Tuple
 import pytest
 from fastapi.testclient import TestClient
 
-import os
 os.environ.setdefault("OPENAI_API_KEY", "test-key")
 
 from src.kelder_api.components.compass_new.models import CompassRedisData

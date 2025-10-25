@@ -12,7 +12,6 @@ from src.kelder_api.components.log.service import LogTracker
 # Component import
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.velocity.service import VelocityCalculator
-from src.kelder_api.configuration.settings import get_settings
 
 # from src.kelder_api.routes.bilge_depth.views import router as bilge_depth_route
 from src.kelder_api.routes.compass.views import router as compass_router
@@ -51,8 +50,6 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup
-    settings = get_settings()
     redis_client = RedisClient()
     gps_interface = GPSInterface(redis_client)
     compass_interface = CompassInterface(redis_client)

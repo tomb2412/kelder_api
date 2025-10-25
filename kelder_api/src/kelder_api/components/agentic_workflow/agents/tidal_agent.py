@@ -27,6 +27,5 @@ prompt = textwrap.dedent(
 tidal_agent = Agent(
     "openai:gpt-4o-mini",
     system_prompt=prompt,
-    tools=[get_height_of_tide_now, get_tide_predictions]
-    )
-
+    tools=[get_height_of_tide_now, get_tide_predictions],
+)

@@ -6,6 +6,7 @@ from typing import Any, Iterable, List
 
 import pytest
 
+from src.kelder_api.components.agentic_workflow import nodes as nodes_module
 from src.kelder_api.components.agentic_workflow.agents import chatbot as chatbot_module
 from src.kelder_api.components.agentic_workflow.agents import (
     passage_planner as passage_module,
@@ -16,7 +17,6 @@ from src.kelder_api.components.agentic_workflow.agents import (
 from src.kelder_api.components.agentic_workflow.agents import (
     tidal_agent as tidal_module,
 )
-from src.kelder_api.components.agentic_workflow import nodes as nodes_module
 from src.kelder_api.components.agentic_workflow.agents.chatbot import (
     ChatResponse,
     ReasoningInput,
