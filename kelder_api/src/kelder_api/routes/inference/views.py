@@ -70,3 +70,12 @@ async def StreamChatResponse(request: Request):
             "Connection": "keep-alive",
         },
     )
+
+
+@router.post("/chat_clear")
+async def ClearChatHistory(request: Request):
+    agent_workflow = request.app.state.agent_workflow
+    agent_workflow.state.message_history = []
+    agent_workflow.state.workflow_plan = []
+    agent_workflow.state.job_count = 0
+    return {"status": "ok"}
