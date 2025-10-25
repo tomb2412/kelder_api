@@ -31,21 +31,21 @@ services:
     env_file:
       - .env 
 
-  # worker:
-  #   build: .
-  #   privileged: true
-  #   volumes:
-  #     - logs:/app/logs
-  #   environment:
-  #     REDIS_HOST: redis
-  #   devices:
-  #     - "/dev/ttyAMA0:/dev/ttyAMA0"
-  #     - "/dev/ttyS0:/dev/ttyS0"
-  #   command: [ "uv", "run", "python", "-m", "src.kelder_api.app.background_orchestrator" ]
-  #   depends_on:
-  #     - redis
-  #   env_file:
-  #     - .env 
+  worker:
+    build: .
+    privileged: true
+    volumes:
+      - logs:/app/logs
+    environment:
+      REDIS_HOST: redis
+    devices:
+      - "/dev/ttyAMA0:/dev/ttyAMA0"
+      - "/dev/ttyS0:/dev/ttyS0"
+    command: [ "uv", "run", "python", "-m", "src.kelder_api.app.background_orchestrator" ]
+    depends_on:
+      - redis
+    env_file:
+      - .env 
 
 volumes:
   logs:
