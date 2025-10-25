@@ -1,3 +1,5 @@
+from typing import Awaitable, Callable
+
 from pydantic_graph import Graph
 
 from src.kelder_api.components.agentic_workflow.models import State
@@ -8,6 +10,9 @@ from src.kelder_api.components.agentic_workflow.nodes import (
     ResponseEvaluatorNode,
     TidalSearchNode,
 )
+
+
+ProgressCallback = Callable[[str], Awaitable[None]]
 
 
 class AgentWorkflow:
@@ -23,9 +28,17 @@ class AgentWorkflow:
             )
         )
 
-    async def run(self, user_message: str) -> str:
+    async def run(
+        self, user_message: str, progress_callback: ProgressCallback | None = None
+    ) -> str:
         self.state.user_message = user_message
-        result = await self.graph.run(ChatBotAgent(), state=self.state)
+        self.state.progress_callback = progress_callback
+        try:
+            result = await self.graph.run(ChatBotAgent(), state=self.state)
+        finally:
+            self.state.progress_callback = None
 
         response = result.output
-        return response
+        if hasattr(response, "message"):
+            return response.message
+        return str(response)

@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List
+from typing import Awaitable, Callable, List
 from enum import Enum
 
 from pydantic import BaseModel, computed_field, Field
@@ -56,6 +56,9 @@ class State(BaseModel):
     job_count: int = 0
 
     passage_plan: PassagePlan | None = field(default=None)
+    progress_callback: Callable[[str], Awaitable[None]] | None = Field(
+        default=None, exclude=True
+    )
 
     @computed_field
     @property

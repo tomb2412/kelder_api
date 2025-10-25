@@ -24,7 +24,8 @@ from src.kelder_api.components.agentic_workflow.models import (
 )
 from src.kelder_api.components.agentic_workflow.utils import (
     clean_user_message,
-    find_models
+    find_models,
+    notify_progress,
 )
 
 
@@ -41,6 +42,7 @@ class ChatBotAgent(BaseNode[State]):
 
     async def run(self, ctx: GraphRunContext[State]) -> ResponseEvaluatorNode:
         logger.debug("Chatbot agent called")
+        await notify_progress(ctx.state, "chat")
         prompt = f"The users message: {ctx.state.user_message}"
         if ctx.state.workflow_length > 0:
             prompt += "\nIn response we have the following processes:"
@@ -69,6 +71,7 @@ class ReasoningAgent(BaseNode[State]):
         self, ctx: GraphRunContext[State]
     ) -> ChatBotAgent | BuildPassageNode | TidalSearchNode:
         logger.debug("Reasoning agent called")
+        await notify_progress(ctx.state, "reasoning on tools")
         print("Return to the reasoning agent")
 
         if ctx.state.workflow_length == 0: 
@@ -97,6 +100,7 @@ class BuildPassageNode(BaseNode[State]):
 
     async def run(self, ctx: GraphRunContext[State]) -> ReasoningAgent:
         logger.debug("Passage planing agent called")
+        await notify_progress(ctx.state, "planning a passage")
 
         prompt = f"Users message: {ctx.state.user_message}\n" \
             f"Task description: {self.passage_plan_description}"
@@ -130,6 +134,7 @@ class ResponseEvaluatorNode(BaseNode[State]):
     input: str
 
     async def run(self, ctx: GraphRunContext[State]) -> End[str]:
+        await notify_progress(ctx.state, "response_evaluator")
         ctx.state.workflow_plan = []
         ctx.state.job_count = 0
         return End(self.input)
@@ -140,6 +145,7 @@ class TidalSearchNode(BaseNode[State]):
     
     async def run(self, ctx: GraphRunContext[State]) -> ReasoningAgent:
         logger.debug("Tidal query agent called for %s" %self.input_prompt)
+        await notify_progress(ctx.state, "searching for tidal data")
         prompt = f"Users message: {ctx.state.user_message}" \
             f"Task description: {self.input_prompt}"
 
