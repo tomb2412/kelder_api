@@ -131,8 +131,8 @@ class GPGSVSatellitesInView(BaseModel):
                 snr = getattr(nmea_data, f"snr_{i + 1}")
                 self.add_satellite(
                     prn=int(satellite_prn),
-                    elevation=getattr(nmea_data, f"elevation_deg_{i + 1}"),
-                    azimuth=getattr(nmea_data, f"azimuth_{i + 1}"),
+                    elevation=int(getattr(nmea_data, f"elevation_deg_{i + 1}")),
+                    azimuth=int(getattr(nmea_data, f"azimuth_{i + 1}")),
                     snr=float(snr) if snr != "" else None,
                 )
 
