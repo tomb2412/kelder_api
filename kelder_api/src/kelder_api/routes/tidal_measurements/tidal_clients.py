@@ -1,5 +1,5 @@
 import logging
-from datetime import date
+from datetime import date, datetime, timezone
 from typing import List
 
 from async_lru import alru_cache
@@ -31,8 +31,13 @@ async def get_height_of_tide_now() -> TideInfo:
             f"https://environment.data.gov.uk/flood-monitoring/id/stations/{PORTSMOUTH_STATION_ID_ENV_AGENCY}/readings.json?today&_sorted"
         )
 
+    timestamp = response.json()["items"][0]["dateTime"]
+    dt = datetime.fromisoformat(timestamp)
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+
     return TideInfo(
-        datetime_stamp=response.json()["items"][0]["dateTime"],
+        datetime_stamp=dt,
         height_of_tide=response.json()["items"][0]["value"] + PORTSMOUTH_OD_TO_CD_DIFF,
     )
 
@@ -52,10 +57,13 @@ async def get_tide_predictions(date: date) -> List[TideInfo]:
         )
 
     for tidal_event in response.json():
+        dt = datetime.fromisoformat(tidal_event["DateTime"])
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+
         tidal_events.append(
-            # TypeError: str.replace() takes no keyword arguments
             TideInfo(
-                datetime_stamp=tidal_event["DateTime"],  # 2025-10-20T03:33:00
+                datetime_stamp=dt,  # 2025-10-20T03:33:00
                 height_of_tide=tidal_event["Height"],
                 event=tidal_event["EventType"],
             )

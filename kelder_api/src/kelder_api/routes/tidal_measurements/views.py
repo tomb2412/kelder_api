@@ -23,7 +23,6 @@ async def get_height_of_tide():
 @router.get("/get_tidal_predictions")
 async def get_tidal_events():
     logger.debug("Tideal predictions requested")
-    # BUG: TypeError: datetime.date() takes no arguments (1 given)
     return await get_tide_predictions(datetime.now(timezone.utc).date())
 
 
@@ -31,7 +30,7 @@ async def get_tidal_events():
 async def get_next_tidal_event():
     logger.debug("Next highwater")
     now = datetime.now(timezone.utc)
-    tidal_events = await get_tide_predictions(now.date(timezone.utc))
+    tidal_events = await get_tide_predictions(now.date())
 
     for tidal_event in tidal_events:
         if (
