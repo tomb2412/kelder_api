@@ -37,10 +37,6 @@ class BilgeDepthSensor:
             logger.debug("Successfully read ultrasound distance: %s", distance_value)
         except Exception:
             logger.exception("Failed to take the ultrasound measurement")
-        finally:
-            if sensor:
-                sensor.close()
-
         return BilgeDepth(
             timestamp=datetime.now(timezone.utc),
             bilge_depth=distance_value,
