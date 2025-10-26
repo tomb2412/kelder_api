@@ -21,7 +21,7 @@ class BilgeDepthSensor:
         self.redis_client = redis_client
         self.TRIG = TRIG
         self.ECHO = ECHO
-        
+
         self.sensor = DistanceSensor(self.TRIG, self.ECHO)
 
     async def record_bilge_depth(self) -> None:
