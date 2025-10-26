@@ -17,8 +17,10 @@ from src.kelder_api.components.gps_new.models import (
     GPSRedisData,
 )
 from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.configuration.logging_config import setup_logging
 from src.kelder_api.configuration.settings import get_settings
 
+setup_logging(component="gps")
 logger = logging.getLogger(__name__)
 
 

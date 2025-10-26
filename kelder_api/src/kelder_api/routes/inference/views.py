@@ -22,13 +22,14 @@ async def StreamChatResponse(request: Request):
 
     if not user_prompt:
         message_id = str(uuid4())
+        logger.warning("Chat stream request missing user prompt")
         return StreamingResponse(
             error_stream("No user prompt provided", message_id=message_id),
             media_type="text/event-stream",
         )
 
-    logger.info("Requesting inference")
     chunk_size = get_settings().inference.stream_chunk_size
+    logger.info("Requesting inference with chunk size %s", chunk_size)
 
     async def stream_chat():
         # generate unique IDs per message / text block
@@ -61,6 +62,7 @@ async def StreamChatResponse(request: Request):
         yield f"data: {json.dumps({'type': 'text-end', 'id': text_id})}\n\n"
         yield f"data: {json.dumps({'type': 'finish'})}\n\n"
         yield "data: [DONE]\n\n"
+        logger.info("Completed streaming response %s", message_id)
 
     return StreamingResponse(
         stream_chat(),
@@ -80,4 +82,5 @@ async def ClearChatHistory(request: Request):
     agent_workflow.state.message_history = []
     agent_workflow.state.workflow_plan = []
     agent_workflow.state.job_count = 0
+    logger.info("Cleared chat history for agent workflow")
     return {"status": "ok"}

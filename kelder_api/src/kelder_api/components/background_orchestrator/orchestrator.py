@@ -22,6 +22,7 @@ class BackgroundTaskManager:
 
     def __init__(self):
         """Initialisation of the sensors and components"""
+        logger.info("Initialising background task manager components")
         self.redis_client = RedisClient()
 
         # Initialise components and their writing functions
@@ -50,7 +51,7 @@ class BackgroundTaskManager:
             velocity_calculator=velocity_calculator,
         )
 
-        return {
+        components = {
             "GPS": {"instance": gps_interface, "method": "stream_serial_data"},
             "COMPASS": {
                 "instance": compass_interface,
@@ -65,6 +66,8 @@ class BackgroundTaskManager:
                 "method": "increment_log",
             },
         }
+        logger.debug("Registered orchestrator components: %s", list(components.keys()))
+        return components
 
     async def calculate_new_state(self, vessel_state: VesselState) -> VesselState:
         """A general method to define the vessels new state each iteration"""
@@ -77,12 +80,15 @@ class BackgroundTaskManager:
             else:
                 return VesselState.STATIONARY
         except Exception:
+            logger.exception(
+                "Failed to calculate vessel state, preserving %s", vessel_state
+            )
             return vessel_state
 
     async def run(self):
         vessel_state = VesselState.STATIONARY
         while True:
-            logger.info("Current vessel state: %s" % vessel_state)
+            logger.info("Current vessel state: %s", vessel_state)
             previous_vessel_state = vessel_state
             # Run the strategy matching the vessel state
             await self.strategies[vessel_state](
@@ -90,3 +96,9 @@ class BackgroundTaskManager:
             )
 
             vessel_state = await self.calculate_new_state(vessel_state)
+            if vessel_state != previous_vessel_state:
+                logger.info(
+                    "Vessel state change detected: %s -> %s",
+                    previous_vessel_state,
+                    vessel_state,
+                )

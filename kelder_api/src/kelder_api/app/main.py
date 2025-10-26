@@ -12,6 +12,7 @@ from src.kelder_api.components.log.service import LogTracker
 # Component import
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.velocity.service import VelocityCalculator
+from src.kelder_api.configuration.logging_config import setup_logging
 
 # from src.kelder_api.routes.bilge_depth.views import router as bilge_depth_route
 from src.kelder_api.routes.compass.views import router as compass_router
@@ -34,22 +35,14 @@ origins = [
     "http://192.168.1.131:5173",
 ]
 
-logging.basicConfig(
-    # filename=(
-    #     f"/app/logs/{datetime.now(timezone.utc).strftime('%Y-%m-%d')}_kelder_api.log"
-    # ),
-    encoding="utf-8",
-    format="API - {levelname} - {asctime} - {message}",
-    style="{",
-    datefmt="%Y-%m-%d %H:%M:%S",
-    level=logging.DEBUG,
-)
+setup_logging(component="api")
 
 logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    logger.info("Initialising API stateful dependencies")
     redis_client = RedisClient()
     gps_interface = GPSInterface(redis_client)
     compass_interface = CompassInterface(redis_client)
@@ -68,6 +61,7 @@ async def lifespan(app: FastAPI):
     app.state.velocity_calculator = velocity_calculator
     app.state.log_tracker = log_tracker
     app.state.agent_workflow = AgentWorkflow()
+    logger.debug("API dependencies initialised and stored on app state")
 
     yield
 
@@ -76,6 +70,7 @@ async def lifespan(app: FastAPI):
     del app.state.gps_interface
     del app.state.velocity_calculator
     del app.state.agent_workflow
+    logger.info("API stateful dependencies released during shutdown")
 
 
 app = FastAPI(lifespan=lifespan)

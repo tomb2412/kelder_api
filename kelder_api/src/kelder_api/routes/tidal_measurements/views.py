@@ -31,13 +31,22 @@ async def get_next_tidal_event():
     logger.debug("Next highwater")
     now = datetime.now(timezone.utc)
     tidal_events = await get_tide_predictions(now.date())
+    logger.debug("Received %s tidal events for %s", len(tidal_events), now.date())
 
     for tidal_event in tidal_events:
         if (
             abs((tidal_event.datetime_stamp - now).total_seconds())
             <= THREE_HOURS_IN_SECONDS
         ):
+            logger.info(
+                "Returning tidal event %s at %s",
+                tidal_event.event,
+                tidal_event.datetime_stamp,
+            )
             return tidal_event
 
     # TODO: what to return or raise?
+    logger.warning(
+        "No tidal event within %s seconds for %s", THREE_HOURS_IN_SECONDS, now
+    )
     return {}

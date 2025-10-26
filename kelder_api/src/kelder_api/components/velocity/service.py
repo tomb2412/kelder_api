@@ -13,8 +13,10 @@ from src.kelder_api.components.velocity.utils import (
     haversine,
     time_difference_seconds,
 )
+from src.kelder_api.configuration.logging_config import setup_logging
 from src.kelder_api.configuration.settings import get_settings
 
+setup_logging(component="velocity")
 logger = logging.getLogger(__name__)
 
 

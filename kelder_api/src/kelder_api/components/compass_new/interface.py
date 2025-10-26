@@ -7,7 +7,9 @@ import numpy as np
 
 from src.kelder_api.components.compass_new.models import CompassRedisData
 from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.configuration.logging_config import setup_logging
 
+setup_logging(component="compass")
 logger = logging.getLogger(__name__)
 
 

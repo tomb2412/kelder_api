@@ -4,19 +4,16 @@ import logging
 from src.kelder_api.components.background_orchestrator.orchestrator import (
     BackgroundTaskManager,
 )
+from src.kelder_api.configuration.logging_config import setup_logging
 
+setup_logging(component="worker")
 logger = logging.getLogger(__name__)
-logging.basicConfig(
-    # filename=(
-    #     f"/app/logs/{datetime.now(timezone.utc).strftime('%Y-%m-%d')}_kelder_api.log"
-    # ),
-    encoding="utf-8",
-    format="WORKER - {levelname} - {asctime} - {message}",
-    style="{",
-    datefmt="%Y-%m-%d %H:%M:%S",
-    level=logging.DEBUG,
-)
 
 if __name__ == "__main__":
+    logger.info("Starting background orchestrator worker")
     task_manager = BackgroundTaskManager()
-    asyncio.run(task_manager.run())
+    try:
+        asyncio.run(task_manager.run())
+    except Exception:
+        logger.exception("Background orchestrator stopped unexpectedly")
+        raise
