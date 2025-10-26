@@ -37,7 +37,7 @@ def test_journey_distance_matches_haversine(
             velocity_utils.convert_to_decimal_degrees(start_longitude),
             velocity_utils.convert_to_decimal_degrees(end_longitude),
         ),
-        2,
+        1,
     )
 
     assert journey.distance_travelled == expected

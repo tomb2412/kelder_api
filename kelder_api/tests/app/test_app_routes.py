@@ -73,9 +73,9 @@ def _assert_velocity(body: Any) -> None:
 
 
 def _assert_compass(body: Any) -> None:
-    assert isinstance(body, list)
+    assert isinstance(body, dict)
     assert body
-    assert round(body[0]["heading"]) == 123
+    assert round(body["heading"]) == 123
 
 
 class AppRoute(Enum):
