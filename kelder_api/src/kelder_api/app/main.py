@@ -14,7 +14,7 @@ from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.configuration.logging_config import setup_logging
 
-# from src.kelder_api.routes.bilge_depth.views import router as bilge_depth_route
+from src.kelder_api.routes.bilge_depth.views import router as bilge_depth_route
 from src.kelder_api.routes.compass.views import router as compass_router
 from src.kelder_api.routes.gps.views import router as gps_route
 from src.kelder_api.routes.gps.views import router_card
@@ -86,7 +86,7 @@ app.add_middleware(
 app.include_router(health_route)
 app.include_router(gps_route)
 app.include_router(router_card)
-# app.include_router(bilge_depth_route)
+app.include_router(bilge_depth_route)
 app.include_router(compass_router)
 app.include_router(velocity_route)
 app.include_router(redis_route)

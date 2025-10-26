@@ -7,51 +7,54 @@ from gpiozero import DistanceSensor
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.ultrasound.models import BilgeDepth
 
-# GPIO Pins
+# GPIO pins
 TRIG = 23
 ECHO = 24
 
 logger = logging.getLogger(__name__)
 
-class BilderDepth:
-    """Manages the ultrasound which measures the depth of water below the bilge"""
+
+class BilgeDepthSensor:
+    """Manages the ultrasound which measures the depth of water below the bilge."""
 
     def __init__(self, redis_client: RedisClient):
         self.redis_client = redis_client
+        self.TRIG = TRIG
+        self.ECHO = ECHO
+        
+        self.sensor = DistanceSensor(self.TRIG, self.ECHO)
 
-        self.TRIG = 23
-        self.ECHO = 24
-
-    async def write_bilge_depth(self) -> None:
-        bilge_depth = self._ultrasound_reading()
-        await self.write_bilge_depth(bilge_depth)
+    async def record_bilge_depth(self) -> None:
+        """Capture the current bilge depth and persist it to Redis."""
+        reading = self._ultrasound_reading()
+        await self.write_bilge_depth(reading)
 
     def _ultrasound_reading(self) -> BilgeDepth:
-        """Takes the reading from the ultrasound component"""
+        """Takes the reading from the ultrasound component."""
+        distance_value = None
         try:
-            distance = DistanceSensor(self.TRIG, self.ECHO)
-        except Exception as error:
+            distance_value = self.sensor.distance
+            logger.debug("Successfully read ultrasound distance: %s", distance_value)
+        except Exception:
             logger.exception("Failed to take the ultrasound measurement")
-            distance = None
-        else:
-            logging.debug("Succesfully read ultrasound distance: %s", distance)
-            return BilgeDepth(
-                timestamp = datetime.now(timezone.utc),
-                bilge_depth=distance,
-                )
-    
+        finally:
+            if sensor:
+                sensor.close()
+
+        return BilgeDepth(
+            timestamp=datetime.now(timezone.utc),
+            bilge_depth=distance_value,
+        )
 
     async def write_bilge_depth(self, bilge_depth: BilgeDepth) -> None:
         logger.debug("Writing bilge_depth data")
         await self.redis_client.write_set("BILGE_DEPTH", bilge_depth)
 
     async def read_latest_bilge_depth(self) -> BilgeDepth:
-        logger.debug("Reading latest compass data")
-        depth = await self.redis_client.read_set("COMPASS")
+        logger.debug("Reading latest bilge depth data from Redis")
+        depth = await self.redis_client.read_set("BILGE_DEPTH")
         try:
             return BilgeDepth(**depth[0])
         except IndexError:
-            logger.debug("No bilge data available")
-            return BilgeDepth(timestamp=datetime.now(timezone.utc), distance = None)
-    
-
+            logger.debug("No bilge depth data available")
+            return BilgeDepth(timestamp=datetime.now(timezone.utc), bilge_depth=None)

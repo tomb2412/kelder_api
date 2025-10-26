@@ -17,7 +17,7 @@ class StationaryStrategy:
 
     def required_sensors() -> List[str]:
         """Defines which sensors are processed and in what order"""
-        return ["GPS"]
+        return ["GPS", "BILGE_DEPTH"]
 
     def required_calculators() -> List[str]:
         """Defines which calcuations are required and in what order"""

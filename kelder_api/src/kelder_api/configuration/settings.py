@@ -112,6 +112,15 @@ class Orchestrator(BaseSettings):
     model_config = model_config
 
 
+class BilgeDepthSettings(BaseSettings):
+    max_data_age_minutes: int = Field(
+        description="Maximum age (minutes) of bilge depth data before flagging stale",
+        default=5,
+    )
+
+    model_config = model_config
+
+
 class Inference(BaseSettings):
     stream_chunk_size: int = Field(
         description="Number of characters per streamed SSE chunk",
@@ -138,6 +147,10 @@ class Settings(BaseModel):
     orchestrator: Orchestrator = Field(
         description="Background orchestrator settings",
         default_factory=Orchestrator,
+    )
+    bilge_depth: BilgeDepthSettings = Field(
+        description="Bilge depth sensor configuration",
+        default_factory=BilgeDepthSettings,
     )
     log_tracker: LogTracker = Field(
         description="All log tracking config", default_factory=LogTracker

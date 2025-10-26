@@ -17,7 +17,7 @@ class UnderwayStrategy:
 
     def required_sensors() -> List[str]:
         """Defines which sensors are processed and in what order"""
-        return ["GPS", "COMPASS"]
+        return ["GPS", "COMPASS", "BILGE_DEPTH"]
 
     def required_calculators() -> List[str]:
         """Defines which calcuations are required and in what order"""

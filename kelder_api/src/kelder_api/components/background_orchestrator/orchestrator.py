@@ -11,6 +11,7 @@ from src.kelder_api.components.compass_new.interface import CompassInterface
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.log.service import LogTracker
 from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.ultrasound.service import BilgeDepthSensor
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.configuration.settings import get_settings
 
@@ -39,6 +40,7 @@ class BackgroundTaskManager:
         # Initialise sensors
         gps_interface = GPSInterface(self.redis_client)
         compass_interface = CompassInterface(self.redis_client)
+        bilge_depth_sensor = BilgeDepthSensor(self.redis_client)
 
         # Initialise velocity which i
         velocity_calculator = VelocityCalculator(
@@ -56,6 +58,10 @@ class BackgroundTaskManager:
             "COMPASS": {
                 "instance": compass_interface,
                 "method": "read_heading_from_compass",
+            },
+            "BILGE_DEPTH": {
+                "instance": bilge_depth_sensor,
+                "method": "record_bilge_depth",
             },
             "VELOCITY": {
                 "instance": velocity_calculator,
