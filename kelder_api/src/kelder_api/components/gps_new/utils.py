@@ -3,6 +3,8 @@ def round_ddmm(value: str, deg_digits: int = 2) -> str:
     Rounds a DDMM.MMMM or DDDMM.MMMM string to 2 decimals in the minutes part.
     deg_digits = 2 for latitude, 3 for longitude
     """
+    if value == "":
+        return ""
     if not isinstance(value, str):
         raise TypeError("Coordinate must be a string in DDMM.MMMM format")
     try:

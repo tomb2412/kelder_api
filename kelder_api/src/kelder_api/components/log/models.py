@@ -31,12 +31,12 @@ class JourneyData(BaseModel):
 
     @computed_field
     @property
-    def disance_travelled(self) -> float:
+    def distance_travelled(self) -> float:
         latitude_start = convert_to_decimal_degrees(self.start_latitude)
         longitude_start = convert_to_decimal_degrees(self.start_longitude)
         latitude_end = convert_to_decimal_degrees(self.end_latitude)
         longitude_end = convert_to_decimal_degrees(self.end_longitude)
 
         return round(
-            haversine(latitude_start, latitude_end, longitude_start, longitude_end), 2
+            haversine(latitude_start, latitude_end, longitude_start, longitude_end), 1
         )

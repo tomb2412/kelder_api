@@ -20,4 +20,4 @@ async def getCompassHeading(
 ):
     logger.info("Request recieved for compass heading")
     heading = await compass_interface.read_heading_history_length(length=1, active=True)
-    return heading
+    return heading[0]

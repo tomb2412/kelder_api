@@ -1305,6 +1305,7 @@ dependencies = [
     { name = "gradio" },
     { name = "httpx" },
     { name = "ipykernel" },
+    { name = "lgpio" },
     { name = "minimalmodbus" },
     { name = "numpy" },
     { name = "openai" },
@@ -1319,6 +1320,7 @@ dependencies = [
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "redis" },
+    { name = "rpi-gpio" },
     { name = "ruff" },
     { name = "sudo" },
     { name = "uvicorn" },
@@ -1341,6 +1343,7 @@ requires-dist = [
     { name = "gradio", specifier = ">=5.49.1" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "ipykernel", specifier = ">=6.29.5,<7.0.0" },
+    { name = "lgpio", specifier = ">=0.2.2.0,<0.3.0.0" },
     { name = "minimalmodbus", specifier = ">=2.1.1,<3.0.0" },
     { name = "numpy", specifier = ">=2.2.5,<3.0.0" },
     { name = "openai", specifier = ">=1.106.1,<2.0.0" },
@@ -1355,6 +1358,7 @@ requires-dist = [
     { name = "pytest", specifier = ">=8.4.2" },
     { name = "pytest-asyncio", specifier = ">=1.2.0" },
     { name = "redis", specifier = ">=5.2.1,<6.0.0" },
+    { name = "rpi-gpio", specifier = ">=0.7.1,<0.8.0" },
     { name = "ruff", specifier = ">=0.11.9,<0.12.0" },
     { name = "sudo", specifier = ">=1.0.0,<2.0.0" },
     { name = "uvicorn", specifier = ">=0.34.0,<0.35.0" },
@@ -1362,6 +1366,17 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [{ name = "ipykernel", specifier = ">=6.30.1" }]
+
+[[package]]
+name = "lgpio"
+version = "0.2.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/56/33/26ec2e8049eaa2f077bf23a12dc61ca559fbfa7bea0516bf263d657ae275/lgpio-0.2.2.0.tar.gz", hash = "sha256:11372e653b200f76a0b3ef8a23a0735c85ec678a9f8550b9893151ed0f863fff", size = 90087, upload-time = "2024-03-29T21:59:55.901Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fe/73/e56c9afb845df53492d42bdea01df9895272bccfdd5128f34719c3a07990/lgpio-0.2.2.0-cp312-cp312-linux_armv7l.whl", hash = "sha256:6c65ac42e878764d04a71ed12fe6d46089b36e9e8127722bf29bb2e4bc91de22", size = 383956, upload-time = "2024-03-29T22:00:47.315Z" },
+    { url = "https://files.pythonhosted.org/packages/3b/1c/becd00f66d2c65feed9a668ff9d91732394cb6baba7bec505d55de0e30c9/lgpio-0.2.2.0-cp312-cp312-manylinux_2_34_aarch64.whl", hash = "sha256:d907db79292c721c605af08187385ddb3b7af09907e1ffca56cf0cd6558ace0a", size = 366058, upload-time = "2024-04-01T22:49:47.615Z" },
+    { url = "https://files.pythonhosted.org/packages/4c/7a/e3b4e5225c9792c4092b2cc07504746acbe62d0a8e4cb023bdf65f6430cf/lgpio-0.2.2.0-cp312-cp312-manylinux_2_34_x86_64.whl", hash = "sha256:2aadff092f642fcdada8457c158f87259dfda3a89ec19bae0b99ff22b34aac4b", size = 372103, upload-time = "2024-04-13T14:08:16.351Z" },
+]
 
 [[package]]
 name = "logfire"
@@ -2777,6 +2792,12 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/04/2e/30b5ea18c01379da6272a92825dd7e53dc9d15c88a19e97932d35d430ef7/rpds_py-0.27.1-cp314-cp314t-win32.whl", hash = "sha256:d5fa0ee122dc09e23607a28e6d7b150da16c662e66409bbe85230e4c85bb528a", size = 217385, upload-time = "2025-08-27T12:15:01.937Z" },
     { url = "https://files.pythonhosted.org/packages/32/7d/97119da51cb1dd3f2f3c0805f155a3aa4a95fa44fe7d78ae15e69edf4f34/rpds_py-0.27.1-cp314-cp314t-win_amd64.whl", hash = "sha256:6567d2bb951e21232c2f660c24cf3470bb96de56cdcb3f071a83feeaff8a2772", size = 230097, upload-time = "2025-08-27T12:15:03.961Z" },
 ]
+
+[[package]]
+name = "rpi-gpio"
+version = "0.7.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/c4/0f/10b524a12b3445af1c607c27b2f5ed122ef55756e29942900e5c950735f2/RPi.GPIO-0.7.1.tar.gz", hash = "sha256:cd61c4b03c37b62bba4a5acfea9862749c33c618e0295e7e90aa4713fb373b70", size = 29090, upload-time = "2022-02-06T15:15:06.022Z" }
 
 [[package]]
 name = "rsa"

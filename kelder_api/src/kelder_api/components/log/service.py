@@ -126,7 +126,7 @@ class LogTracker:
             else:
                 self.leg_data.course_over_ground = velocity_data.course_over_ground
 
-        logger.info(f"Writing log distance: {self.journey_data.disance_travelled}")
+        logger.info(f"Writing log distance: {self.journey_data.distance_travelled}")
         await self.update_redis_set(self.journey_data, self.leg_data)
 
     async def finish_jouney(self):

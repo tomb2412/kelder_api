@@ -40,4 +40,4 @@ def test_journey_distance_matches_haversine(
         2,
     )
 
-    assert journey.disance_travelled == expected
+    assert journey.distance_travelled == expected
