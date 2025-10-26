@@ -1,7 +1,11 @@
 # hc_sr04_pi5.py
 import logging
+from datetime import datetime, timezone
 
 from gpiozero import DistanceSensor
+
+from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.ultrasound.models import BilgeDepth
 
 # GPIO Pins
 TRIG = 23
@@ -9,8 +13,45 @@ ECHO = 24
 
 logger = logging.getLogger(__name__)
 
+class BilderDepth:
+    """Manages the ultrasound which measures the depth of water below the bilge"""
 
-async def getBilgeDepth() -> float:
-    distance = DistanceSensor(TRIG, ECHO)
-    logging.debug("Succesfully read ultrasound distance: %s", distance)
-    return {"bilge_depth": distance}
+    def __init__(self, redis_client: RedisClient):
+        self.redis_client = redis_client
+
+        self.TRIG = 23
+        self.ECHO = 24
+
+    async def write_bilge_depth(self) -> None:
+        bilge_depth = self._ultrasound_reading()
+        await self.write_bilge_depth(bilge_depth)
+
+    def _ultrasound_reading(self) -> BilgeDepth:
+        """Takes the reading from the ultrasound component"""
+        try:
+            distance = DistanceSensor(self.TRIG, self.ECHO)
+        except Exception as error:
+            logger.exception("Failed to take the ultrasound measurement")
+            distance = None
+        else:
+            logging.debug("Succesfully read ultrasound distance: %s", distance)
+            return BilgeDepth(
+                timestamp = datetime.now(timezone.utc),
+                bilge_depth=distance,
+                )
+    
+
+    async def write_bilge_depth(self, bilge_depth: BilgeDepth) -> None:
+        logger.debug("Writing bilge_depth data")
+        await self.redis_client.write_set("BILGE_DEPTH", bilge_depth)
+
+    async def read_latest_bilge_depth(self) -> BilgeDepth:
+        logger.debug("Reading latest compass data")
+        depth = await self.redis_client.read_set("COMPASS")
+        try:
+            return BilgeDepth(**depth[0])
+        except IndexError:
+            logger.debug("No bilge data available")
+            return BilgeDepth(timestamp=datetime.now(timezone.utc), distance = None)
+    
+
