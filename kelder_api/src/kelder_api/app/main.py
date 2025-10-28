@@ -4,21 +4,21 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+# Component import
 from src.kelder_api.components.agentic_workflow.graph import AgentWorkflow
 from src.kelder_api.components.compass_new.interface import CompassInterface
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.log.service import LogTracker
-
-# Component import
+from src.kelder_api.components.drift_calculator.serivce import DriftCalculator
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.configuration.logging_config import setup_logging
+
+# Routes
 from src.kelder_api.routes.bilge_depth.views import router as bilge_depth_route
 from src.kelder_api.routes.compass.views import router as compass_router
 from src.kelder_api.routes.gps.views import router as gps_route
 from src.kelder_api.routes.gps.views import router_card
-
-# Routes
 from src.kelder_api.routes.health.views import router as health_route
 from src.kelder_api.routes.inference.views import router as agent_routes
 from src.kelder_api.routes.log.views import router as log_route
@@ -53,12 +53,18 @@ async def lifespan(app: FastAPI):
         redis_client=redis_client,
         velocity_calculator=velocity_calculator,
     )
+    drift_calculator = DriftCalculator(
+        redis_client=redis_client,
+        velocity_calculator=velocity_calculator,
+        compass_interface=compass_interface
+    )
 
     app.state.redis_client = redis_client
     app.state.gps_interface = gps_interface
     app.state.compass_interface = compass_interface
     app.state.velocity_calculator = velocity_calculator
     app.state.log_tracker = log_tracker
+    app.state.drift_calculator = drift_calculator
     app.state.agent_workflow = AgentWorkflow()
     logger.debug("API dependencies initialised and stored on app state")
 
@@ -67,7 +73,10 @@ async def lifespan(app: FastAPI):
     # Shutdown
     del app.state.redis_client
     del app.state.gps_interface
+    del app.state.compass_interface
     del app.state.velocity_calculator
+    del app.state.log_tracker
+    del app.state.drift_calculator
     del app.state.agent_workflow
     logger.info("API stateful dependencies released during shutdown")
 

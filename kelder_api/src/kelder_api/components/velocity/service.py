@@ -167,3 +167,21 @@ class VelocityCalculator:
                 GPSVelocity(**velocity)
                 for velocity in await self.redis_client.read_set("VELOCITY")
             ]
+
+    async def read_velocity_timeseries(self,
+        start_datetime: datetime,
+        end_datetime: datetime = datetime.now(timezone.utc),
+        active: bool = True,
+    ) -> List[GPSVelocity]:
+        logger.debug(f"Reading compass data between {start_datetime} to {end_datetime}")
+        velocity_set = await self.redis_client.read_set(
+            "VELOCITY", [start_datetime, end_datetime]
+        )
+        if active:
+            return [
+                GPSVelocity(**active_sog)
+                for active_sog in velocity_set
+                if active_sog["speed_over_ground"] is not None
+            ]
+        else:
+            return [GPSVelocity(**velocity) for velocity in velocity_set]

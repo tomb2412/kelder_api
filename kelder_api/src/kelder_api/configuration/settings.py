@@ -128,6 +128,13 @@ class Inference(BaseSettings):
     )
     model_config = model_config
 
+class Drift(BaseSettings):
+    instantaneous_history_period: int = Field(
+        description = "Number of seconds subtracted from current time to measure the history from",
+        defualt = 60
+    )
+    model_config = model_config
+
 
 class Settings(BaseModel):
     redis: Redis = Field(
@@ -157,6 +164,9 @@ class Settings(BaseModel):
     )
     inference: Inference = Field(
         description="Inference service configuration", default_factory=Inference
+    )
+    drift: Drift = Field(
+        description = "Drift calculator config", default = Drift
     )
 
 

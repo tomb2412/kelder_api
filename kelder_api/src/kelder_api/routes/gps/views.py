@@ -8,10 +8,12 @@ from src.kelder_api.app.getters import (
     get_gps_interface,
     get_log_tracker,
     get_velocity_calculator,
+    get_drift_calculator,
 )
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.log.service import LogTracker
 from src.kelder_api.components.velocity.service import VelocityCalculator
+from src.kelder_api.components.drift_calculator.serivce import DriftCalculator
 from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.routes.gps.models import GPSCard
 
@@ -31,8 +33,9 @@ def get_card_dependancies(
     gps_interface = get_gps_interface(request.app)
     velocity_calculator = get_velocity_calculator(request.app)
     log_tracker = get_log_tracker(request.app)
+    drift_calculator = get_drift_calculator(request.app)
 
-    return gps_interface, velocity_calculator, log_tracker
+    return gps_interface, velocity_calculator, log_tracker, drift_calculator
 
 
 @router.get("/gps_coords_latest")
@@ -76,18 +79,20 @@ async def get_gps_coords_length(
 
 @router_card.get("/gps_card_data")
 async def get_gps_card(
-    components: Tuple[GPSInterface, VelocityCalculator, LogTracker] = Depends(
+    components: Tuple[GPSInterface, VelocityCalculator, LogTracker, DriftCalculator] = Depends(
         get_card_dependancies
     ),
 ) -> GPSCard:
     gps_interface = components[0]
     velocity_calculator = components[1]
     log_tracker = components[2]
+    drift_calculator = components[3]
 
     # TODO: This should be a time window, so the latest gps within say 1 hour
     gps_data = await gps_interface.read_gps_latest(active=True)
     velocity_data = await velocity_calculator.read_velocity_latest(active=True)
     journey_data = await log_tracker.get_journey_set()
+    drift_data = await drift_calculator.read_drift_latest(active=True)
 
     # TODO will this return the previous journeys stats?
     if journey_data:
@@ -104,4 +109,4 @@ async def get_gps_card(
         if velocity_data.speed_over_ground
         else "error",
         log=log,
-    )
+        drift=drift_data.drift_speed )

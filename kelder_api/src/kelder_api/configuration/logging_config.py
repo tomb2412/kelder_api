@@ -37,6 +37,7 @@ class ComponentFilter(logging.Filter):
 def _log_directory(provided: str | Path | None = None) -> Path:
     if provided is not None:
         return Path(provided)
+    # NOTE I think this adds to root/app/logs in the container
     default_dir = Path(__file__).resolve().parents[3] / "logs"
     default_dir.mkdir(parents=True, exist_ok=True)
     return default_dir
