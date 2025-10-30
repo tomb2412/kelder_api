@@ -45,6 +45,7 @@ async def get_bilge_depth(
     return bilge_depth
 
 
+# TODO: Move this validation to an API untility
 def _validate_freshness(reading: BilgeDepth, max_age: timedelta) -> BilgeDepth:
     """
     Ensure the reading timestamp is within the allowed freshness window.

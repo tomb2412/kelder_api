@@ -43,7 +43,7 @@ class DriftCalculator:
         self.redis_client = redis_client
         self.velocity_calculator = velocity_calculator
 
-        self.settings = get_settings.drift
+        self.settings = get_settings().drift
     
     def instantaneous_drift_calculator(self) -> DriftData:
         end_datetime = datetime.now(timezone.utc)
@@ -96,8 +96,8 @@ class DriftCalculator:
                     ][0]
                 )
             else:
-                return DriftCalculator(**drift_history[0])
+                return DriftData(**drift_history[0])
         except IndexError:
             logger.debug("No drift history available")
-            return DriftCalculator(datetime=datetime.now(timezone.utc))
+            return DriftData(timestamp=datetime.now(timezone.utc), drift_speed = None)
         

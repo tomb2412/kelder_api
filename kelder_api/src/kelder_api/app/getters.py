@@ -26,4 +26,5 @@ def get_velocity_calculator(app: FastAPI) -> VelocityCalculator:
 def get_log_tracker(app: FastAPI) -> LogTracker:
     return app.state.log_tracker
 
-def get_drift_calculator(app: FastAPI) -> DriftCalculator
+def get_drift_calculator(app: FastAPI) -> DriftCalculator:
+    return app.state.drift_calculator
