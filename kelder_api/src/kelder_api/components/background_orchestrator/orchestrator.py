@@ -13,7 +13,7 @@ from src.kelder_api.components.log.service import LogTracker
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.ultrasound.service import BilgeDepthSensor
 from src.kelder_api.components.velocity.service import VelocityCalculator
-from src.kelder_api.components.drift_calculator import DriftCalculator
+from src.kelder_api.components.drift_calculator.serivce import DriftCalculator
 from src.kelder_api.configuration.settings import get_settings
 
 logger = logging.getLogger(__name__)
