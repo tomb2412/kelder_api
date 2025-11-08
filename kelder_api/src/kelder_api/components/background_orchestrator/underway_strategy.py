@@ -21,7 +21,7 @@ class UnderwayStrategy:
 
     def required_calculators() -> List[str]:
         """Defines which calcuations are required and in what order"""
-        return ["VELOCITY", "LOG"]
+        return ["VELOCITY", "LOG", "DRIFT"]
 
     @classmethod
     async def execute(

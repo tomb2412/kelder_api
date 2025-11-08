@@ -13,6 +13,7 @@ from src.kelder_api.components.log.service import LogTracker
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.ultrasound.service import BilgeDepthSensor
 from src.kelder_api.components.velocity.service import VelocityCalculator
+from src.kelder_api.components.drift_calculator import DriftCalculator
 from src.kelder_api.configuration.settings import get_settings
 
 logger = logging.getLogger(__name__)
@@ -53,6 +54,12 @@ class BackgroundTaskManager:
             velocity_calculator=velocity_calculator,
         )
 
+        drift_calculator = DriftCalculator(
+            redis_client = self.redis_client,
+            velocity_calculator = velocity_calculator,
+            compass_interface = compass_interface,
+        )
+
         components = {
             "GPS": {"instance": gps_interface, "method": "stream_serial_data"},
             "COMPASS": {
@@ -71,6 +78,10 @@ class BackgroundTaskManager:
                 "instance": log_tracker,
                 "method": "increment_log",
             },
+            "DRIFT": {
+                "instance": drift_calculator,
+                "method": "instantaneous_drift_calculator",
+            }
         }
         logger.debug("Registered orchestrator components: %s", list(components.keys()))
         return components

@@ -106,7 +106,7 @@ class Orchestrator(BaseSettings):
         description=(
             "Speed over ground threshold that sets the vessel state to underway"
         ),
-        default=0.5,
+        default=-0.5,
     )
 
     model_config = model_config
