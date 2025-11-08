@@ -45,12 +45,15 @@ class DriftCalculator:
 
         self.settings = get_settings().drift
     
-    def instantaneous_drift_calculator(self) -> DriftData:
-        end_datetime = datetime.now(timezone.utc)
+    async def instantaneous_drift_calculator(self, now: datetime | None = None) -> DriftData:
+        if now:
+            end_datetime = now
+        else:
+            end_datetime = datetime.now(timezone.utc)
         start_datetime = end_datetime - timedelta(seconds=self.settings.instantaneous_history_period)
 
-        sog_avg, cog_avg = self._calculate_avg_velocity(start_datetime=start_datetime)
-        heading_avg = self._calculate_avg_heading(start_datetime=start_datetime)
+        sog_avg, cog_avg = await self._calculate_avg_velocity(start_datetime=start_datetime)
+        heading_avg = await self._calculate_avg_heading(start_datetime=start_datetime)
 
         drift_angle = bearing_angle_difference(heading_avg, cog_avg)
         drift_speed = sog_avg*math.sin(drift_angle)
@@ -60,19 +63,20 @@ class DriftCalculator:
             drift_speed = drift_speed
         )
 
-    def _calculate_avg_velocity(self, start_datetime: datetime):
-        velocity_history = self.velocity_calculator.read_heading_history_timeseries(
+    async def _calculate_avg_velocity(self, start_datetime: datetime):
+        velocity_history = await self.velocity_calculator.read_velocity_timeseries(
             start_datetime = start_datetime,
             active = True
         )
 
+        # TODO: catch no data 
         sog_avg = fmean(map(lambda measurement: measurement.speed_over_ground, velocity_history))
         cog_avg = fmean(map(lambda measurement: measurement.course_over_ground, velocity_history))
 
         return sog_avg, cog_avg
 
-    def _calculate_avg_heading(self, start_datetime: datetime):
-        compass_history = self.compass_interface.read_heading_history_timeseries(
+    async def _calculate_avg_heading(self, start_datetime: datetime):
+        compass_history = await self.compass_interface.read_heading_history_timeseries(
             start_datetime=start_datetime,
             active=True
         )
