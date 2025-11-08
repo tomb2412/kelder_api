@@ -168,7 +168,8 @@ class VelocityCalculator:
                 for velocity in await self.redis_client.read_set("VELOCITY")
             ]
 
-    async def read_velocity_timeseries(self,
+    async def read_velocity_timeseries(
+        self,
         start_datetime: datetime,
         end_datetime: datetime = datetime.now(timezone.utc),
         active: bool = True,

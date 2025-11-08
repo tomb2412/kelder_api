@@ -127,7 +127,7 @@ class AppRoute(Enum):
             "longitude": "00123.99",
             "speed_over_ground": 7.2,
             "log": 12.5,
-            "drift": 1.2,
+            "drift": None,
             "dtw": 4.7,
         },
     )

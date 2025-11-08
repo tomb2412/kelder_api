@@ -5,15 +5,15 @@ from typing import Tuple
 from fastapi import APIRouter, Depends, Request
 
 from src.kelder_api.app.getters import (
+    get_drift_calculator,
     get_gps_interface,
     get_log_tracker,
     get_velocity_calculator,
-    get_drift_calculator,
 )
+from src.kelder_api.components.drift_calculator.serivce import DriftCalculator
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.log.service import LogTracker
 from src.kelder_api.components.velocity.service import VelocityCalculator
-from src.kelder_api.components.drift_calculator.serivce import DriftCalculator
 from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.routes.gps.models import GPSCard
 
@@ -79,9 +79,9 @@ async def get_gps_coords_length(
 
 @router_card.get("/gps_card_data")
 async def get_gps_card(
-    components: Tuple[GPSInterface, VelocityCalculator, LogTracker, DriftCalculator] = Depends(
-        get_card_dependancies
-    ),
+    components: Tuple[
+        GPSInterface, VelocityCalculator, LogTracker, DriftCalculator
+    ] = Depends(get_card_dependancies),
 ) -> GPSCard:
     gps_interface = components[0]
     velocity_calculator = components[1]
@@ -109,4 +109,5 @@ async def get_gps_card(
         if velocity_data.speed_over_ground
         else "error",
         log=log,
-        drift=drift_data.drift_speed )
+        drift=drift_data.drift_speed,
+    )

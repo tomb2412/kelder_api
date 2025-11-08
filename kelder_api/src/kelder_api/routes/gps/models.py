@@ -14,7 +14,10 @@ class GPSCard(BaseModel):
         description="The distance travelled in current trip nautical miles"
     )
     drift: float | None = Field(
-        description="Component of velocity perpendicular to heading / knts or None if stationary"
+        description=(
+            "Component of velocity perpendicular to heading / knts "
+            "or None if stationary"
+        )
     )
     dtw: float = Field(
         description="The distance to the next waypoint / nautical miles", default=4.7

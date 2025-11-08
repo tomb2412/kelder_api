@@ -1,6 +1,6 @@
 import logging
-from http import HTTPStatus
 import subprocess
+from http import HTTPStatus
 
 from fastapi import APIRouter
 
@@ -19,4 +19,4 @@ def read_root():
 def restart_container():
     """Restart a single Docker container using the engine's Python SDK."""
     logger.info("Restart endpoint requested")
-    subprocess.run(["docker", "compose", "restart"])    
+    subprocess.run(["docker", "compose", "restart"])
