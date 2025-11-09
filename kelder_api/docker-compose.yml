@@ -8,6 +8,7 @@ services:
       resources:
         limits:
           memory: 128M
+    restart: "on-failure"
 
   kelder_api:
     build: .
@@ -17,6 +18,7 @@ services:
     volumes:
       - /dev:/dev
       - logs:/app/logs
+      - /var/run/docker.sock:/var/run/docker.sock
     devices:
       - /dev/gpiomem
       - /dev/mem
@@ -30,6 +32,7 @@ services:
       - REDIS_HOST=redis
     env_file:
       - .env 
+    restart: "on-failure"
 
   worker:
     build: .
@@ -46,6 +49,7 @@ services:
       - redis
     env_file:
       - .env 
+    restart: "on-failure"
 
 volumes:
   logs:
