@@ -2,6 +2,7 @@ from typing import Awaitable, Callable
 
 from pydantic_graph import Graph
 
+from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.agentic_workflow.models import State
 from src.kelder_api.components.agentic_workflow.nodes import (
     BuildPassageNode,
@@ -15,8 +16,8 @@ ProgressCallback = Callable[[str], Awaitable[None]]
 
 
 class AgentWorkflow:
-    def __init__(self):
-        self.state = State()
+    def __init__(self, redis_client: RedisClient):
+        self.state = State(redis_client=redis_client)
         self.graph = Graph(
             nodes=(
                 ChatBotAgent,

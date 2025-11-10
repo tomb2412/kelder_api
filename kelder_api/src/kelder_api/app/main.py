@@ -65,7 +65,7 @@ async def lifespan(app: FastAPI):
     app.state.velocity_calculator = velocity_calculator
     app.state.log_tracker = log_tracker
     app.state.drift_calculator = drift_calculator
-    app.state.agent_workflow = AgentWorkflow()
+    app.state.agent_workflow = AgentWorkflow(redis_client)
     logger.debug("API dependencies initialised and stored on app state")
 
     yield

@@ -50,7 +50,6 @@ class ChatBotAgent(BaseNode[State]):
         result = await chatbot_agent.run(
             prompt, message_history=ctx.state.message_history
         )
-        print(f"\nThe chatbot response is {result.output}\n")
 
         ctx.state.message_history += clean_user_message(
             result.new_messages(), ctx.state.user_message
@@ -70,23 +69,15 @@ class ReasoningAgent(BaseNode[State]):
     ) -> ChatBotAgent | BuildPassageNode | TidalSearchNode:
         logger.debug("Reasoning agent called")
         await notify_progress(ctx.state, "reasoning")
-        print("Return to the reasoning agent")
 
         if ctx.state.workflow_length == 0:
-            print(f"\n THE USERS MESSAGE: {ctx.state.user_message}")
             result = await reasoning_agent.run(
                 ctx.state.user_message, message_history=ctx.state.message_history
             )
-            print(f"\nThe reasoning agent output: {result.output}\n")
             ctx.state.workflow_plan = result.output.plan
             ctx.state.job_count = 0
 
         if ctx.state.job_count < ctx.state.workflow_length:
-            print(
-                f"\nCurrent node: {
-                    ctx.state.workflow_plan[ctx.state.job_count].node_type
-                }\n"
-            )
             return reasoning_end_nodes[
                 ctx.state.workflow_plan[ctx.state.job_count].node_type
             ](ctx.state.workflow_plan[ctx.state.job_count].node_input)
@@ -122,14 +113,11 @@ class BuildPassageNode(BaseNode[State]):
         if len(tidal_nodes) > 0:
             prompt += f"Latest tidal analysis: {tidal_nodes[-1].node_output}"
 
-        print("Generating the plan")
-        result = await passage_plan_agent.run(prompt)
-        print("The passage plan has been produced")
+        result = await passage_plan_agent.run(prompt, deps=ctx.state.redis_client)
         ctx.state.workflow_plan[ctx.state.job_count].node_output = result.output
         ctx.state.passage_plan = result.output
         ctx.state.job_count += 1
 
-        print("returning to the reasoning agent")
         return ReasoningAgent()
 
 

@@ -2,9 +2,10 @@ from dataclasses import field
 from enum import Enum
 from typing import Awaitable, Callable, List
 
-from pydantic import BaseModel, Field, computed_field
+from pydantic import BaseModel, Field, computed_field, ConfigDict
 from pydantic_ai.messages import ModelMessage
 
+from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.agentic_workflow.agents.models import PassagePlan
 
 """
@@ -50,6 +51,7 @@ class Node(BaseModel):
 
 # @dataclass
 class State(BaseModel):
+    redis_client: RedisClient
     user_message: str | None = field(default=None)
     message_history: list[ModelMessage] = field(default_factory=list)
 
@@ -65,3 +67,7 @@ class State(BaseModel):
     @property
     def workflow_length(self) -> int:
         return len(self.workflow_plan)
+
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True
+    )

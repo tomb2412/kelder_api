@@ -72,7 +72,7 @@ def convert_to_decimal_degrees(degree: str, lon: bool = True) -> float:
 
 
 def haversine(
-    latitude_start: str, latitude_end: str, longitude_start: str, longitude_end: str
+    latitude_start: float, latitude_end: float, longitude_start: float, longitude_end: float
 ) -> float:
     """Requires a DD.DD format"""
     d_latitude = (latitude_end - latitude_start) * math.pi / 180

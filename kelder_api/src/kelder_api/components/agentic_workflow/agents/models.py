@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 
 from pydantic import BaseModel, Field, computed_field
@@ -12,32 +12,32 @@ from src.kelder_api.components.velocity.utils import (
 
 class Waypoint(BaseModel):
     name: Optional[str] = Field(None, description="Name of the waypoint")
-    latitude: str = Field(
+    latitude: float = Field(
         description=(
-            "Latitude of waypoint in degrees and decimal minutes (e.g. '5046.03')"
+            "Latitude of waypoint in decimal degrees"
         )
     )
     latitude_hemisphere: str = Field(
         description="North or south hemisphere e.g 'N' or 'S'", default="N"
     )
-    longitude: str = Field(
+    longitude: float = Field(
         description=(
-            "Longitude of waypoint in degrees and decimal minutes (e.g. '00106.20')"
+            "Longitude of waypoinfloatt in decimal degrees"
         )
     )
     longitude_hemisphere: str = Field(
         description="East or west hemisphere of longitude", default="W"
     )
 
-    @computed_field
-    @property
-    def latitude_decimal_degs(self) -> float:
-        return convert_to_decimal_degrees(self.latitude)
+    # @computed_field
+    # @property
+    # def latitude(self) -> float:
+    #     return convert_to_decimal_degrees(self.latitude)
 
-    @computed_field
-    @property
-    def longitude_decimal_degs(self) -> float:
-        return convert_to_decimal_degrees(self.longitude)
+    # @computed_field
+    # @property
+    # def longitude(self) -> float:
+    #     return convert_to_decimal_degrees(self.longitude)
 
 
 class PilotageInfo(BaseModel):
@@ -52,7 +52,8 @@ class PortOfRefuge(BaseModel):
 
 class PassagePlan(BaseModel):
     timestamp: datetime = Field(
-        description="The timestamp the passage plan was created"
+        description="The timestamp the passage plan was created",
+        default = datetime.now(tz=timezone.utc)
     )
     departure_place_name: str = Field(
         ..., description="Place of departure for the passage plan, e.g. 'Cowes'"
@@ -74,10 +75,10 @@ class PassagePlan(BaseModel):
             waypoint_end = self.course_to_steer[index + 1]
             distances.append(
                 haversine(
-                    latitude_start=waypoint_start.latitude_decimal_degs,
-                    latitude_end=waypoint_end.latitude_decimal_degs,
-                    longitude_start=waypoint_start.longitude_decimal_degs,
-                    longitude_end=waypoint_end.longitude_decimal_degs,
+                    latitude_start=waypoint_start.latitude,
+                    latitude_end=waypoint_end.latitude,
+                    longitude_start=waypoint_start.longitude,
+                    longitude_end=waypoint_end.longitude,
                 )
             )
 
@@ -93,10 +94,10 @@ class PassagePlan(BaseModel):
             waypoint_end = self.course_to_steer[index + 1]
             bearings.append(
                 bearing_degrees(
-                    latitude_start=waypoint_start.latitude_decimal_degs,
-                    longitude_start=waypoint_start.longitude_decimal_degs,
-                    latitude_end=waypoint_end.latitude_decimal_degs,
-                    longitude_end=waypoint_end.longitude_decimal_degs,
+                    latitude_start=waypoint_start.latitude,
+                    longitude_start=waypoint_start.longitude,
+                    latitude_end=waypoint_end.latitude,
+                    longitude_end=waypoint_end.longitude,
                 )
             )
 
