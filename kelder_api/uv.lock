@@ -663,6 +663,15 @@ wheels = [
 ]
 
 [[package]]
+name = "docutils"
+version = "0.22.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d9/02/111134bfeb6e6c7ac4c74594e39a59f6c0195dc4846afbeac3cba60f1927/docutils-0.22.3.tar.gz", hash = "sha256:21486ae730e4ca9f622677b1412b879af1791efcfba517e4c6f60be543fc8cdd", size = 2290153, upload-time = "2025-11-06T02:35:55.655Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/11/a8/c6a4b901d17399c77cd81fb001ce8961e9f5e04d3daf27e8925cb012e163/docutils-0.22.3-py3-none-any.whl", hash = "sha256:bd772e4aca73aff037958d44f2be5229ded4c09927fcf8690c577b66234d6ceb", size = 633032, upload-time = "2025-11-06T02:35:52.391Z" },
+]
+
+[[package]]
 name = "eval-type-backport"
 version = "0.2.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1322,6 +1331,7 @@ dependencies = [
     { name = "redis" },
     { name = "rpi-gpio" },
     { name = "ruff" },
+    { name = "statistics" },
     { name = "sudo" },
     { name = "uvicorn" },
 ]
@@ -1360,6 +1370,7 @@ requires-dist = [
     { name = "redis", specifier = ">=5.2.1,<6.0.0" },
     { name = "rpi-gpio", specifier = ">=0.7.1,<0.8.0" },
     { name = "ruff", specifier = ">=0.11.9,<0.12.0" },
+    { name = "statistics", specifier = ">=1.0.3.5" },
     { name = "sudo", specifier = ">=1.0.0,<2.0.0" },
     { name = "uvicorn", specifier = ">=0.34.0,<0.35.0" },
 ]
@@ -2942,6 +2953,15 @@ sdist = { url = "https://files.pythonhosted.org/packages/ce/20/08dfcd9c983f6a6f4
 wheels = [
     { url = "https://files.pythonhosted.org/packages/8b/0c/9d30a4ebeb6db2b25a841afbb80f6ef9a854fc3b41be131d249a977b4959/starlette-0.46.2-py3-none-any.whl", hash = "sha256:595633ce89f8ffa71a015caed34a5b2dc1c0cdb3f0f1fbd1e69339cf2abeec35", size = 72037, upload-time = "2025-04-13T13:56:16.21Z" },
 ]
+
+[[package]]
+name = "statistics"
+version = "1.0.3.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "docutils" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/bb/3a/ae99a15e65636559d936dd2159d75af1619491e8cb770859fbc8aa62cef6/statistics-1.0.3.5.tar.gz", hash = "sha256:2dc379b80b07bf2ddd5488cad06b2b9531da4dd31edb04dc9ec0dc226486c138", size = 8303, upload-time = "2014-10-16T14:34:26.455Z" }
 
 [[package]]
 name = "sudo"
