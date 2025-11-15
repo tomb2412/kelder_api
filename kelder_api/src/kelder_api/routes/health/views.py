@@ -1,15 +1,16 @@
 import logging
-import subprocess
 from http import HTTPStatus
 
+import requests
 from fastapi import APIRouter, HTTPException
+
+from src.kelder_api.configuration.settings import get_settings
 
 logger = logging.getLogger("core status")
 
 router = APIRouter(tags=["Health"])
 
-SERVICES_TO_RESTART = ("worker", "redis", "kelder_api")
-
+host_api_settings = get_settings().host_api
 
 @router.get("/health_check")
 def read_root():
@@ -20,18 +21,15 @@ def read_root():
 @router.post("/restart", status_code=HTTPStatus.ACCEPTED)
 def restart_container():
     """Restart the API, worker, and Redis containers."""
-    logger.info("Restart endpoint requested for %s", SERVICES_TO_RESTART)
+    logger.info("Restart endpoint requested")
 
     try:
-        subprocess.run(
-            ["docker", "compose", "stop"],
-            check=True,
+        r = requests.post(
+            host_api_settings.restart_url,
+            auth=(host_api_settings.username, host_api_settings.password),
+            timeout=10,
         )
-    except subprocess.CalledProcessError as exc:
-        logger.exception("Failed to restart services: %s", SERVICES_TO_RESTART)
-        raise HTTPException(
-            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-            detail="Unable to restart services",
-        ) from exc
-
-    return {"status": "restarting", "services": list(SERVICES_TO_RESTART)}
+        r.raise_for_status()
+        return {"status": "ok", "output": r.text}
+    except Exception as e:
+        raise HTTPException(500, f"Failed to call host restart API: {e}")

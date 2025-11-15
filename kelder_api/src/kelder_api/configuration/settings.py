@@ -1,7 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import BaseModel, Field
+from pydantic import AliasChoices, BaseModel, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from src.kelder_api.components.velocity.models import CalculationType
@@ -139,6 +139,26 @@ class Drift(BaseSettings):
     model_config = model_config
 
 
+class HostAPISettings(BaseSettings):
+    restart_url: str = Field(
+        description="URL for the host restart endpoint",
+        default="http://host.docker.internal:9090/restart",
+        validation_alias=AliasChoices("HOST_API_RESTART_URL", "RESTART_URL"),
+    )
+    username: str = Field(
+        description="HTTP basic username for the host restart API",
+        default="kelder",
+        validation_alias=AliasChoices("HOST_API_USERNAME", "RESTART_USERNAME"),
+    )
+    password: str = Field(
+        description="HTTP basic password for the host restart API",
+        default="kelder",
+        validation_alias=AliasChoices("HOST_API_PASSWORD", "RESTART_PASSWORD"),
+    )
+
+    model_config = model_config
+
+
 class Settings(BaseModel):
     redis: Redis = Field(
         description="Redis server connection config", default_factory=Redis
@@ -169,6 +189,9 @@ class Settings(BaseModel):
         description="Inference service configuration", default_factory=Inference
     )
     drift: Drift = Field(description="Drift calculator config", default_factory=Drift)
+    host_api: HostAPISettings = Field(
+        description="Host restart API configuration", default_factory=HostAPISettings
+    )
 
 
 @lru_cache(maxsize=1)
