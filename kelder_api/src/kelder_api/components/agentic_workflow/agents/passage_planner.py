@@ -2,7 +2,6 @@ import asyncio
 import logging
 import textwrap
 
-import httpx
 from pydantic import Field
 from pydantic_ai import Agent, RunContext
 
@@ -65,8 +64,8 @@ passage_plan_agent = Agent(
     "gpt-5",
     system_prompt=system_prompt,
     output_type=PassagePlan,
-
 )
+
 
 @passage_plan_agent.tool
 async def save_passage_plan_tool(
@@ -75,16 +74,17 @@ async def save_passage_plan_tool(
     """Persist the passage plan to display to the user"""
     return await save_passage_plan(passage_plan, ctx.deps)
 
+
 # @passage_plan_agent.tool
 # async def check_coordinates_are_water(ctx: RunContext, latitude: str, longitude: str) -> bool | None:
 #     """
-#     Verify a latitude and longitude are in the water. longitude DD.DDD latitude DDD.DDD 
-    
+#     Verify a latitude and longitude are in the water. longitude DD.DDD latitude DDD.DDD
+
 #     Returns:
 #         bool - for successful response. True implies waypoint is on water, and false is on land.
 #         None - tool is not active at the moment.
 #     """
-    
+
 #     url = "https://isitwater-com.p.rapidapi.com/"
 #     params = {
 #         "latitude": latitude,
@@ -117,11 +117,19 @@ async def save_passage_plan_tool(
 @passage_plan_agent.tool
 def calculate_distance_between_waypoints(
     ctx: RunContext,
-    start_latitude: str = Field(description="The start waypoint latitude in decimal degrees"),
-    start_longitude: str = Field(description="The start waypoint longitude in decimal degrees"),
-    end_latitude: str = Field(description="The end waypoint latitude in decimal degrees"),
-    end_longitude: str = Field(description="The end waypoint longitude in decimal degrees")
-    ):
+    start_latitude: str = Field(
+        description="The start waypoint latitude in decimal degrees"
+    ),
+    start_longitude: str = Field(
+        description="The start waypoint longitude in decimal degrees"
+    ),
+    end_latitude: str = Field(
+        description="The end waypoint latitude in decimal degrees"
+    ),
+    end_longitude: str = Field(
+        description="The end waypoint longitude in decimal degrees"
+    ),
+):
     """Calculate the distance in nautical miles between waypoints. All arguments in decimal degrees"""
     return haversine(
         latitude_start=start_latitude,

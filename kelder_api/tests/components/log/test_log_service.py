@@ -13,6 +13,7 @@ from src.kelder_api.components.log.exceptions import DataValidationError
 from src.kelder_api.components.log.models import JourneyData, LegData
 from src.kelder_api.components.log.service import LogTracker
 from src.kelder_api.components.velocity.models import GPSVelocity
+from tests.conftest import make_settings
 
 
 class RecordingRedisClient:
@@ -67,7 +68,7 @@ def configure_log_settings(monkeypatch: pytest.MonkeyPatch):
     def _configure(
         time_window_length: int = 60, tack_bearing_tolerance: int = 15
     ) -> None:
-        settings = SimpleNamespace(
+        settings = make_settings(
             log_tracker=SimpleNamespace(
                 time_window_length=time_window_length,
                 tack_bearing_tolerance=tack_bearing_tolerance,

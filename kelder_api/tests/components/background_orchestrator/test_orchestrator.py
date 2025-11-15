@@ -15,6 +15,7 @@ from src.kelder_api.components.background_orchestrator.stationary_strategy impor
 from src.kelder_api.components.background_orchestrator.underway_strategy import (
     UnderwayStrategy,
 )
+from tests.conftest import make_settings
 
 
 class _ComponentStub:
@@ -74,7 +75,7 @@ class _VelocityReaderStub:
 @pytest.fixture
 def configure_orchestrator_settings(monkeypatch: pytest.MonkeyPatch):
     def _configure(sog_threshold: float = 5.0) -> None:
-        settings = SimpleNamespace(
+        settings = make_settings(
             orchestrator=SimpleNamespace(sog_threshold=sog_threshold)
         )
         monkeypatch.setattr(

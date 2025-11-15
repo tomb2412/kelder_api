@@ -12,6 +12,7 @@ router = APIRouter(tags=["Health"])
 
 host_api_settings = get_settings().host_api
 
+
 @router.get("/health_check")
 def read_root():
     logger.debug("Health check success")

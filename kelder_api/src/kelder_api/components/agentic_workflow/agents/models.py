@@ -5,25 +5,18 @@ from pydantic import BaseModel, Field, computed_field
 
 from src.kelder_api.components.velocity.utils import (
     bearing_degrees,
-    convert_to_decimal_degrees,
     haversine,
 )
 
 
 class Waypoint(BaseModel):
     name: Optional[str] = Field(None, description="Name of the waypoint")
-    latitude: float = Field(
-        description=(
-            "Latitude of waypoint in decimal degrees"
-        )
-    )
+    latitude: float = Field(description=("Latitude of waypoint in decimal degrees"))
     latitude_hemisphere: str = Field(
         description="North or south hemisphere e.g 'N' or 'S'", default="N"
     )
     longitude: float = Field(
-        description=(
-            "Longitude of waypoinfloatt in decimal degrees"
-        )
+        description=("Longitude of waypoinfloatt in decimal degrees")
     )
     longitude_hemisphere: str = Field(
         description="East or west hemisphere of longitude", default="W"
@@ -53,7 +46,7 @@ class PortOfRefuge(BaseModel):
 class PassagePlan(BaseModel):
     timestamp: datetime = Field(
         description="The timestamp the passage plan was created",
-        default = datetime.now(tz=timezone.utc)
+        default=datetime.now(tz=timezone.utc),
     )
     departure_place_name: str = Field(
         ..., description="Place of departure for the passage plan, e.g. 'Cowes'"

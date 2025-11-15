@@ -3,11 +3,11 @@ from __future__ import annotations
 import json
 import math
 import os
-from pathlib import Path
 from collections import defaultdict
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, Dict, Iterable, Tuple
 
@@ -15,6 +15,9 @@ import pytest
 from fastapi.testclient import TestClient
 
 os.environ.setdefault("OPENAI_API_KEY", "test-key")
+os.environ.setdefault("HOST_API_RESTART_URL", "http://test:9090/restart")
+os.environ.setdefault("HOST_API_USERNAME", "test")
+os.environ.setdefault("HOST_API_PASSWORD", "test")
 
 from src.kelder_api.components.compass_new.models import CompassRedisData
 from src.kelder_api.components.db_manager.service import DBManager
@@ -303,6 +306,20 @@ class DummyLogTracker:
 
     async def get_leg_set(self, _datetime: datetime | None = None) -> SimpleNamespace:
         return SimpleNamespace(course_over_ground=182.0)
+
+
+def make_settings(**sections: Any) -> SimpleNamespace:
+    """Construct a SimpleNamespace mimicking our Settings object for tests."""
+    host_api = SimpleNamespace(
+        restart_url=os.getenv(
+            "HOST_API_RESTART_URL", "http://host.docker.internal:9090/restart"
+        ),
+        username=os.getenv("HOST_API_USERNAME", "kelder"),
+        password=os.getenv("HOST_API_PASSWORD", "kelder"),
+    )
+    defaults = {"host_api": host_api}
+    defaults.update(sections)
+    return SimpleNamespace(**defaults)
 
 
 @pytest.fixture()

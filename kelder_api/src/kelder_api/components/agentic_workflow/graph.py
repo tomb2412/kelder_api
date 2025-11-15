@@ -2,7 +2,6 @@ from typing import Awaitable, Callable
 
 from pydantic_graph import Graph
 
-from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.agentic_workflow.models import State
 from src.kelder_api.components.agentic_workflow.nodes import (
     BuildPassageNode,
@@ -11,6 +10,7 @@ from src.kelder_api.components.agentic_workflow.nodes import (
     ResponseEvaluatorNode,
     TidalSearchNode,
 )
+from src.kelder_api.components.redis_client.redis_client import RedisClient
 
 ProgressCallback = Callable[[str], Awaitable[None]]
 

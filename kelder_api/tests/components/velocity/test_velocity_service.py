@@ -12,6 +12,7 @@ from src.kelder_api.components.gps_new.types import GPSStatus
 from src.kelder_api.components.velocity import utils as velocity_utils
 from src.kelder_api.components.velocity.models import CalculationType, GPSVelocity
 from src.kelder_api.components.velocity.service import VelocityCalculator
+from tests.conftest import make_settings
 
 
 class RecordingRedisClient:
@@ -63,7 +64,7 @@ def configure_velocity_settings(monkeypatch: pytest.MonkeyPatch):
         calculation_type: CalculationType = CalculationType.TIMESERIES,
         history: int = 3,
     ) -> None:
-        settings = SimpleNamespace(
+        settings = make_settings(
             velocity=SimpleNamespace(
                 velocity_calculation_type=calculation_type,
                 gps_velocity_history=history,

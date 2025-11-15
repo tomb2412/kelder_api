@@ -49,7 +49,7 @@ async def lifespan(app: FastAPI):
     velocity_calculator = VelocityCalculator(
         gps_interface=gps_interface, redis_client=redis_client
     )
-    db_manager=DBManager()
+    db_manager = DBManager()
     log_tracker = LogTracker(
         gps_interface=gps_interface,
         redis_client=redis_client,
