@@ -141,19 +141,16 @@ class Drift(BaseSettings):
 
 class HostAPISettings(BaseSettings):
     restart_url: str = Field(
-        description="URL for the host restart endpoint",
-        default="http://host.docker.internal:9090/restart",
-        validation_alias=AliasChoices("HOST_API_RESTART_URL", "RESTART_URL"),
+        description="URL for the host endpoint",
+        validation_alias=AliasChoices("HOST_API_RESTART_URL"),
     )
     username: str = Field(
-        description="HTTP basic username for the host restart API",
-        default="kelder",
-        validation_alias=AliasChoices("HOST_API_USERNAME", "RESTART_USERNAME"),
+        description="HTTP basic username for the host API",
+        validation_alias=AliasChoices("HOST_API_USERNAME"),
     )
     password: str = Field(
-        description="HTTP basic password for the host restart API",
-        default="kelder",
-        validation_alias=AliasChoices("HOST_API_PASSWORD", "RESTART_PASSWORD"),
+        description="HTTP basic password for the host API",
+        validation_alias=AliasChoices("HOST_API_PASSWORD"),
     )
 
     model_config = model_config

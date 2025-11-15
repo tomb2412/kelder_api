@@ -25,7 +25,7 @@ def restart_container():
 
     try:
         r = requests.post(
-            host_api_settings.restart_url,
+            f"{host_api_settings.restart_url}/restart",
             auth=(host_api_settings.username, host_api_settings.password),
             timeout=10,
         )
