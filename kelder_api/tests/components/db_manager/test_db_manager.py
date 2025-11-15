@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 from typing import Callable
 
 import pytest
@@ -12,18 +11,6 @@ from src.kelder_api.components.db_manager.models import (
 )
 from src.kelder_api.components.db_manager.service import DBManager
 from src.kelder_api.components.log.models import JourneyData
-
-
-@pytest.fixture()
-def db_path(tmp_path: Path) -> Path:
-    return tmp_path / "journey_history.db"
-
-
-@pytest.fixture()
-def db_manager(db_path: Path) -> DBManager:
-    manager = DBManager(db_path)
-    manager.clear_history()
-    return manager
 
 
 @pytest.fixture()

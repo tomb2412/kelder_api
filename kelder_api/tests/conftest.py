@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import math
 import os
+from pathlib import Path
 from collections import defaultdict
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
@@ -16,6 +17,7 @@ from fastapi.testclient import TestClient
 os.environ.setdefault("OPENAI_API_KEY", "test-key")
 
 from src.kelder_api.components.compass_new.models import CompassRedisData
+from src.kelder_api.components.db_manager.service import DBManager
 from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.gps_new.types import GPSStatus
 from src.kelder_api.components.log.models import JourneyData
@@ -276,6 +278,7 @@ class DummyLogTracker:
         gps_interface: DummyGPSInterface,
         redis_client: DummyRedisClient,
         velocity_calculator: DummyVelocityCalculator,
+        db_manager=None,
     ) -> None:
         timestamp = datetime(2024, 1, 1, 12, tzinfo=timezone.utc)
 
@@ -300,6 +303,18 @@ class DummyLogTracker:
 
     async def get_leg_set(self, _datetime: datetime | None = None) -> SimpleNamespace:
         return SimpleNamespace(course_over_ground=182.0)
+
+
+@pytest.fixture()
+def db_path(tmp_path: Path) -> Path:
+    return tmp_path / "journey_history.db"
+
+
+@pytest.fixture()
+def db_manager(db_path: Path) -> DBManager:
+    manager = DBManager(db_path)
+    manager.clear_history()
+    return manager
 
 
 class FakeStream:

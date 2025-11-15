@@ -42,5 +42,9 @@ class StationaryStrategy:
                 )()
             except Exception as error:
                 logger.error(f"Exception occured processing {calculator}: {error}")
+        
+        if previous_vessel_state == VesselState.UNDERWAY:
+            logger.info("Journey finishing")
+            await components["LOG"]["instance"].finish_journey()
 
         await asyncio.sleep(10)

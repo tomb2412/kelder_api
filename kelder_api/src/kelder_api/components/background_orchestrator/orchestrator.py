@@ -8,6 +8,7 @@ from src.kelder_api.components.background_orchestrator.underway_strategy import 
     UnderwayStrategy,
 )
 from src.kelder_api.components.compass_new.interface import CompassInterface
+from src.kelder_api.components.db_manager.service import DBManager
 from src.kelder_api.components.drift_calculator.serivce import DriftCalculator
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.log.service import LogTracker
@@ -48,10 +49,12 @@ class BackgroundTaskManager:
             gps_interface=gps_interface, redis_client=self.redis_client
         )
 
+        db_manager = DBManager()
         log_tracker = LogTracker(
             gps_interface=gps_interface,
             redis_client=self.redis_client,
             velocity_calculator=velocity_calculator,
+            db_manager=db_manager,
         )
 
         drift_calculator = DriftCalculator(

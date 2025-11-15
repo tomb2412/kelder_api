@@ -32,6 +32,14 @@ class RecordingRedisClient:
         return self.storage.get(key, {})
 
 
+class RecordingDBManager:
+    def __init__(self) -> None:
+        self.saved: list[JourneyData] = []
+
+    def save_from_journey_data(self, journey_data: JourneyData) -> None:
+        self.saved.append(journey_data)
+
+
 @dataclass
 class StubGPSInterface:
     gps_data: GPSRedisData
@@ -99,13 +107,20 @@ def _make_velocity(
     )
 
 
+@pytest.fixture
+def db_manager_stub():
+    return RecordingDBManager()
+
+
 @pytest.mark.asyncio
-async def test_get_sensor_data_returns_latest_values(configure_log_settings):
+async def test_get_sensor_data_returns_latest_values(
+    configure_log_settings, db_manager_stub
+):
     configure_log_settings(time_window_length=120)
     timestamp = datetime(2024, 1, 1, 12, tzinfo=timezone.utc)
     gps = StubGPSInterface(_make_gps(timestamp))
     velocity = StubVelocityCalculator(_make_velocity(timestamp))
-    tracker = LogTracker(gps, RecordingRedisClient(), velocity)
+    tracker = LogTracker(gps, RecordingRedisClient(), velocity, db_manager_stub)
 
     gps_data, velocity_data = await tracker._get_sensor_data(now=timestamp)
 
@@ -122,7 +137,7 @@ async def test_get_sensor_data_returns_latest_values(configure_log_settings):
     ],
 )
 async def test_get_sensor_data_missing_sources_raise_validation(
-    configure_log_settings, gps_raises: bool, velocity_raises: bool
+    configure_log_settings, gps_raises: bool, velocity_raises: bool, db_manager_stub
 ):
     configure_log_settings()
     timestamp = datetime(2024, 1, 1, 12, tzinfo=timezone.utc)
@@ -130,7 +145,7 @@ async def test_get_sensor_data_missing_sources_raise_validation(
     velocity = StubVelocityCalculator(
         _make_velocity(timestamp), raise_index=velocity_raises
     )
-    tracker = LogTracker(gps, RecordingRedisClient(), velocity)
+    tracker = LogTracker(gps, RecordingRedisClient(), velocity, db_manager_stub)
 
     with pytest.raises(DataValidationError):
         await tracker._get_sensor_data(now=timestamp)
@@ -145,7 +160,10 @@ async def test_get_sensor_data_missing_sources_raise_validation(
     ],
 )
 async def test_get_sensor_data_latency_violation_raises(
-    configure_log_settings, gps_offset: timedelta, velocity_offset: timedelta
+    configure_log_settings,
+    gps_offset: timedelta,
+    velocity_offset: timedelta,
+    db_manager_stub,
 ):
     configure_log_settings(time_window_length=60)
     base_time = datetime(2024, 1, 1, 12, tzinfo=timezone.utc)
@@ -154,20 +172,22 @@ async def test_get_sensor_data_latency_violation_raises(
 
     gps = StubGPSInterface(_make_gps(gps_timestamp))
     velocity = StubVelocityCalculator(_make_velocity(velocity_timestamp))
-    tracker = LogTracker(gps, RecordingRedisClient(), velocity)
+    tracker = LogTracker(gps, RecordingRedisClient(), velocity, db_manager_stub)
 
     with pytest.raises(DataValidationError):
         await tracker._get_sensor_data(now=base_time)
 
 
 @pytest.mark.asyncio
-async def test_increment_log_initialises_journey_and_leg(configure_log_settings):
+async def test_increment_log_initialises_journey_and_leg(
+    configure_log_settings, db_manager_stub
+):
     configure_log_settings()
     timestamp = datetime(2024, 1, 1, 12, tzinfo=timezone.utc)
     gps = StubGPSInterface(_make_gps(timestamp))
     velocity = StubVelocityCalculator(_make_velocity(timestamp, course=90.0))
     redis_client = RecordingRedisClient()
-    tracker = LogTracker(gps, redis_client, velocity)
+    tracker = LogTracker(gps, redis_client, velocity, db_manager_stub)
 
     await tracker.increment_log(now=timestamp)
 
@@ -180,13 +200,15 @@ async def test_increment_log_initialises_journey_and_leg(configure_log_settings)
 
 
 @pytest.mark.asyncio
-async def test_increment_log_resets_leg_on_bearing_change(configure_log_settings):
+async def test_increment_log_resets_leg_on_bearing_change(
+    configure_log_settings, db_manager_stub
+):
     configure_log_settings(tack_bearing_tolerance=10)
     timestamp = datetime(2024, 1, 1, 12, tzinfo=timezone.utc)
     gps = StubGPSInterface(_make_gps(timestamp))
     velocity = StubVelocityCalculator(_make_velocity(timestamp, course=100.0))
     redis_client = RecordingRedisClient()
-    tracker = LogTracker(gps, redis_client, velocity)
+    tracker = LogTracker(gps, redis_client, velocity, db_manager_stub)
 
     await tracker.increment_log(now=timestamp)
 
@@ -201,12 +223,14 @@ async def test_increment_log_resets_leg_on_bearing_change(configure_log_settings
 
 
 @pytest.mark.asyncio
-async def test_increment_log_updates_leg_when_within_tolerance(configure_log_settings):
+async def test_increment_log_updates_leg_when_within_tolerance(
+    configure_log_settings, db_manager_stub
+):
     configure_log_settings(tack_bearing_tolerance=40)
     timestamp = datetime(2024, 1, 1, 12, tzinfo=timezone.utc)
     gps = StubGPSInterface(_make_gps(timestamp))
     velocity = StubVelocityCalculator(_make_velocity(timestamp, course=200.0))
-    tracker = LogTracker(gps, RecordingRedisClient(), velocity)
+    tracker = LogTracker(gps, RecordingRedisClient(), velocity, db_manager_stub)
 
     await tracker.increment_log(now=timestamp)
 
@@ -221,29 +245,35 @@ async def test_increment_log_updates_leg_when_within_tolerance(configure_log_set
 
 
 @pytest.mark.asyncio
-async def test_finish_journey_resets_state(configure_log_settings):
+async def test_finish_journey_persists_and_resets_state(
+    configure_log_settings, db_manager_stub
+):
     configure_log_settings()
     timestamp = datetime(2024, 1, 1, 12, tzinfo=timezone.utc)
     gps = StubGPSInterface(_make_gps(timestamp))
     velocity = StubVelocityCalculator(_make_velocity(timestamp))
-    tracker = LogTracker(gps, RecordingRedisClient(), velocity)
+    tracker = LogTracker(gps, RecordingRedisClient(), velocity, db_manager_stub)
 
     await tracker.increment_log(now=timestamp)
+    journey_snapshot = tracker.journey_data
     await tracker.finish_jouney()
 
     assert tracker.start_journey is True
-    assert not hasattr(tracker, "journey_data")
+    assert tracker.journey_data is None
     assert not hasattr(tracker, "leg_data")
+    assert db_manager_stub.saved == [journey_snapshot]
 
 
 @pytest.mark.asyncio
-async def test_get_journey_set_returns_model_instance(configure_log_settings):
+async def test_get_journey_set_returns_model_instance(
+    configure_log_settings, db_manager_stub
+):
     configure_log_settings()
     timestamp = datetime(2024, 1, 1, 12, tzinfo=timezone.utc)
     gps = StubGPSInterface(_make_gps(timestamp))
     velocity = StubVelocityCalculator(_make_velocity(timestamp))
     redis_client = RecordingRedisClient()
-    tracker = LogTracker(gps, redis_client, velocity)
+    tracker = LogTracker(gps, redis_client, velocity, db_manager_stub)
 
     await tracker.increment_log(now=timestamp)
 
@@ -255,7 +285,9 @@ async def test_get_journey_set_returns_model_instance(configure_log_settings):
 
 
 @pytest.mark.asyncio
-async def test_get_sets_return_none_when_validation_fails(configure_log_settings):
+async def test_get_sets_return_none_when_validation_fails(
+    configure_log_settings, db_manager_stub
+):
     configure_log_settings()
     tracker = LogTracker(
         StubGPSInterface(_make_gps(datetime(2024, 1, 1, tzinfo=timezone.utc))),
@@ -263,6 +295,7 @@ async def test_get_sets_return_none_when_validation_fails(configure_log_settings
         StubVelocityCalculator(
             _make_velocity(datetime(2024, 1, 1, tzinfo=timezone.utc))
         ),
+        db_manager_stub,
     )
 
     assert await tracker.get_journey_set() is None

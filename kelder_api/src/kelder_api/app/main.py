@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # Component import
 from src.kelder_api.components.agentic_workflow.graph import AgentWorkflow
 from src.kelder_api.components.compass_new.interface import CompassInterface
+from src.kelder_api.components.db_manager.service import DBManager
 from src.kelder_api.components.drift_calculator.serivce import DriftCalculator
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.log.service import LogTracker
@@ -48,10 +49,12 @@ async def lifespan(app: FastAPI):
     velocity_calculator = VelocityCalculator(
         gps_interface=gps_interface, redis_client=redis_client
     )
+    db_manager=DBManager()
     log_tracker = LogTracker(
         gps_interface=gps_interface,
         redis_client=redis_client,
         velocity_calculator=velocity_calculator,
+        db_manager=db_manager,
     )
     drift_calculator = DriftCalculator(
         redis_client=redis_client,

@@ -27,6 +27,10 @@ class UnderwayStrategy:
     async def execute(
         self, components: Dict[str, dict], previous_vessel_state: VesselState
     ) -> None:
+        if previous_vessel_state == VesselState.STATIONARY:
+            # The log tracker when finishing sets the start journey attribute to true
+            logger.info("Journey tracking starting")
+
         for sensor in self.required_sensors():
             try:
                 await getattr(
@@ -42,9 +46,4 @@ class UnderwayStrategy:
                 )()
             except Exception as error:
                 logger.error(f"Exception occured processing {calculator}: {error}")
-
-        if previous_vessel_state == VesselState.STATIONARY:
-            logger.info("Journey finishing")
-            await components["LOG"]["instance"].finish_journey()
-
         await asyncio.sleep(5)

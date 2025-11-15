@@ -4,6 +4,7 @@ from typing import Tuple
 
 from pydantic import ValidationError
 
+from src.kelder_api.components.db_manager.service import DBManager
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.log.exceptions import DataValidationError
@@ -27,15 +28,18 @@ class LogTracker:
         gps_interface: GPSInterface,
         redis_client: RedisClient,
         velocity_calculator: VelocityCalculator,
+        db_manager: DBManager,
     ):
         self.gps_interface = gps_interface
         self.redis_client = redis_client
         self.velocity_calculator = velocity_calculator
+        self.db_manager: DBManager = db_manager
 
         self.settings = get_settings().log_tracker
 
         # Variable to monitor the start of the jouney.
         self.start_journey = True
+        self.journey_data = None
 
     async def _get_sensor_data(
         self, now: datetime | None = None
@@ -131,9 +135,17 @@ class LogTracker:
 
     async def finish_jouney(self):
         "Writes and clears the cached journey data."
+        if self.journey_data is not None:
+            try:
+                self.db_manager.save_from_journey_data(self.journey_data)
+                logger.info("Persisted journey data to sqlite history")
+            except Exception:
+                logger.exception("Failed to persist journey history record")
+
         del self.journey_data
         del self.leg_data
         self.start_journey = True
+        self.journey_data = None
 
     async def update_redis_set(
         self, journey_data: JourneyData, leg_data: LegData
