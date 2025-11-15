@@ -20,3 +20,4 @@ async def save_passage_plan(
 
     except Exception:
         return False
+

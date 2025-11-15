@@ -1,7 +1,8 @@
 import logging
 import math
 from datetime import datetime, timedelta, timezone
-from statistics import fmean
+from statistics import fmean, StatisticsError
+from typing import Tuple
 
 from src.kelder_api.components.compass_new.interface import CompassInterface
 from src.kelder_api.components.drift_calculator.models import DriftData
@@ -59,35 +60,47 @@ class DriftCalculator:
             start_datetime=start_datetime
         )
         heading_avg = await self._calculate_avg_heading(start_datetime=start_datetime)
-
-        drift_angle = bearing_angle_difference(heading_avg, cog_avg)
-        drift_speed = sog_avg * math.sin(drift_angle)
+        
+        if sog_avg and cog_avg and heading_avg:
+            drift_angle = bearing_angle_difference(heading_avg, cog_avg)
+            drift_speed = sog_avg * math.sin(drift_angle)
+        else:
+            drift_speed = None
 
         return DriftData(timestamp=end_datetime, drift_speed=drift_speed)
 
-    async def _calculate_avg_velocity(self, start_datetime: datetime):
+    async def _calculate_avg_velocity(self, start_datetime: datetime) -> Tuple[float| None]:
         velocity_history = await self.velocity_calculator.read_velocity_timeseries(
             start_datetime=start_datetime, active=True
         )
 
         # TODO: catch no data
-        sog_avg = fmean(
-            map(lambda measurement: measurement.speed_over_ground, velocity_history)
-        )
-        cog_avg = fmean(
-            map(lambda measurement: measurement.course_over_ground, velocity_history)
-        )
-
+        try:
+            sog_avg = fmean(
+                map(lambda measurement: measurement.speed_over_ground, velocity_history)
+            )
+            cog_avg = fmean(
+                map(lambda measurement: measurement.course_over_ground, velocity_history)
+            )
+        except StatisticsError:
+            sog_avg = None
+            cog_avg = None
+            logger.error(f"No velocity data available in the last {self.settings.instantaneous_history_period}") 
+        
         return sog_avg, cog_avg
 
-    async def _calculate_avg_heading(self, start_datetime: datetime):
+    async def _calculate_avg_heading(self, start_datetime: datetime) -> float | None:
         compass_history = await self.compass_interface.read_heading_history_timeseries(
             start_datetime=start_datetime, active=True
         )
 
-        heading_avg = fmean(
-            map(lambda measurement: measurement.heading, compass_history)
-        )
+        try:
+            heading_avg = fmean(
+                map(lambda measurement: measurement.heading, compass_history)
+            )
+        except StatisticsError:
+            heading_avg = None
+            logger.error(f"No compass data available in the last {self.settings.instantaneous_history_period}") 
 
         return heading_avg
 
