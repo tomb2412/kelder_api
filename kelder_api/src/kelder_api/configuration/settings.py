@@ -142,7 +142,7 @@ class Drift(BaseSettings):
 class HostAPISettings(BaseSettings):
     restart_url: str = Field(
         description="URL for the host endpoint",
-        validation_alias=AliasChoices("HOST_API_RESTART_URL"),
+        validation_alias=AliasChoices("HOST_API_URL"),
     )
     username: str = Field(
         description="HTTP basic username for the host API",
