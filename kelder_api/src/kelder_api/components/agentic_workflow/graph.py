@@ -1,3 +1,4 @@
+import logging
 from typing import Awaitable, Callable
 
 from pydantic_graph import Graph
@@ -12,8 +13,7 @@ from src.kelder_api.components.agentic_workflow.nodes import (
 )
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 
-ProgressCallback = Callable[[str], Awaitable[None]]
-
+logger = logging.getLogger(__name__)
 
 class AgentWorkflow:
     def __init__(self, redis_client: RedisClient):
@@ -29,11 +29,12 @@ class AgentWorkflow:
         )
 
     async def run(
-        self, user_message: str, progress_callback: ProgressCallback | None = None
+        self, user_message: str, progress_callback: Callable[[str], Awaitable[None]] | None = None
     ) -> str:
         self.state.user_message = user_message
         self.state.progress_callback = progress_callback
         try:
+            logger.info("Running the graph")
             result = await self.graph.run(ChatBotAgent(), state=self.state)
         finally:
             self.state.progress_callback = None

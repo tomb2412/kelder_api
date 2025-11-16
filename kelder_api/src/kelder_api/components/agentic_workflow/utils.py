@@ -18,7 +18,7 @@ def find_models(models: List[Node], node_type: ReasoningEndNodes):
 
 
 async def notify_progress(state: State, node_name: str):
-    callback = getattr(state, "progress_callback", None)
+    callback = state.progress_callback
     if callback is None:
         return
     await callback(node_name)
