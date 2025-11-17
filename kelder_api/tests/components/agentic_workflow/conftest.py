@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from unittest.mock import AsyncMock
 from dataclasses import dataclass
 from types import SimpleNamespace
 from typing import Any, Iterable, List
 
 import pytest
 
+from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.agentic_workflow import nodes as nodes_module
 from src.kelder_api.components.agentic_workflow.agents import chatbot as chatbot_module
 from src.kelder_api.components.agentic_workflow.agents import (
@@ -72,7 +74,7 @@ class _SimpleAgentStub:
     def set_outputs(self, outputs: Iterable[Any]) -> None:
         self.outputs = list(outputs)
 
-    async def run(self, prompt: str):
+    async def run(self, prompt: str, deps: Any = None):
         self.prompts.append(prompt)
         if not self.outputs:
             raise AssertionError("No outputs configured for agent stub")
@@ -141,3 +143,9 @@ def tidal_outputs(fake_tidal_agent: _SimpleAgentStub):
         fake_tidal_agent.set_outputs(outputs)
 
     return _configure
+
+@pytest.fixture()
+def mock_redis_client() -> AsyncMock:
+    """Provide an async mock of the redis client for GPSInterface tests."""
+    client = AsyncMock(spec=RedisClient)
+    return client

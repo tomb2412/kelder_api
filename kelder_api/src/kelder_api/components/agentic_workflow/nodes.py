@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 class ChatBotAgent(BaseNode[State]):
     async def run(self, ctx: GraphRunContext[State]) -> ResponseEvaluatorNode:
         logger.debug("Chatbot agent called")
-        await notify_progress(ctx.state, "chat")
+        await notify_progress(ctx.state, "Generating a chat response")
         prompt = f"The users message: {ctx.state.user_message}"
         if ctx.state.workflow_length > 0:
             prompt += "\nIn response we have the following processes:"
@@ -68,7 +68,7 @@ class ReasoningAgent(BaseNode[State]):
         self, ctx: GraphRunContext[State]
     ) -> ChatBotAgent | BuildPassageNode | TidalSearchNode:
         logger.debug("Reasoning agent called")
-        await notify_progress(ctx.state, "reasoning")
+        await notify_progress(ctx.state, "Reasoning actions")
 
         if ctx.state.workflow_length == 0:
             result = await reasoning_agent.run(
@@ -93,7 +93,7 @@ class BuildPassageNode(BaseNode[State]):
 
     async def run(self, ctx: GraphRunContext[State]) -> ReasoningAgent:
         logger.debug("Passage planing agent called")
-        await notify_progress(ctx.state, "passage_plan")
+        await notify_progress(ctx.state, "Generating a passage plan")
 
         prompt = (
             f"Users message: {ctx.state.user_message}\n"
@@ -127,7 +127,7 @@ class ResponseEvaluatorNode(BaseNode[State]):
     input: str
 
     async def run(self, ctx: GraphRunContext[State]) -> End[str]:
-        await notify_progress(ctx.state, "response_evaluator")
+        await notify_progress(ctx.state, "Evaluating the final response")
         ctx.state.workflow_plan = []
         ctx.state.job_count = 0
         return End(self.input)
@@ -139,7 +139,7 @@ class TidalSearchNode(BaseNode[State]):
 
     async def run(self, ctx: GraphRunContext[State]) -> ReasoningAgent:
         logger.debug("Tidal query agent called for %s" % self.input_prompt)
-        await notify_progress(ctx.state, "tidal_search")
+        await notify_progress(ctx.state, "Searching tidal information")
         prompt = (
             f"Users message: {ctx.state.user_message}"
             f"Task description: {self.input_prompt}"

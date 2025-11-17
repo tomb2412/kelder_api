@@ -51,7 +51,7 @@ prompt = textwrap.dedent(
 ).strip()
 
 chatbot_agent = Agent(
-    model="gpt-5-mini",
+    model="gpt-5-nano",
     output_type=ChatResponse | ReasoningInput,  # | TidalSearch | BuildPassageRoute,
     system_prompt=prompt,
 )

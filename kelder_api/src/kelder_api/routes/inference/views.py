@@ -75,7 +75,7 @@ async def stream_chat(user_prompt: str, agent_workflow: AgentWorkflow):
         yield f"data: {
             json.dumps({'type': 'text-delta', 'id': text_id, 'delta': chunk})
         }\n\n"
-        await asyncio.sleep(0)
+        await asyncio.sleep(0.025)
 
     # stream finished — close the text block, send finish and termination markers
     yield f"data: {json.dumps({'type': 'text-end', 'id': text_id})}\n\n"

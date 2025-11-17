@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pytest
 
+from unittest.mock import AsyncMock
 from src.kelder_api.components.agentic_workflow.agents.chatbot import (
     ChatResponse,
     ReasoningInput,
@@ -18,9 +19,10 @@ from src.kelder_api.components.agentic_workflow.models import (
 async def test_agent_workflow_returns_direct_chat_response(
     fake_reasoning,
     chatbot_responses,
+    mock_redis_client: AsyncMock,
 ):
     chatbot_responses(ChatResponse(message="Hello skipper"))
-    workflow = AgentWorkflow()
+    workflow = AgentWorkflow(redis_client=mock_redis_client)
 
     result = await workflow.run("Hi")
 
@@ -34,6 +36,7 @@ async def test_agent_workflow_executes_reasoning_plan_and_reports_progress(
     chatbot_responses,
     reasoning_plan,
     passage_outputs,
+    mock_redis_client
 ):
     plan = [
         Node(
@@ -59,7 +62,7 @@ async def test_agent_workflow_executes_reasoning_plan_and_reports_progress(
     async def progress_callback(node: str) -> None:
         progress_calls.append(node)
 
-    workflow = AgentWorkflow()
+    workflow = AgentWorkflow(redis_client=mock_redis_client)
     result = await workflow.run(
         "Plan a short hop from Cowes to Southampton",
         progress_callback=progress_callback,
@@ -68,10 +71,10 @@ async def test_agent_workflow_executes_reasoning_plan_and_reports_progress(
     assert result == "Passage plan ready"
     assert fake_reasoning.calls == ["Plan a short hop from Cowes to Southampton"]
     assert progress_calls == [
-        "chat",
-        "reasoning",
-        "passage_plan",
-        "reasoning",
-        "chat",
-        "response_evaluator",
+        "Generating a chat response",
+        "Reasoning actions",
+        "Generating a passage plan",
+        "Reasoning actions",
+        "Generating a chat response",
+        "Evaluating the final response",
     ]

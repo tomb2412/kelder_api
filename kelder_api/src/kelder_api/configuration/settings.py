@@ -124,7 +124,7 @@ class BilgeDepthSettings(BaseSettings):
 class Inference(BaseSettings):
     stream_chunk_size: int = Field(
         description="Number of characters per streamed SSE chunk",
-        default=10,
+        default=1,
     )
     model_config = model_config
 
