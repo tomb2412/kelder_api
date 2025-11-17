@@ -21,7 +21,8 @@ def check_auth(credentials: HTTPBasicCredentials = Depends(security)):
     correct_user = secrets.compare_digest(credentials.username, ADMIN_USER)
     correct_pass = secrets.compare_digest(credentials.password, ADMIN_PASS)
     print(
-        f"The credentials recieved: \nusername: {credentials.username}\nPassword: {credentials.password}"
+        f"The credentials recieved:"
+        f"username: {credentials.username}\nPassword: {credentials.password}"
     )
     if not (correct_user and correct_pass):
         raise HTTPException(401, "Unauthorized")

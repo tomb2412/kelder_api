@@ -1,9 +1,9 @@
 import logging
-from datetime import datetime, timedelta, timezone, time
-from typing import Tuple
+from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
+from typing import Tuple
 
-from fastapi import APIRouter, Depends, Request, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from src.kelder_api.app.getters import (
     get_drift_calculator,
@@ -113,4 +113,6 @@ async def get_gps_card(
             drift=drift_data.drift_speed,
         )
     else:
-        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="No GPS data available")
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND, detail="No GPS data available"
+        )

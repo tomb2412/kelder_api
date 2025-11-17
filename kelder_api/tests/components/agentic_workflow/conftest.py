@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-from unittest.mock import AsyncMock
 from dataclasses import dataclass
 from types import SimpleNamespace
 from typing import Any, Iterable, List
+from unittest.mock import AsyncMock
 
 import pytest
 
-from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.agentic_workflow import nodes as nodes_module
 from src.kelder_api.components.agentic_workflow.agents import chatbot as chatbot_module
 from src.kelder_api.components.agentic_workflow.agents import (
@@ -23,6 +22,7 @@ from src.kelder_api.components.agentic_workflow.agents.chatbot import (
     ChatResponse,
     ReasoningInput,
 )
+from src.kelder_api.components.redis_client.redis_client import RedisClient
 
 
 class _FakeAgentResult:
@@ -143,6 +143,7 @@ def tidal_outputs(fake_tidal_agent: _SimpleAgentStub):
         fake_tidal_agent.set_outputs(outputs)
 
     return _configure
+
 
 @pytest.fixture()
 def mock_redis_client() -> AsyncMock:

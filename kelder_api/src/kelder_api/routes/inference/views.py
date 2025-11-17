@@ -6,13 +6,14 @@ from uuid import uuid4
 from fastapi import APIRouter, Request
 from starlette.responses import StreamingResponse
 
+from src.kelder_api.components.agentic_workflow.graph import AgentWorkflow
 from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.routes.inference.utils import error_stream, extract_user_prompt
-from src.kelder_api.components.agentic_workflow.graph import AgentWorkflow
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["Agentic"])
+
 
 async def stream_chat(user_prompt: str, agent_workflow: AgentWorkflow):
     # define some stream metadata:
@@ -25,6 +26,7 @@ async def stream_chat(user_prompt: str, agent_workflow: AgentWorkflow):
 
     # Provide callbacks of the current state
     queue = asyncio.Queue()
+
     async def notify(message: str):
         await queue.put({"processing_update": message})
 
@@ -48,13 +50,15 @@ async def stream_chat(user_prompt: str, agent_workflow: AgentWorkflow):
             if queue_future in done:
                 chunk = queue_future.result()
                 yield "event: data\n"
-                yield f"data: {json.dumps({
-                    "type": "data-progress",
-                    "data": {
-                        "node": chunk["processing_update"]
-                    },
-                    "transient": True
-                })}\n\n"
+                yield f"data: {
+                    json.dumps(
+                        {
+                            'type': 'data-progress',
+                            'data': {'node': chunk['processing_update']},
+                            'transient': True,
+                        }
+                    )
+                }\n\n"
                 # re-arm the queue future
                 queue_future = asyncio.ensure_future(queue.get())
 
@@ -83,6 +87,7 @@ async def stream_chat(user_prompt: str, agent_workflow: AgentWorkflow):
     yield "data: [DONE]\n\n"
     logger.info("Completed streaming response %s", message_id)
 
+
 @router.post("/chat_stream")
 async def StreamChatResponse(request: Request):
     # read incoming request body minimally / adapt if you already get `request.message`
@@ -90,7 +95,7 @@ async def StreamChatResponse(request: Request):
     body = await request.json()
     user_prompt = extract_user_prompt(body)
     agent_workflow = request.app.state.agent_workflow
-        
+
     if not user_prompt:
         message_id = str(uuid4())
         logger.warning("Chat stream request missing user prompt")

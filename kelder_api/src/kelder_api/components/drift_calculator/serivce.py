@@ -1,7 +1,7 @@
 import logging
 import math
 from datetime import datetime, timedelta, timezone
-from statistics import fmean, StatisticsError
+from statistics import StatisticsError, fmean
 from typing import Tuple
 
 from src.kelder_api.components.compass_new.interface import CompassInterface
@@ -60,7 +60,7 @@ class DriftCalculator:
             start_datetime=start_datetime
         )
         heading_avg = await self._calculate_avg_heading(start_datetime=start_datetime)
-        
+
         if sog_avg and cog_avg and heading_avg:
             drift_angle = bearing_angle_difference(heading_avg, cog_avg)
             drift_speed = sog_avg * math.sin(drift_angle)
@@ -69,7 +69,9 @@ class DriftCalculator:
 
         return DriftData(timestamp=end_datetime, drift_speed=drift_speed)
 
-    async def _calculate_avg_velocity(self, start_datetime: datetime) -> Tuple[float| None]:
+    async def _calculate_avg_velocity(
+        self, start_datetime: datetime
+    ) -> Tuple[float | None]:
         velocity_history = await self.velocity_calculator.read_velocity_timeseries(
             start_datetime=start_datetime, active=True
         )
@@ -80,13 +82,17 @@ class DriftCalculator:
                 map(lambda measurement: measurement.speed_over_ground, velocity_history)
             )
             cog_avg = fmean(
-                map(lambda measurement: measurement.course_over_ground, velocity_history)
+                map(
+                    lambda measurement: measurement.course_over_ground, velocity_history
+                )
             )
         except StatisticsError:
             sog_avg = None
             cog_avg = None
-            logger.error(f"No velocity data available in the last {self.settings.instantaneous_history_period}") 
-        
+            logger.error(
+                f"No velocity data available in the last {self.settings.instantaneous_history_period}"
+            )
+
         return sog_avg, cog_avg
 
     async def _calculate_avg_heading(self, start_datetime: datetime) -> float | None:
@@ -100,7 +106,11 @@ class DriftCalculator:
             )
         except StatisticsError:
             heading_avg = None
-            logger.error(f"No compass data available in the last {self.settings.instantaneous_history_period}") 
+            logger.error(
+                f"No compass data available in the last {
+                    self.settings.instantaneous_history_period
+                }"
+            )
 
         return heading_avg
 

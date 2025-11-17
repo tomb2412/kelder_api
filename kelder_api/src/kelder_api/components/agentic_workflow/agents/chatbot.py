@@ -45,7 +45,7 @@ prompt = textwrap.dedent(
 
     Always stay concise, and respond as susinctly as possible, but keep a conversational
      friendilness.
-    Include metadata made about location, or time (including UT or DST) if you quote 
+    Include metadata made about location, or time (including UT or DST) if you quote
      information in the response.
     """
 ).strip()

@@ -15,6 +15,7 @@ from src.kelder_api.components.redis_client.redis_client import RedisClient
 
 logger = logging.getLogger(__name__)
 
+
 class AgentWorkflow:
     def __init__(self, redis_client: RedisClient):
         self.state = State(redis_client=redis_client)
@@ -29,7 +30,9 @@ class AgentWorkflow:
         )
 
     async def run(
-        self, user_message: str, progress_callback: Callable[[str], Awaitable[None]] | None = None
+        self,
+        user_message: str,
+        progress_callback: Callable[[str], Awaitable[None]] | None = None,
     ) -> str:
         self.state.user_message = user_message
         self.state.progress_callback = progress_callback
