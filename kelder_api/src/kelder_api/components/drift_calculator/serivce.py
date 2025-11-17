@@ -90,7 +90,8 @@ class DriftCalculator:
             sog_avg = None
             cog_avg = None
             logger.error(
-                f"No velocity data available in the last {self.settings.instantaneous_history_period}"
+                "No velocity data available in the last"
+                f"{self.settings.instantaneous_history_period}"
             )
 
         return sog_avg, cog_avg
