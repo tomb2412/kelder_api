@@ -1,0 +1,8992 @@
+[
+  {
+    "name": "Port Solent",
+    "type": "marina",
+    "coordinates": [
+      -1.0995974549189234,
+      50.842721425838484
+    ]
+  },
+  {
+    "name": "Town Quay Marina",
+    "type": "marina",
+    "coordinates": [
+      -1.404003978316551,
+      50.89487332201284
+    ]
+  },
+  {
+    "name": "Swanwick Marina",
+    "type": "marina",
+    "coordinates": [
+      -1.3002283900919334,
+      50.88214618480363
+    ]
+  },
+  {
+    "name": "Hythe Marina Village",
+    "type": "marina",
+    "coordinates": [
+      -1.4012420013998577,
+      50.874299766726644
+    ]
+  },
+  {
+    "name": "Northney Marina",
+    "type": "marina",
+    "coordinates": [
+      -0.966667003370844,
+      50.83315190026474
+    ]
+  },
+  {
+    "name": null,
+    "type": "marina",
+    "coordinates": [
+      -1.0302169713890823,
+      50.79255323354515
+    ]
+  },
+  {
+    "name": null,
+    "type": "marina",
+    "coordinates": [
+      -0.9692287102034531,
+      50.805148438978826
+    ]
+  },
+  {
+    "name": "Bucklers Hard Marina",
+    "type": "marina",
+    "coordinates": [
+      -1.422586847682109,
+      50.80152715405957
+    ]
+  },
+  {
+    "name": "Shamrock Quay",
+    "type": "marina",
+    "coordinates": [
+      -1.380362210657465,
+      50.90952259651468
+    ]
+  },
+  {
+    "name": "Yarmouth Harbour",
+    "type": "marina",
+    "coordinates": [
+      -1.5035869857471797,
+      50.70586564276099
+    ]
+  },
+  {
+    "name": null,
+    "type": "marina",
+    "coordinates": [
+      -1.5021793366549645,
+      50.70330993107638
+    ]
+  },
+  {
+    "name": null,
+    "type": "marina",
+    "coordinates": [
+      -1.5016047497057068,
+      50.700385315636645
+    ]
+  },
+  {
+    "name": null,
+    "type": "marina",
+    "coordinates": [
+      -1.090834480272404,
+      50.81545635388588
+    ]
+  },
+  {
+    "name": "University Boathouse",
+    "type": "marina",
+    "coordinates": [
+      -1.3800989152629717,
+      50.93397511474036
+    ]
+  },
+  {
+    "name": "Netley Cliff Sailing Club",
+    "type": "marina",
+    "coordinates": [
+      -1.3525808219450017,
+      50.87094935091923
+    ]
+  },
+  {
+    "name": "East Cowes Marina",
+    "type": "marina",
+    "coordinates": [
+      -1.291087891772996,
+      50.75116582664217
+    ]
+  },
+  {
+    "name": "Haslar Marina",
+    "type": "marina",
+    "coordinates": [
+      -1.1177087363347877,
+      50.79096442308571
+    ]
+  },
+  {
+    "name": "Lymington Yacht Haven",
+    "type": "marina",
+    "coordinates": [
+      -1.5278336207501009,
+      50.750941274985024
+    ]
+  },
+  {
+    "name": "Berthon Marina",
+    "type": "marina",
+    "coordinates": [
+      -1.5323549924231599,
+      50.7569925954399
+    ]
+  },
+  {
+    "name": "Priory Boat Yard",
+    "type": "marina",
+    "coordinates": [
+      -1.380848492770195,
+      50.92230426408276
+    ]
+  },
+  {
+    "name": "Ocean Village Marina",
+    "type": "marina",
+    "coordinates": [
+      -1.3904945614479218,
+      50.89544243928779
+    ]
+  },
+  {
+    "name": "Shepards Wharf Marina",
+    "type": "marina",
+    "coordinates": [
+      -1.2931892775417488,
+      50.759665814456234
+    ]
+  },
+  {
+    "name": "Boatyard",
+    "type": "marina",
+    "coordinates": [
+      -1.1584135589970619,
+      50.83810923145288
+    ]
+  },
+  {
+    "name": null,
+    "type": "marina",
+    "coordinates": [
+      -1.158599164365724,
+      50.83740451183734
+    ]
+  },
+  {
+    "name": "Boat Yard",
+    "type": "marina",
+    "coordinates": [
+      -1.1223669677926793,
+      50.79178254138536
+    ]
+  },
+  {
+    "name": "Joint Services Adventurous Sail Training Centre (JSASTC)",
+    "type": "marina",
+    "coordinates": [
+      -1.1202486883162208,
+      50.78886737289553
+    ]
+  },
+  {
+    "name": null,
+    "type": "marina",
+    "coordinates": [
+      -1.1163143606273698,
+      50.78843741023536
+    ]
+  },
+  {
+    "name": "Gosport Marina",
+    "type": "marina",
+    "coordinates": [
+      -1.1194880234904259,
+      50.79821255985048
+    ]
+  },
+  {
+    "name": null,
+    "type": "marina",
+    "coordinates": [
+      -1.1342415633602452,
+      50.813202780406215
+    ]
+  },
+  {
+    "name": "Royal Clarence Marina",
+    "type": "marina",
+    "coordinates": [
+      -1.1231157852859044,
+      50.80255207870157
+    ]
+  },
+  {
+    "name": null,
+    "type": "marina",
+    "coordinates": [
+      -1.1247346022136364,
+      50.80376363779609
+    ]
+  },
+  {
+    "name": null,
+    "type": "marina",
+    "coordinates": [
+      -1.1389506093844093,
+      50.81582156604977
+    ]
+  },
+  {
+    "name": null,
+    "type": "marina",
+    "coordinates": [
+      -1.0349383337120381,
+      50.79124403969865
+    ]
+  },
+  {
+    "name": null,
+    "type": "marina",
+    "coordinates": [
+      -1.0244483845518346,
+      50.795697178484225
+    ]
+  },
+  {
+    "name": "Gunwharf Quays Marina",
+    "type": "marina",
+    "coordinates": [
+      -1.1082584438870409,
+      50.794804468379795
+    ]
+  },
+  {
+    "name": "Cowes Yacht Haven",
+    "type": "marina",
+    "coordinates": [
+      -1.2952710971228318,
+      50.76158561342548
+    ]
+  },
+  {
+    "name": "Island Harbour Marina",
+    "type": "marina",
+    "coordinates": [
+      -1.277087530917381,
+      50.725341300085624
+    ]
+  },
+  {
+    "name": "Haslar Marina",
+    "type": "marina",
+    "coordinates": [
+      -1.1206946,
+      50.7903984
+    ]
+  },
+  {
+    "name": "Ventnor Haven",
+    "type": null,
+    "coordinates": [
+      -1.2048366,
+      50.5926119
+    ]
+  },
+  {
+    "name": "Hill Head Harbour",
+    "type": "marina",
+    "coordinates": [
+      -1.2428972,
+      50.8180095
+    ]
+  },
+  {
+    "name": "Ryde Harbour",
+    "type": "marina",
+    "coordinates": [
+      -1.1543982,
+      50.7325511
+    ]
+  },
+  {
+    "name": "No.1",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3005527,
+      50.7678989
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No.2",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2979198,
+      50.7679093
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No.4",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2954076,
+      50.7644795
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:3-period:5"
+  },
+  {
+    "name": "No.6",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2927144,
+      50.7611186
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:2-period:5"
+  },
+  {
+    "name": "Reach",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2942226,
+      50.8176023
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:3-period:10"
+  },
+  {
+    "name": "Hamble Point",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.3108706,
+      50.8358336
+    ],
+    "catagory": "south",
+    "light": "Q+LFl-white-group:6-period:15"
+  },
+  {
+    "name": "Prince Consort",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.2929007,
+      50.7735817
+    ],
+    "catagory": "north",
+    "light": null
+  },
+  {
+    "name": "West Bramble",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.310833,
+      50.786667
+    ],
+    "catagory": "west",
+    "light": "VQ-white-group:9-period:10"
+  },
+  {
+    "name": "Black Jack",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3014362,
+      50.818761
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:2-period:4"
+  },
+  {
+    "name": "Gurnard",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.3139528,
+      50.7703781
+    ],
+    "catagory": "north",
+    "light": null
+  },
+  {
+    "name": "Hook",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3038391,
+      50.8260239
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Thorn Knoll",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3073114,
+      50.7917449
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "South Bramble",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2954704,
+      50.7830427
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Calshot",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.2839354,
+      50.8072949
+    ],
+    "catagory": "north",
+    "light": null
+  },
+  {
+    "name": "Bourne Gap",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3059554,
+      50.7969984
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Castle Point",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2945226,
+      50.8117622
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "North Thorn",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2975247,
+      50.7985896
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Bembridge Ledge",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.0468347,
+      50.6858306
+    ],
+    "catagory": "east",
+    "light": "Q-white-group:3-period:10"
+  },
+  {
+    "name": "NW Netley",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3789078,
+      50.8718285
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Cadland",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3424676,
+      50.8504319
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Pier Head",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4107649,
+      50.8944846
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Deans Elbow",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3809029,
+      50.8700439
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "N. Ryde Middle",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2386746,
+      50.7767707
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:4-period:20"
+  },
+  {
+    "name": "Greenland",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3398016,
+      50.8518585
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Hyth Knock",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3967545,
+      50.8804284
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "W. Ryde Middle",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.263,
+      50.7747055
+    ],
+    "catagory": "west",
+    "light": "Q-white-group:9-period:15"
+  },
+  {
+    "name": "Hound",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3590532,
+      50.8616228
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:3-period:10"
+  },
+  {
+    "name": "Norris",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2586635,
+      50.766263
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:3-period:10"
+  },
+  {
+    "name": "Ashlett Creek Sailing Club",
+    "type": "marina",
+    "coordinates": [
+      -1.3380194,
+      50.8272786
+    ]
+  },
+  {
+    "name": "SG 1",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3908243,
+      50.8834551
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Gymp",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4027137,
+      50.8845291
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Weston Shelf",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3875232,
+      50.8784483
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:2-period:4"
+  },
+  {
+    "name": "Lains Lake",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3607838,
+      50.8598421
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:2-period:4"
+  },
+  {
+    "name": "S. Ryde Middle",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2360394,
+      50.7688658
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Gymp Elbow",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4101636,
+      50.8905382
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "SG 4",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4312466,
+      50.9029488
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Eling",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.4640323,
+      50.9078878
+    ],
+    "catagory": "east",
+    "light": "Q-white-group:3-period:10"
+  },
+  {
+    "name": "SG 8",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4399701,
+      50.9030531
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:2-period:10"
+  },
+  {
+    "name": "Bury",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4518109,
+      50.9023112
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Millbrook",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4468807,
+      50.9019841
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "SG 14",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4644976,
+      50.9045608
+    ],
+    "catagory": "port",
+    "light": "Oc-red-group:2-period:4"
+  },
+  {
+    "name": "Mulberry",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4185524,
+      50.897053
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:2-period:10"
+  },
+  {
+    "name": "Cracknore",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4199729,
+      50.8990366
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "SG 16",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4649746,
+      50.9069947
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:3-period:5"
+  },
+  {
+    "name": "Dibden Bay",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.4151549,
+      50.8949302
+    ],
+    "catagory": "north",
+    "light": null
+  },
+  {
+    "name": "SG 10",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.457346,
+      50.90461
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "SG 6",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4367178,
+      50.9035208
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "SG 12",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4597416,
+      50.9047871
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:2-period:5"
+  },
+  {
+    "name": "Horse Head",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.468352,
+      50.9101884
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Marchwood",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4259838,
+      50.8996639
+    ],
+    "light": null
+  },
+  {
+    "name": "Ocean Quay Marina",
+    "type": "marina",
+    "coordinates": [
+      -1.3842211,
+      50.908114
+    ]
+  },
+  {
+    "name": "Kemps Quay Marina",
+    "type": "marina",
+    "coordinates": [
+      -1.3778693,
+      50.9145617
+    ]
+  },
+  {
+    "name": "NE Gunard",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3236334,
+      50.7843592
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:3-period:10"
+  },
+  {
+    "name": "Hill Head",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2667389,
+      50.8010996
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "East Bramble",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.227497,
+      50.7871926
+    ],
+    "catagory": "east",
+    "light": "Q-white-group:3-period:5"
+  },
+  {
+    "name": "NE Ryde Middle",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1985908,
+      50.7701462
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:2-period:10"
+  },
+  {
+    "name": "SE Ryde Middle",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.2016409,
+      50.7654941
+    ],
+    "catagory": "south",
+    "light": "VQ+LFl-white-group:6-period:10"
+  },
+  {
+    "name": "Peel Bank",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2226899,
+      50.7583438
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:2-period:5"
+  },
+  {
+    "name": "Mother Bank",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.18683,
+      50.75789
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "N. Sturbridge",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.1376126,
+      50.7555518
+    ],
+    "catagory": "north",
+    "light": null
+  },
+  {
+    "name": "Outer Spit",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.091009,
+      50.7572799
+    ],
+    "catagory": "south",
+    "light": "Q+LFl-white-group:6-period:15"
+  },
+  {
+    "name": "Horse Sand",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.085388,
+      50.7603638
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Warner",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0664892,
+      50.7311631
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "W. Princessa",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.06061,
+      50.66914
+    ],
+    "catagory": "west",
+    "light": "Q-white-group:9-period:15"
+  },
+  {
+    "name": "After Barn",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3468014,
+      50.8587412
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:2-period:4"
+  },
+  {
+    "name": "Netley",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3634642,
+      50.8671846
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Coronation",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2935353,
+      50.8257441
+    ],
+    "light": null
+  },
+  {
+    "name": "Deans Lake",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3595746,
+      50.8567745
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Moorhead",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3817511,
+      50.8758061
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Lepe Spit",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.3441545,
+      50.7796137
+    ],
+    "catagory": "south",
+    "light": "Q+LFl-white-group:6-period:15"
+  },
+  {
+    "name": "No.3",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3880181,
+      50.8912176
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Lower Foul ground",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4093303,
+      50.8875626
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:2-period:10"
+  },
+  {
+    "name": "No.4",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3861958,
+      50.8937244
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No.1",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3901658,
+      50.8858664
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Ballast Bank",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.47017,
+      50.9147917
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Upper Foul ground",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4149695,
+      50.8920503
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:2-period:10"
+  },
+  {
+    "name": "No.1",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3106354,
+      50.8390708
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No.2",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.389786,
+      50.8881319
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4281925,
+      50.9016658
+    ],
+    "light": null
+  },
+  {
+    "name": "Bald Head",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3013643,
+      50.8301132
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Bird Pile",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3721386,
+      50.8619731
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "E. Lepe",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3514172,
+      50.7655687
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:2-period:5"
+  },
+  {
+    "name": "Gunard Ledge",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3430394,
+      50.7588047
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:4-period:15"
+  },
+  {
+    "name": "Bramble Tide Gauge",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2859,
+      50.7902
+    ],
+    "light": null
+  },
+  {
+    "name": "Salt Mead",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3840086,
+      50.7418349
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:3-period:10"
+  },
+  {
+    "name": "W. Lepe",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4012846,
+      50.7538161
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "East Knoll",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2804937,
+      50.799337
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:2-period:10"
+  },
+  {
+    "name": "Hamstead Ledge",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4363161,
+      50.7311628
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:2-period:5"
+  },
+  {
+    "name": "Newtown",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.4152322,
+      50.7292583
+    ],
+    "catagory": "west",
+    "light": "Q-white-group:9-period:15"
+  },
+  {
+    "name": "Browndown",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1825572,
+      50.776193
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:2-period:10"
+  },
+  {
+    "name": "Mid Shingles",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5781456,
+      50.6869143
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:3-period:10"
+  },
+  {
+    "name": "Jack in the Basket",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5095874,
+      50.7377902
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Warden",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5589693,
+      50.6917206
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Shingles Elbow",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.600856,
+      50.6728158
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:2-period:5"
+  },
+  {
+    "name": "NB (outfall)",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5314136,
+      50.725483
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "NE Shingles",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.5568187,
+      50.6993575
+    ],
+    "catagory": "east",
+    "light": null
+  },
+  {
+    "name": "SW Shingles",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.6253049,
+      50.6548674
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5397465,
+      50.7293384
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4520738,
+      50.7566881
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "North Head",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.591757,
+      50.7114977
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:3-period:10"
+  },
+  {
+    "name": "21 Black Rock",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.509663,
+      50.7096215
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4991117,
+      50.7101944
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "20 Sconce",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.5237954,
+      50.7088628
+    ],
+    "catagory": "north",
+    "light": null
+  },
+  {
+    "name": "Lymington Bank",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5137944,
+      50.7183963
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:2-period:5"
+  },
+  {
+    "name": "Bridge",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.6146864,
+      50.6604994
+    ],
+    "catagory": "west",
+    "light": "VQ-white-group:9-period:10"
+  },
+  {
+    "name": "No.1",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5080234,
+      50.740221
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "2 Cross Boom",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5096635,
+      50.7392759
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Solent Bank",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4561578,
+      50.737112
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:3-period:10"
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0996531,
+      50.7359532
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0683537,
+      50.7664606
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No.1",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3156221,
+      50.8239871
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No.2",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.3128665,
+      50.8399453
+    ],
+    "catagory": "east",
+    "light": "Q-white-group:3-period:10"
+  },
+  {
+    "name": "No.2",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3138234,
+      50.8247254
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0690548,
+      50.7780572
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No.1",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.361574,
+      50.7818963
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0684308,
+      50.7672356
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Saddle",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0824664,
+      50.7516374
+    ],
+    "catagory": "starboard",
+    "light": "VQ-green-group:3-period:10"
+  },
+  {
+    "name": "Mary Rose Historic Wreck",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1033123,
+      50.7633356
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0690474,
+      50.7783605
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Trinity House Buoy",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2957697,
+      50.7718329
+    ],
+    "light": null
+  },
+  {
+    "name": "Wootton",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.2025983,
+      50.74216
+    ],
+    "catagory": "north",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0720537,
+      50.7503034
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3995182,
+      50.8725842
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3928491,
+      50.888504
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3937412,
+      50.8881185
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.397605,
+      50.87394
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No.9",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3746509,
+      50.9122728
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:4-period:10"
+  },
+  {
+    "name": "Bank",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.388635,
+      50.8934547
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No.4",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4689512,
+      50.9088452
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3988497,
+      50.8761335
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No.9",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4755779,
+      50.9108715
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3984634,
+      50.8767495
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3982937,
+      50.8766452
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3764566,
+      50.8574427
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3187742,
+      50.8291654
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.353288,
+      50.8700632
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3790188,
+      50.9224533
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3431647,
+      50.86152
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4520675,
+      50.9007985
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.3980183,
+      50.8772355
+    ],
+    "catagory": "east",
+    "light": "Q-white-group:3-period:10"
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.451571,
+      50.9012172
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3625288,
+      50.8775711
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4683927,
+      50.9121109
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No.7",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4732994,
+      50.9097932
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3620865,
+      50.8756957
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No.7",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3749678,
+      50.9100691
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:2-period:5"
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3605762,
+      50.8733754
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.397632,
+      50.877029
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:2-period:5"
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.332678,
+      50.8547569
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Chapel",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3869312,
+      50.9024427
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No.3",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4690359,
+      50.9091793
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No.11",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4764784,
+      50.911518
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No.5",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3793648,
+      50.9083303
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No.5",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4715202,
+      50.9093746
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No.13",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4772052,
+      50.911984
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Bembridge Harbour",
+    "type": null,
+    "coordinates": [
+      -1.0984805,
+      50.6929739
+    ]
+  },
+  {
+    "name": "Boyne",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0876372,
+      50.7673374
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:4-period:10"
+  },
+  {
+    "name": "Spit Refuge",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0945873,
+      50.7701032
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:3-period:7.5"
+  },
+  {
+    "name": "Castle",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0898414,
+      50.7742606
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:3-period:7.5"
+  },
+  {
+    "name": "1 Bar",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0968177,
+      50.7795174
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Darling Buoy",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2618333,
+      50.8196667
+    ],
+    "light": null
+  },
+  {
+    "name": "Cowes Yacht Haven",
+    "type": "marina",
+    "coordinates": [
+      -1.2966036,
+      50.7614678
+    ]
+  },
+  {
+    "name": "Deloitte Saling Club",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.283333,
+      50.786667
+    ],
+    "light": null
+  },
+  {
+    "name": "TeamO",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3208333,
+      50.7968333
+    ],
+    "light": null
+  },
+  {
+    "name": "QXI International",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.265,
+      50.787833
+    ],
+    "light": null
+  },
+  {
+    "name": "Goodall Roofing",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.243167,
+      50.788833
+    ],
+    "light": null
+  },
+  {
+    "name": "Gurnard SC",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.324167,
+      50.766167
+    ],
+    "light": null
+  },
+  {
+    "name": "Peters ' May 2",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.239833,
+      50.758833
+    ],
+    "light": null
+  },
+  {
+    "name": "RORC",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.295333,
+      50.785333
+    ],
+    "light": null
+  },
+  {
+    "name": "39-Snowden",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2958034,
+      50.7700762
+    ],
+    "light": null
+  },
+  {
+    "name": "William",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.274833,
+      50.817167
+    ],
+    "light": null
+  },
+  {
+    "name": "Cowes Dinghy Week",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.335667,
+      50.760333
+    ],
+    "light": null
+  },
+  {
+    "name": "Sunsail Racing",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2515161,
+      50.7738381
+    ],
+    "light": null
+  },
+  {
+    "name": "Island Sailing Club",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.307167,
+      50.768333
+    ],
+    "light": null
+  },
+  {
+    "name": "Mackley Construction",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.218167,
+      50.769333
+    ],
+    "light": null
+  },
+  {
+    "name": "Royal Southern",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2571667,
+      50.8143333
+    ],
+    "light": null
+  },
+  {
+    "name": "Fastnet Insurance",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2275,
+      50.794333
+    ],
+    "light": null
+  },
+  {
+    "name": "Fumesy",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.291,
+      50.820167
+    ],
+    "light": null
+  },
+  {
+    "name": "Jane",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.283333,
+      50.7945
+    ],
+    "light": null
+  },
+  {
+    "name": "John Fisher",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.262,
+      50.807667
+    ],
+    "light": null
+  },
+  {
+    "name": "Craftinsure.com",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.198167,
+      50.7505
+    ],
+    "light": null
+  },
+  {
+    "name": "Royal Cork",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3313333,
+      50.7845
+    ],
+    "light": null
+  },
+  {
+    "name": "Hamble Yacht Services",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.244,
+      50.802167
+    ],
+    "light": null
+  },
+  {
+    "name": "Citymain",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.329333,
+      50.763
+    ],
+    "light": null
+  },
+  {
+    "name": "Goodacre Yacht Repairs",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.201667,
+      50.7885
+    ],
+    "light": null
+  },
+  {
+    "name": "hamblewinterseries.com",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.276,
+      50.8105
+    ],
+    "light": null
+  },
+  {
+    "name": "Seafarers Ale",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2775,
+      50.769167
+    ],
+    "light": null
+  },
+  {
+    "name": "Williams Shipping",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.309167,
+      50.786667
+    ],
+    "light": null
+  },
+  {
+    "name": "West Knoll",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.297333,
+      50.7905
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1662833,
+      50.63335
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0838705,
+      50.7079514
+    ],
+    "light": null
+  },
+  {
+    "name": "TB",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4613778,
+      50.9085566
+    ],
+    "light": null
+  },
+  {
+    "name": "TA",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4619309,
+      50.9087935
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4382667,
+      50.9093333
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4385,
+      50.9084167
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4103391,
+      50.8995166
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4118667,
+      50.8991833
+    ],
+    "light": null
+  },
+  {
+    "name": "Crosshouse",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3865833,
+      50.9007
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No.6",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.31335,
+      50.8438667
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3138074,
+      50.8043501
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4216274,
+      50.800036
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Beaulieu Spit Dolphin",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3625382,
+      50.7809962
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Winner",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.00166,
+      50.75166
+    ],
+    "catagory": "south",
+    "light": null
+  },
+  {
+    "name": "Mark",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3156667,
+      50.826
+    ],
+    "light": null
+  },
+  {
+    "name": "Cutter",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2818333,
+      50.8241667
+    ],
+    "light": null
+  },
+  {
+    "name": "Garmin",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3853333,
+      50.7606667
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": null,
+    "coordinates": [
+      -1.1065012,
+      50.7911874
+    ]
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1097097,
+      50.7975133
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Cathead",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3206667,
+      50.8435
+    ],
+    "light": null
+  },
+  {
+    "name": "Sposa",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2931667,
+      50.8276667
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4647835,
+      50.6515402
+    ],
+    "light": null
+  },
+  {
+    "name": "Hamblecliff",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3426104,
+      50.8546851
+    ],
+    "light": null
+  },
+  {
+    "name": "Itchen Marine",
+    "type": "marina",
+    "coordinates": [
+      -1.3886868,
+      50.9021801
+    ]
+  },
+  {
+    "name": "Breakwater",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2973432,
+      50.7671474
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Test",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3907448,
+      50.8765298
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:2-period:4"
+  },
+  {
+    "name": "Fawley Deep",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3198297,
+      50.8403349
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:2-period:4"
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.367284,
+      50.8792614
+    ],
+    "light": null
+  },
+  {
+    "name": "Jib",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3843333,
+      50.8826667
+    ],
+    "light": null
+  },
+  {
+    "name": "No. 3",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3845653,
+      50.8835518
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3703505,
+      50.8840627
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3771765,
+      50.8850053
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3740819,
+      50.8860215
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No. 2",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3894503,
+      50.8861897
+    ],
+    "light": null
+  },
+  {
+    "name": "No. 4",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3836821,
+      50.8868339
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3833044,
+      50.8888465
+    ],
+    "light": null
+  },
+  {
+    "name": "No. 1",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3876564,
+      50.8890015
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3841581,
+      50.8890154
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3846159,
+      50.8909306
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4101649,
+      50.8948736
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3571598,
+      50.8475856
+    ],
+    "light": null
+  },
+  {
+    "name": "measured mile",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3554005,
+      50.8487205
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3684521,
+      50.8521442
+    ],
+    "light": null
+  },
+  {
+    "name": "measured half-mile",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3673162,
+      50.8529808
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3732116,
+      50.855627
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3734821,
+      50.8561562
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3797831,
+      50.8566683
+    ],
+    "light": null
+  },
+  {
+    "name": "measured mile",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3776197,
+      50.8581023
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3298276,
+      50.8276931
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.325516,
+      50.8282682
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3394489,
+      50.8622366
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3162492,
+      50.8068589
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3112713,
+      50.8096492
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No. 6",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.377053,
+      50.9096929
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No. 8",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3758928,
+      50.9115909
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3849024,
+      50.9199316
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3854878,
+      50.9203099
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No.8",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3118519,
+      50.84549
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No.9",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3093739,
+      50.8464263
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No.10",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3097354,
+      50.8483733
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No. 11",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3080259,
+      50.8488779
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No. 13",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3078807,
+      50.8508093
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No. 15",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3086079,
+      50.8524432
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No. 17",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3091209,
+      50.8536243
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2495532,
+      50.8156502
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2856588,
+      50.827881
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2732282,
+      50.8286885
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2864131,
+      50.82986
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2872447,
+      50.8317321
+    ],
+    "light": null
+  },
+  {
+    "name": "No.3",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3114045,
+      50.8409563
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No.4",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3138814,
+      50.8415178
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No.5",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3117895,
+      50.8423641
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Watch House",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2972755,
+      50.7650223
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "2A",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2963402,
+      50.7658069
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Shrape Beacon",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2816122,
+      50.7681432
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2904899,
+      50.706843
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2904115,
+      50.70724
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2898086,
+      50.7082136
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2889702,
+      50.7107838
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2874644,
+      50.7149994
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2855504,
+      50.7181823
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2855239,
+      50.7189983
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2862959,
+      50.7190181
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2826249,
+      50.7247172
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.281157,
+      50.7258957
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.28242,
+      50.7259912
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2814279,
+      50.7282673
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2800116,
+      50.7282769
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2848089,
+      50.7376175
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No.10",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.287002,
+      50.7393139
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No.8",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2880031,
+      50.7432509
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3381653,
+      50.8554137
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3378978,
+      50.8555334
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3455857,
+      50.8628036
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "SG 2",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4239659,
+      50.9008822
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4370665,
+      50.9031091
+    ],
+    "light": null
+  },
+  {
+    "name": "Proposed Marina (Victoria Quays Development)",
+    "type": "marina",
+    "coordinates": [
+      -1.2913619,
+      50.7617262
+    ]
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2798593,
+      50.7303206
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2810624,
+      50.7304941
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0682556,
+      50.7545621
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.123533,
+      50.815667
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1232,
+      50.815717
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.122867,
+      50.815783
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.127917,
+      50.8242
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1276,
+      50.824283
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.127267,
+      50.824333
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2959853,
+      50.8879851
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Historic Wreck",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2883356,
+      50.8927175
+    ],
+    "light": null
+  },
+  {
+    "name": "VisitorPontoonS",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3087262,
+      50.8507537
+    ],
+    "catagory": "preferred_channel_starboard",
+    "light": "Fl-red-group:2+1-period:10"
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3090561,
+      50.8545848
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3109859,
+      50.8549421
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.310994,
+      50.8556008
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3087745,
+      50.8666596
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Crableck",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3095858,
+      50.8728248
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3102953,
+      50.8738941
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Swanwick",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2989321,
+      50.8784168
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Swanwick",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2994283,
+      50.8787096
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Harbour Office",
+    "type": "marina",
+    "coordinates": [
+      -1.2906381,
+      50.7508315
+    ]
+  },
+  {
+    "name": "B4",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1001761,
+      50.8128022
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "B2",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.1011712,
+      50.8125828
+    ],
+    "catagory": "south",
+    "light": "Q+LFl-white-group:6-period:15"
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1168816,
+      50.7886683
+    ],
+    "light": null
+  },
+  {
+    "name": "Magazine",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3996739,
+      50.8804968
+    ],
+    "light": null
+  },
+  {
+    "name": "SWSA/HSC",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3713333,
+      50.8626667
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3647534,
+      50.785332
+    ],
+    "light": null
+  },
+  {
+    "name": "Newtown Harbour IDM",
+    "type": "isolated_danger",
+    "coordinates": [
+      -1.4088518,
+      50.7228016
+    ]
+  },
+  {
+    "name": "SHM",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4102948,
+      50.7228763
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "PHM",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4096189,
+      50.7212495
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Mark for Leading Line White Disc on pole",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4089429,
+      50.724795
+    ],
+    "light": null
+  },
+  {
+    "name": "Mark for Leading line - V on Pole",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4114428,
+      50.7263073
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4082241,
+      50.7223499
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No.7",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3655716,
+      50.7844912
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No.9",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3674975,
+      50.7843488
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No.5",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3633669,
+      50.7839146
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No.4",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3635063,
+      50.7832092
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No.6",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.364944,
+      50.7837315
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No.8",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3666713,
+      50.7838943
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No.2",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3628948,
+      50.7821374
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "No.3",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3622457,
+      50.7829955
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "SHM",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4100721,
+      50.7224263
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "No.7",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3114178,
+      50.8440266
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Selwyn Marina",
+    "type": "marina",
+    "coordinates": [
+      -1.0959372,
+      50.6916934
+    ]
+  },
+  {
+    "name": "Milford Waverider",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.6151519,
+      50.7125194
+    ],
+    "light": "Fl-yellow-group:5-period:20"
+  },
+  {
+    "name": "Sandown Bay Waverider",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.12867,
+      50.65077
+    ],
+    "light": "Fl-yellow-group:5-period:20"
+  },
+  {
+    "name": "Maraval",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2462573,
+      50.7938419
+    ],
+    "light": null
+  },
+  {
+    "name": "Paul Heys",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.278,
+      50.8035
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4054919,
+      50.8925182
+    ],
+    "light": null
+  },
+  {
+    "name": "Langstone Fairway",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0226458,
+      50.7718558
+    ],
+    "light": null
+  },
+  {
+    "name": "Roway Wk",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0378802,
+      50.7683444
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4674632,
+      50.83354
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4676576,
+      50.8334818
+    ],
+    "catagory": "green",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2279848,
+      50.8131878
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "28 V",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.521648,
+      50.7216707
+    ],
+    "light": null
+  },
+  {
+    "name": "2B Dunford",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5256566,
+      50.7229951
+    ],
+    "light": null
+  },
+  {
+    "name": "2C Colten",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5143108,
+      50.7304828
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5015838,
+      50.7360681
+    ],
+    "light": null
+  },
+  {
+    "name": "2F Berthon",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4869899,
+      50.7366707
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4909676,
+      50.7431158
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4746343,
+      50.7468166
+    ],
+    "light": null
+  },
+  {
+    "name": "2H Draycott's",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4693235,
+      50.7383313
+    ],
+    "light": null
+  },
+  {
+    "name": "2J Zwerver",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4556456,
+      50.7518663
+    ],
+    "light": null
+  },
+  {
+    "name": "3P Cowes Yacht Haven",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3329881,
+      50.7613378
+    ],
+    "light": null
+  },
+  {
+    "name": "Sevenstar Yacht Transport",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3576524,
+      50.7763363
+    ],
+    "light": null
+  },
+  {
+    "name": "3E YachtDataBank",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3698068,
+      50.7688381
+    ],
+    "light": null
+  },
+  {
+    "name": "2R Powder Byrre",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4314842,
+      50.7571741
+    ],
+    "light": null
+  },
+  {
+    "name": "2K Cowes Radio",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4348424,
+      50.7471756
+    ],
+    "light": null
+  },
+  {
+    "name": "22 Charles Stanley",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4899832,
+      50.714331
+    ],
+    "light": null
+  },
+  {
+    "name": "2A Embley School",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5421844,
+      50.7131999
+    ],
+    "light": null
+  },
+  {
+    "name": "Poole Belle",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5028203,
+      50.7089911
+    ],
+    "light": null
+  },
+  {
+    "name": "3F Elephant Boatyard",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.365813,
+      50.7453256
+    ],
+    "light": null
+  },
+  {
+    "name": "3B John Rainger",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3966477,
+      50.7393409
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1409474,
+      50.7725106
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Ballast",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1138356,
+      50.7936747
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1122531,
+      50.7907788
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Victoria Pile",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1081386,
+      50.7891341
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Bc Outer",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1113304,
+      50.788722
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "4 Bar",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1080796,
+      50.7829497
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "3 Bar",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1038256,
+      50.7846879
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "2 Bar",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1025649,
+      50.7776804
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "New Grounds",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -0.9748221,
+      50.6973343
+    ],
+    "catagory": "east",
+    "light": "VQ-white-group:3-period:5"
+  },
+  {
+    "name": "Dean Tail N",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -0.9927808,
+      50.7189197
+    ],
+    "catagory": "north",
+    "light": null
+  },
+  {
+    "name": "Dean Tail S",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -0.9929109,
+      50.7174626
+    ],
+    "catagory": "south",
+    "light": null
+  },
+  {
+    "name": "Horse Tail",
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.9861463,
+      50.7165082
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Nab End",
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.9915054,
+      50.7104824
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Nab East",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0133064,
+      50.7143276
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:2-period:10"
+  },
+  {
+    "name": "Horse Tail",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0038114,
+      50.7204684
+    ],
+    "catagory": "port",
+    "light": "Fl-green-group:2-period:10"
+  },
+  {
+    "name": "Dean Elbow",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0313255,
+      50.7281704
+    ],
+    "catagory": "port",
+    "light": "Fl-green-group:3-period:15"
+  },
+  {
+    "name": "St. Helens Buoy",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0401178,
+      50.7226691
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:3-period:15"
+  },
+  {
+    "name": "Horse Elbow",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0646519,
+      50.737674
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Cambrian Wk",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.0572115,
+      50.740619
+    ],
+    "catagory": "south",
+    "light": null
+  },
+  {
+    "name": "Ryde Sands",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.120981,
+      50.7426643
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Spit Elbow",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0925925,
+      50.7636283
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:4-period:10"
+  },
+  {
+    "name": null,
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.2967287,
+      50.7674975
+    ],
+    "catagory": "north",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.2927698,
+      50.7669177
+    ],
+    "catagory": "north",
+    "light": null
+  },
+  {
+    "name": "S",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2919772,
+      50.7669059
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2919262,
+      50.7646759
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "EC3",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2918538,
+      50.7664309
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "EC5",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2927711,
+      50.765776
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "EC4",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2912825,
+      50.7663443
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "EC2",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2902874,
+      50.7670077
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "EC1",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2910706,
+      50.7670127
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "EC6",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2922534,
+      50.7655996
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "EC8",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2929803,
+      50.7644816
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "EC7",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2933183,
+      50.7650126
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "EC9",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2938762,
+      50.7641762
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "EC10",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2937608,
+      50.7633042
+    ],
+    "light": null
+  },
+  {
+    "name": "4a Baacon",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2938225,
+      50.7626239
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "EC11",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.29453,
+      50.7633386
+    ],
+    "catagory": "south",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2928341,
+      50.7664843
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2938279,
+      50.7666361
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2948471,
+      50.7667854
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2958382,
+      50.7669144
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2968266,
+      50.7670645
+    ],
+    "light": null
+  },
+  {
+    "name": "Royal Victoria YC Starting Platform",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2116397,
+      50.7426338
+    ],
+    "light": null
+  },
+  {
+    "name": "Fairhall West",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.173327,
+      50.7801158
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1516118,
+      50.7767577
+    ],
+    "light": null
+  },
+  {
+    "name": "SBSC Central",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1641216,
+      50.7767035
+    ],
+    "light": null
+  },
+  {
+    "name": "Stokes Bay East",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1459685,
+      50.7710179
+    ],
+    "light": "Fl-yellow-group:4-period:10"
+  },
+  {
+    "name": "RNC & Royal Albert YC",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1316615,
+      50.7735961
+    ],
+    "light": "Fl-yellow-group:4-period:10"
+  },
+  {
+    "name": "Portsmouth SC",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1225018,
+      50.780338
+    ],
+    "light": null
+  },
+  {
+    "name": "KB Dry Stack",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1215442,
+      50.7768358
+    ],
+    "light": "Fl-yellow-group:4-period:10"
+  },
+  {
+    "name": "Suffolk Sails",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1132187,
+      50.7848066
+    ],
+    "light": null
+  },
+  {
+    "name": "Linington",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1013258,
+      50.7726632
+    ],
+    "light": "Fl-yellow-group:4-period:10"
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4944142,
+      50.7096009
+    ],
+    "light": null
+  },
+  {
+    "name": "Caldwell Estate Agents",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4582741,
+      50.7191778
+    ],
+    "light": null
+  },
+  {
+    "name": "Hall Hunter",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4736432,
+      50.7143446
+    ],
+    "light": null
+  },
+  {
+    "name": "Generation Estates",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4693141,
+      50.7161652
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5330809,
+      50.7582448
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5307004,
+      50.7584574
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5305731,
+      50.7582007
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5300152,
+      50.757449
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "KB Dry Stack",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5294465,
+      50.7565141
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "J",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5280536,
+      50.7547293
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "11A",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5261608,
+      50.7538619
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5260455,
+      50.7531118
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5255171,
+      50.7527877
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.524758,
+      50.7523075
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5227102,
+      50.7518463
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5224582,
+      50.7518063
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5225328,
+      50.7518144
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5226015,
+      50.751823
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5196672,
+      50.7507742
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5197544,
+      50.7507666
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5199636,
+      50.750417
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5201379,
+      50.7501404
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5198442,
+      50.7500403
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5196672,
+      50.7503152
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.519466,
+      50.7505977
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5194902,
+      50.7507208
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.519572,
+      50.7507522
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "9 Cage Boom",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.518876,
+      50.751571
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Cocket Hat",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5194285,
+      50.7509431
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "10",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5190208,
+      50.7504272
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5199006,
+      50.7472231
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5195908,
+      50.7456184
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5194325,
+      50.7463906
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5179345,
+      50.7513521
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5181142,
+      50.7505154
+    ],
+    "light": null
+  },
+  {
+    "name": "Bag of Halfpence",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5191898,
+      50.7492257
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Enticott",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5179881,
+      50.7495278
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5175724,
+      50.7492987
+    ],
+    "light": null
+  },
+  {
+    "name": "Seymour's Post",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5192944,
+      50.7481531
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Pylewell Boom",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5180981,
+      50.7480224
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Tar Barrel",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5181679,
+      50.7468735
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "8A",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5193373,
+      50.7467513
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Royal Lymington YC Starting Platform",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.507085,
+      50.7403254
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5094185,
+      50.7417647
+    ],
+    "light": null
+  },
+  {
+    "name": "8",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5177065,
+      50.7453188
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "7",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5164352,
+      50.7453121
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5153998,
+      50.7431599
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5134364,
+      50.743978
+    ],
+    "light": null
+  },
+  {
+    "name": "5",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5144074,
+      50.7438898
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "6",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5152657,
+      50.7434892
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "3a",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5120873,
+      50.7422739
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "4",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5123314,
+      50.7413132
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "3",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5105128,
+      50.7408516
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5158451,
+      50.7506224
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5161857,
+      50.7504357
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5167034,
+      50.7501098
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5170574,
+      50.74993
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5174222,
+      50.7496567
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5176234,
+      50.7494412
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5174007,
+      50.7492427
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5170306,
+      50.7493801
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5166417,
+      50.7496567
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5162528,
+      50.7498485
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5157968,
+      50.7502236
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5154776,
+      50.7504849
+    ],
+    "light": null
+  },
+  {
+    "name": "11",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5238877,
+      50.7525196
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.556325,
+      50.7165965
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5564899,
+      50.7166729
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5601766,
+      50.7148643
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5638942,
+      50.7206416
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5632316,
+      50.7198231
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.564106,
+      50.7178838
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5557241,
+      50.7094803
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5559253,
+      50.7106251
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5555364,
+      50.7111108
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.554898,
+      50.7115117
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5575883,
+      50.7110785
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5566844,
+      50.710941
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5558556,
+      50.7113469
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5553111,
+      50.7117104
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5549892,
+      50.7121282
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5550375,
+      50.7127141
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5557402,
+      50.7132746
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5559307,
+      50.7146757
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:3-period:9"
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5530178,
+      50.7148795
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5527362,
+      50.7153483
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "21",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4219087,
+      50.8009409
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4193526,
+      50.7995763
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4193606,
+      50.7999306
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "26",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4196235,
+      50.7996373
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "28",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4115822,
+      50.8000628
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Mulberry",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4100587,
+      50.7943868
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Fiddlers",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4082938,
+      50.7914062
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Gins",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.4093238,
+      50.7842046
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "19",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3962775,
+      50.7788608
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "17",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3891885,
+      50.7802142
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "15",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3844061,
+      50.781593
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "13",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3787225,
+      50.7823341
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "11",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3737524,
+      50.7831549
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "24",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3940942,
+      50.7785081
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "22",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3901031,
+      50.778854
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "20",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3848889,
+      50.7805873
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "18",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3823113,
+      50.7808858
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "16",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3784918,
+      50.7814217
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "14",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3752812,
+      50.782117
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "10",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3718319,
+      50.7823918
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "10",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3690563,
+      50.7830952
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "9",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3686267,
+      50.7841622
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.3669861,
+      50.7847265
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3212937,
+      50.8309601
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.3205212,
+      50.830462
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2120192,
+      50.7401378
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2185571,
+      50.7321075
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2181011,
+      50.7334147
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2180555,
+      50.7344622
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2170067,
+      50.7354875
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.2129164,
+      50.7366419
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2132302,
+      50.7353195
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2135131,
+      50.7349639
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2121922,
+      50.7358016
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.210497,
+      50.7369237
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "4",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2096494,
+      50.7364314
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "3",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.208767,
+      50.7380839
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "2",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2077934,
+      50.7376027
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "1",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.205948,
+      50.7399519
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:2-period:5"
+  },
+  {
+    "name": "17",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1056387,
+      50.694113
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "14",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1017227,
+      50.6941368
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "12A",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0998291,
+      50.6941402
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "12",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0981232,
+      50.6939091
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "10A",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0955322,
+      50.6939465
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "13",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0958031,
+      50.694096
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "11",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0949796,
+      50.6958426
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "9A",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0949367,
+      50.6970948
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "10",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0943413,
+      50.6972103
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "9",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0960364,
+      50.6985847
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "8",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0953713,
+      50.6988599
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "6a",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0954678,
+      50.7003889
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "6",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0949743,
+      50.7010515
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "7A",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0962403,
+      50.7003651
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "7",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0962135,
+      50.7010922
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "4",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0921472,
+      50.7015
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "5",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0928607,
+      50.7018533
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "3",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0911441,
+      50.7034536
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "2A",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0900176,
+      50.7031852
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0881293,
+      50.7040821
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0579062,
+      50.6899331
+    ],
+    "light": null
+  },
+  {
+    "name": "Cochrane",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0586786,
+      50.6947722
+    ],
+    "light": null
+  },
+  {
+    "name": "moreton",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0545159,
+      50.7003855
+    ],
+    "light": null
+  },
+  {
+    "name": "Ruthven",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0591936,
+      50.7109308
+    ],
+    "light": null
+  },
+  {
+    "name": "Tara",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0677982,
+      50.6947179
+    ],
+    "light": null
+  },
+  {
+    "name": "Fitzwilliam",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0655451,
+      50.7013913
+    ],
+    "light": null
+  },
+  {
+    "name": "Nainby Luxmore",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0711241,
+      50.6994478
+    ],
+    "light": null
+  },
+  {
+    "name": "Under Tyne",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0752547,
+      50.6980547
+    ],
+    "light": null
+  },
+  {
+    "name": "Garland",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.086359,
+      50.7005486
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0817886,
+      50.7021795
+    ],
+    "light": null
+  },
+  {
+    "name": "Acland",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0839772,
+      50.7257662
+    ],
+    "light": null
+  },
+  {
+    "name": "Somerus",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0852647,
+      50.7319463
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0852432,
+      50.734486
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1192215,
+      50.7288428
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1190498,
+      50.7303776
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Line",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.103906,
+      50.7266593
+    ],
+    "light": null
+  },
+  {
+    "name": "1",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0902536,
+      50.7049212
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "2",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0894918,
+      50.7046902
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Derrick",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0811019,
+      50.7144227
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0806191,
+      50.7083151
+    ],
+    "light": null
+  },
+  {
+    "name": "Britten",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0802651,
+      50.7086106
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0901678,
+      50.7089945
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0856509,
+      50.7093342
+    ],
+    "light": null
+  },
+  {
+    "name": "Drumhead",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.086359,
+      50.7121808
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1021841,
+      50.7214329
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1018622,
+      50.7206654
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1048019,
+      50.7190623
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Wreck",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.087389,
+      50.719368
+    ],
+    "light": null
+  },
+  {
+    "name": "Bunny",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0930753,
+      50.7301806
+    ],
+    "light": null
+  },
+  {
+    "name": "Outer Mark",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0967231,
+      50.7336847
+    ],
+    "light": null
+  },
+  {
+    "name": "Lollipop",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0919595,
+      50.7260922
+    ],
+    "light": null
+  },
+  {
+    "name": "Jonah",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0941482,
+      50.7144227
+    ],
+    "light": null
+  },
+  {
+    "name": "Bruce",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0985899,
+      50.7186072
+    ],
+    "light": null
+  },
+  {
+    "name": "Pier Head",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0938478,
+      50.7219355
+    ],
+    "light": null
+  },
+  {
+    "name": "Old O",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1008859,
+      50.7222208
+    ],
+    "light": null
+  },
+  {
+    "name": "Sixteen",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1025167,
+      50.7244282
+    ],
+    "light": null
+  },
+  {
+    "name": "Brookie",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0996413,
+      50.7264182
+    ],
+    "light": null
+  },
+  {
+    "name": "Little Deb",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1018729,
+      50.7302485
+    ],
+    "light": null
+  },
+  {
+    "name": "Bertie",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1074895,
+      50.7268291
+    ],
+    "light": null
+  },
+  {
+    "name": "ILM (green line)",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1105472,
+      50.726116
+    ],
+    "light": null
+  },
+  {
+    "name": "Boom",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1102629,
+      50.7283164
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1125374,
+      50.7233942
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1125428,
+      50.722051
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1131114,
+      50.7221291
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1141414,
+      50.7221121
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1147636,
+      50.7222208
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.115815,
+      50.7226861
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1182612,
+      50.7234162
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1215013,
+      50.7239698
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1238241,
+      50.7247474
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1461428,
+      50.7302095
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1485621,
+      50.7311466
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1500883,
+      50.7313707
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1513436,
+      50.7316984
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1549686,
+      50.7330896
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1551858,
+      50.7329759
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "6",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1549217,
+      50.7334674
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "4",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1541545,
+      50.7349239
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "2",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1529154,
+      50.7373514
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "5",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1555761,
+      50.7332738
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "3",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1540043,
+      50.7361903
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "1",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1530334,
+      50.7379591
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1640036,
+      50.7379422
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0691232,
+      50.7793425
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.068002,
+      50.7586808
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0681897,
+      50.7627189
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.068576,
+      50.7696404
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0687423,
+      50.772402
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0689676,
+      50.7752007
+    ],
+    "light": null
+  },
+  {
+    "name": "WE",
+    "type": "special_purpose",
+    "coordinates": [
+      -0.9748006,
+      50.7720153
+    ],
+    "light": null
+  },
+  {
+    "name": "Hard",
+    "type": "special_purpose",
+    "coordinates": [
+      -0.9749937,
+      50.7456617
+    ],
+    "light": null
+  },
+  {
+    "name": "Rizzi",
+    "type": "special_purpose",
+    "coordinates": [
+      -0.9934902,
+      50.758708
+    ],
+    "light": null
+  },
+  {
+    "name": "Sparkles",
+    "type": "special_purpose",
+    "coordinates": [
+      -0.9749937,
+      50.7589795
+    ],
+    "light": null
+  },
+  {
+    "name": "Patch",
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0974902,
+      50.706946
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.9995574,
+      50.8412269
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0031676,
+      50.8416047
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0049594,
+      50.8413404
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0042083,
+      50.8395925
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0044015,
+      50.8392063
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0029638,
+      50.8360692
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0019124,
+      50.8337993
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0008824,
+      50.8314751
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.9998846,
+      50.8293066
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Binness",
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.9989727,
+      50.8272735
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "South Lake",
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.9979534,
+      50.8248609
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Stoke",
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.9977603,
+      50.8204825
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Alpha",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0040581,
+      50.8143819
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Rod",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0028994,
+      50.812111
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:3-period:10"
+  },
+  {
+    "name": "Sinah",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0148406,
+      50.8075823
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:2-period:5"
+  },
+  {
+    "name": "Kendalls",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0384816,
+      50.8220041
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0358369,
+      50.8196793
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0344851,
+      50.8176763
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Broom",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0347211,
+      50.8166867
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Mallard South",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0325271,
+      50.8151513
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Mallard Sands S",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.0290648,
+      50.8118793
+    ],
+    "catagory": "south",
+    "light": null
+  },
+  {
+    "name": "Salterns",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0303384,
+      50.8115822
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "South Salterns",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0304457,
+      50.8092162
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:2-period:5"
+  },
+  {
+    "name": "West Sword",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0294962,
+      50.8081653
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Sword Pt",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0278225,
+      50.8059991
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:3-period:5"
+  },
+  {
+    "name": null,
+    "type": "isolated_danger",
+    "coordinates": [
+      -1.0237804,
+      50.8052906
+    ]
+  },
+  {
+    "name": "Nw Sinah",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0265458,
+      50.8026531
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "E. Milton",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0295606,
+      50.8028497
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:4-period:10"
+  },
+  {
+    "name": null,
+    "type": "isolated_danger",
+    "coordinates": [
+      -1.030333,
+      50.8023513
+    ]
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0343443,
+      50.7926142
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0344261,
+      50.7930559
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0348023,
+      50.7937447
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0348465,
+      50.7934437
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0356284,
+      50.7944339
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0360146,
+      50.7945288
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0361715,
+      50.7949807
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0364478,
+      50.7949552
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0356606,
+      50.7954867
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0361554,
+      50.7954376
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0347084,
+      50.7960471
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:3-period:10"
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0351966,
+      50.7961166
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0335282,
+      50.7962234
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0335644,
+      50.7963887
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0326143,
+      50.7966358
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0323983,
+      50.7964654
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0312879,
+      50.7971825
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0311511,
+      50.7968401
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0294358,
+      50.7953871
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0289946,
+      50.7946971
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0264063,
+      50.7945632
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0265029,
+      50.7960009
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.9738779,
+      50.8346937
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.9731698,
+      50.8381697
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.9686101,
+      50.8365977
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.9686744,
+      50.8351613
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0206157,
+      50.8185355
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0033286,
+      50.8200487
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0066223,
+      50.8158462
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0267067,
+      50.8074941
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0208059,
+      50.8033854
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0014138,
+      50.8122138
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -0.9948957,
+      50.8216483
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.9926105,
+      50.830052
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -0.9774506,
+      50.8341008
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -0.9858084,
+      50.8308245
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "cardinal_mark",
+    "coordinates": [
+      -0.9765601,
+      50.8345481
+    ],
+    "catagory": "west",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -0.9750956,
+      50.8348225
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -0.9722766,
+      50.8389217
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.9794355,
+      50.8368281
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.9782338,
+      50.835351
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.9772682,
+      50.838251
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.975852,
+      50.8376412
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.9741783,
+      50.8393621
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1086723,
+      50.8122652
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "102",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.106599,
+      50.8125753
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "100",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.110334,
+      50.812005
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "99",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1103849,
+      50.8112322
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "101",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.1091712,
+      50.8118559
+    ],
+    "catagory": "south",
+    "light": null
+  },
+  {
+    "name": "98",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.1128673,
+      50.8102094
+    ],
+    "catagory": "south",
+    "light": "Q+LFl-white-group:6-period:15"
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.114651,
+      50.8107907
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1148575,
+      50.8106653
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1162013,
+      50.8113076
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1249694,
+      50.8045702
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1231563,
+      50.8047906
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1243177,
+      50.8084297
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1186475,
+      50.8038159
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1199644,
+      50.8036057
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1201173,
+      50.8014936
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1218889,
+      50.8021886
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1217669,
+      50.8017894
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1215617,
+      50.801608
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1208536,
+      50.8013393
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1201656,
+      50.8012325
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1131758,
+      50.8064178
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.113157,
+      50.8046668
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1131516,
+      50.8038362
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1106518,
+      50.7982387
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1106893,
+      50.7984947
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1188164,
+      50.8066314
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1184007,
+      50.8057788
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1178669,
+      50.8049923
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1174324,
+      50.8042126
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.110177,
+      50.7951566
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1105177,
+      50.7963315
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.122247,
+      50.8181712
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.13841,
+      50.8232343
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1339253,
+      50.7861564
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1310366,
+      50.7864227
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.130704,
+      50.7865549
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1299717,
+      50.7870976
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1307362,
+      50.7881879
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1293374,
+      50.7879208
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1252591,
+      50.7894918
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1245456,
+      50.7908415
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1232206,
+      50.7908212
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1226091,
+      50.7909212
+    ],
+    "light": null
+  },
+  {
+    "name": "D1",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.0948911,
+      50.8093001
+    ],
+    "catagory": "north",
+    "light": null
+  },
+  {
+    "name": "C2",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.0923417,
+      50.8147616
+    ],
+    "catagory": "south",
+    "light": "Q+LFl-white-group:6-period:15"
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0947865,
+      50.8133244
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0938156,
+      50.8137176
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0946471,
+      50.81306
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0953444,
+      50.8127448
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "C2",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.0962671,
+      50.8125347
+    ],
+    "catagory": "south",
+    "light": "VQ+LFl-white-group:6-period:10"
+  },
+  {
+    "name": "104",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1029297,
+      50.8135803
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "103",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1047053,
+      50.8128736
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1321282,
+      50.8232275
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1306638,
+      50.8202961
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1354703,
+      50.8202114
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1347729,
+      50.8187033
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1335981,
+      50.8151005
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "63",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1081708,
+      50.823136
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "62",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1118051,
+      50.822787
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1136532,
+      50.8217923
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1144418,
+      50.8212586
+    ],
+    "light": null
+  },
+  {
+    "name": "61",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1150265,
+      50.8216788
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "87",
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.1050379,
+      50.8230513
+    ],
+    "catagory": "west",
+    "light": null
+  },
+  {
+    "name": "88",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1057729,
+      50.8220414
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "89",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1078918,
+      50.821018
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "90",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1117005,
+      50.8200419
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "91",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1142326,
+      50.8192557
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "95",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1159062,
+      50.8181339
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:2-period:5"
+  },
+  {
+    "name": "60",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1194038,
+      50.8191133
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "59",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1208308,
+      50.8170832
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "58",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1214906,
+      50.8159444
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "95",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1185134,
+      50.8166426
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:3-period:5"
+  },
+  {
+    "name": "94",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.119495,
+      50.8144599
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "95",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1196506,
+      50.8135075
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "96",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1181808,
+      50.8129618
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1359048,
+      50.8228005
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1344779,
+      50.8215873
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1318386,
+      50.8171781
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1330241,
+      50.8185575
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1309803,
+      50.8190862
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1302722,
+      50.8178933
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1306906,
+      50.815636
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1296311,
+      50.816707
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1260772,
+      50.8143006
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1235184,
+      50.8136295
+    ],
+    "light": null
+  },
+  {
+    "name": "B",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1061779,
+      50.8434914
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:4-period:10"
+  },
+  {
+    "name": "A",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1057058,
+      50.8441621
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "75",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1088145,
+      50.8417537
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "74",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1092383,
+      50.8419807
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "73",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1098284,
+      50.8400532
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "76",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1094582,
+      50.8389319
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "72",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1100537,
+      50.8389285
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:3-period:10"
+  },
+  {
+    "name": "84",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1011541,
+      50.8278225
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "72A",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1099249,
+      50.8369941
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "77",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.108852,
+      50.8345243
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "71",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1097157,
+      50.8343482
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "78",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1090988,
+      50.8330506
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "70",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1098498,
+      50.8326338
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "79",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1093563,
+      50.8312277
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:5-period:10"
+  },
+  {
+    "name": "69",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1102736,
+      50.8304315
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "68A",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1101127,
+      50.8294963
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "80",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1088574,
+      50.8294997
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:4-period:10"
+  },
+  {
+    "name": "68",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.108498,
+      50.8285578
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:4-period:10"
+  },
+  {
+    "name": "81",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1054349,
+      50.8285849
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0989118,
+      50.8277683
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0995287,
+      50.8297369
+    ],
+    "light": null
+  },
+  {
+    "name": "83",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1018837,
+      50.8289135
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.1030746,
+      50.8285713
+    ],
+    "catagory": "south",
+    "light": null
+  },
+  {
+    "name": "67",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1063039,
+      50.8278801
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:3-period:10"
+  },
+  {
+    "name": "66",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.104759,
+      50.8263451
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:2-period:5"
+  },
+  {
+    "name": "85",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1028224,
+      50.8278597
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "86",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1040616,
+      50.8241933
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:3-period:10"
+  },
+  {
+    "name": "65",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1051399,
+      50.82542
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "64",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1062825,
+      50.8240781
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1092973,
+      50.8214145
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.111604,
+      50.8207875
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.132713,
+      50.8244644
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1307174,
+      50.8241594
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1232233,
+      50.8246982
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1239743,
+      50.8281207
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1491334,
+      50.8335071
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1364117,
+      50.8309855
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1474758,
+      50.8353646
+    ],
+    "catagory": "starboard",
+    "light": "Fl-green-group:4-period:10"
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1470574,
+      50.834128
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1428839,
+      50.8337858
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1440373,
+      50.8332267
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:4-period:10"
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1417091,
+      50.832705
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1433399,
+      50.8318308
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1418164,
+      50.8300486
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1419827,
+      50.8283816
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1433291,
+      50.830052
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1433077,
+      50.82972
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1432809,
+      50.8293676
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1432648,
+      50.8290287
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1432755,
+      50.8286188
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1432807,
+      50.8282798
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1444342,
+      50.8277954
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1420471,
+      50.8268805
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.141119,
+      50.8258504
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1433721,
+      50.8256775
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.136983,
+      50.8245593
+    ],
+    "catagory": "south",
+    "light": "Q+LFl-white-group:6-period:15"
+  },
+  {
+    "name": null,
+    "type": "cardinal_mark",
+    "coordinates": [
+      -1.135127,
+      50.8246271
+    ],
+    "catagory": "south",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1352128,
+      50.8260232
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1353201,
+      50.8206994
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1214691,
+      50.815009
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1196774,
+      50.8148158
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1189854,
+      50.8160156
+    ],
+    "light": null
+  },
+  {
+    "name": "58",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1219895,
+      50.8144904
+    ],
+    "catagory": "port",
+    "light": "Fl-red-group:3-period:5"
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.110692,
+      50.8138379
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1740941,
+      50.844345
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1755385,
+      50.8420687
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1754929,
+      50.8421678
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1756015,
+      50.8421644
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1755988,
+      50.842261
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1733229,
+      50.8421322
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1750382,
+      50.8397483
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1736918,
+      50.839606
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "38",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1729568,
+      50.8389454
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "34A",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1731499,
+      50.8386067
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "39",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1671686,
+      50.8394095
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1684936,
+      50.8385931
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1636603,
+      50.8393926
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.1533821,
+      50.8408154
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1616701,
+      50.8397788
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1588001,
+      50.8398398
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1570406,
+      50.8394705
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1536771,
+      50.8402395
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "31",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.154227,
+      50.8395958
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1523843,
+      50.8388692
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1511639,
+      50.8380477
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1505014,
+      50.8370398
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "42",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1506811,
+      50.8387015
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1494687,
+      50.8373312
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1489645,
+      50.8366248
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1496484,
+      50.8361505
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": "Bridge",
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.9842527,
+      50.8327355
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "isolated_danger",
+    "coordinates": [
+      -1.005013,
+      50.8011579
+    ]
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0077703,
+      50.8007138
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.042403,
+      50.8037812
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0250813,
+      50.7950523
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0388142,
+      50.8297877
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0406971,
+      50.8304247
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0441572,
+      50.8271041
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0406059,
+      50.8234003
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0398247,
+      50.8229365
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.968138,
+      50.8355001
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -0.9738565,
+      50.8349038
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.5524908,
+      50.7190679
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.4085782,
+      50.8956852
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.1706448,
+      50.7828904
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2350607,
+      50.8165105
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.221242,
+      50.8108433
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": "Peel Wreck",
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.2236882,
+      50.748703
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.5654945,
+      50.7217478
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.502936,
+      50.703501
+    ],
+    "catagory": "starboard",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "special_purpose",
+    "coordinates": [
+      -1.0205409,
+      50.8185576
+    ],
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0249786,
+      50.8137723
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0230551,
+      50.815777
+    ],
+    "catagory": "port",
+    "light": null
+  },
+  {
+    "name": null,
+    "type": "lateral_mark",
+    "coordinates": [
+      -1.0226469,
+      50.8141227
+    ],
+    "catagory": "starboard",
+    "light": null
+  }
+]

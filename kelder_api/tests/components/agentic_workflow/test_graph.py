@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from unittest.mock import AsyncMock
+
 import pytest
 
-from unittest.mock import AsyncMock
 from src.kelder_api.components.agentic_workflow.agents.chatbot import (
     ChatResponse,
     ReasoningInput,
@@ -36,7 +37,7 @@ async def test_agent_workflow_executes_reasoning_plan_and_reports_progress(
     chatbot_responses,
     reasoning_plan,
     passage_outputs,
-    mock_redis_client
+    mock_redis_client,
 ):
     plan = [
         Node(
