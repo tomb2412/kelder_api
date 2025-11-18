@@ -2,6 +2,7 @@ from __future__ import annotations as _annotations
 
 import logging
 from dataclasses import dataclass
+from pathlib import Path
 
 from pydantic_graph import BaseNode, End, GraphRunContext
 
@@ -23,8 +24,10 @@ from src.kelder_api.components.agentic_workflow.models import (
     State,
 )
 from src.kelder_api.components.agentic_workflow.utils import (
+    build_marks_index,
     clean_user_message,
     find_models,
+    load_map,
     notify_progress,
 )
 
@@ -33,6 +36,9 @@ from src.kelder_api.components.agentic_workflow.utils import (
 # TODO: task pass or fail communication? - flag in Node model.
 # TODO: do we need to allow nodes to directly communicate with the chatbot?
 logger = logging.getLogger(__name__)
+
+MARKS_FILE = Path(__file__).resolve().parents[3] / "assets" / "marks.json"
+SOLENT_COASTLINE_FILE = Path(__file__).resolve().parents[3] / "assets" / "seas.json"
 
 
 @dataclass
@@ -95,6 +101,10 @@ class BuildPassageNode(BaseNode[State]):
         logger.debug("Passage planing agent called")
         await notify_progress(ctx.state, "Generating a passage plan")
 
+        MARKS_DATA = load_map(MARKS_FILE)
+        SEA_DATA = load_map(SOLENT_COASTLINE_FILE)
+        MARKS_INDEX = build_marks_index(MARKS_DATA)
+
         prompt = (
             f"Users message: {ctx.state.user_message}\n"
             f"Task description: {self.passage_plan_description}"
@@ -113,7 +123,15 @@ class BuildPassageNode(BaseNode[State]):
         if len(tidal_nodes) > 0:
             prompt += f"Latest tidal analysis: {tidal_nodes[-1].node_output}"
 
-        result = await passage_plan_agent.run(prompt, deps=ctx.state.redis_client)
+        result = await passage_plan_agent.run(
+            prompt,
+            deps={
+                "redis_client": ctx.state.redis_client,
+                "marks_index": MARKS_INDEX,
+                "marks_data": MARKS_DATA,
+                "sea_boundries": SEA_DATA,
+            },
+        )
         ctx.state.workflow_plan[ctx.state.job_count].node_output = result.output
         ctx.state.passage_plan = result.output
         ctx.state.job_count += 1
