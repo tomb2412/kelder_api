@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
-from typing import Tuple
+from typing import List, Tuple
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 
@@ -13,6 +13,7 @@ from src.kelder_api.app.getters import (
 )
 from src.kelder_api.components.drift_calculator.serivce import DriftCalculator
 from src.kelder_api.components.gps_new.interface import GPSInterface
+from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.log.service import LogTracker
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.configuration.settings import get_settings
@@ -22,6 +23,17 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["GPS"])
 router_card = APIRouter(tags=["Card routes"])
+
+
+def _format_gps_payload(
+    gps_payload: GPSRedisData | List[GPSRedisData] | None,
+) -> GPSRedisData | List[GPSRedisData] | None:
+    """Apply frontend-specific rounding to gps payloads."""
+    if gps_payload is None:
+        return None
+    if isinstance(gps_payload, list):
+        return [payload.round_coordinates() for payload in gps_payload]
+    return gps_payload.round_coordinates()
 
 
 def get_dependancy(request: Request) -> GPSInterface:
@@ -43,14 +55,14 @@ def get_card_dependancies(
 async def get_gps_coords_latest(gps_interface: GPSInterface = Depends(get_dependancy)):
     logger.info("Requesting GPS data")
     gps_data = await gps_interface.read_gps_latest(active=True)
-    return gps_data
+    return _format_gps_payload(gps_data)
 
 
 @router.get("/gps_coords_all")
 async def get_gps_coords_all(gps_interface: GPSInterface = Depends(get_dependancy)):
     logger.info("Requesting GPS data")
     gps_data = await gps_interface.read_gps_all_history(active=True)
-    return gps_data
+    return _format_gps_payload(gps_data)
 
 
 @router.get("/gps_coords_timeseries")
@@ -65,7 +77,7 @@ async def get_gps_coords_timeseries(
     gps_data = await gps_interface.read_gps_history_time_series(
         start_datetime=start_datetime, end_datetime=end_datetime, active=True
     )
-    return gps_data
+    return _format_gps_payload(gps_data)
 
 
 @router.get("/gps_coords_length")
@@ -75,7 +87,7 @@ async def get_gps_coords_length(
 ):
     logger.info("Requesting GPS data")
     gps_data = await gps_interface.read_gps_history_length(length=length, active=True)
-    return gps_data
+    return _format_gps_payload(gps_data)
 
 
 @router_card.get("/gps_card_data")
@@ -100,6 +112,8 @@ async def get_gps_card(
         log = journey_data.distance_travelled
     else:
         log = "error"
+    gps_data = _format_gps_payload(gps_data)
+
     if gps_data:
         return GPSCard(
             # TODO implement an error handling + add drift and DTW

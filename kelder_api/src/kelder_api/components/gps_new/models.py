@@ -172,8 +172,12 @@ class GPSRedisData(BaseModel):
         description="The satellite information", default={}
     )
 
-    @field_validator("latitude_nmea", "longitude_nmea", mode="before")
-    def round_coordinates(cls, v, info):
-        # detect if field is lat (2 deg digits) or lon (3 deg digits)
-        deg_digits = 2 if info.field_name == "latitude_nmea" else 3
-        return round_ddmm(v, deg_digits)
+    def round_coordinates(self) -> "GPSRedisData":
+        """Prepare coordinate and timestamp fields for frontend consumption."""
+        if isinstance(self.latitude_nmea, str):
+            self.latitude_nmea = round_ddmm(self.latitude_nmea, 2)
+        if isinstance(self.longitude_nmea, str):
+            self.longitude_nmea = round_ddmm(self.longitude_nmea, 3)
+        if isinstance(self.timestamp, datetime):
+            self.timestamp = self.timestamp.replace(microsecond=0)
+        return self
