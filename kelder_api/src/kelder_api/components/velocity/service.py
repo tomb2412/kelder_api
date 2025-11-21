@@ -37,7 +37,7 @@ class VelocityCalculator:
         if self.velocity_calculation_type == CalculationType.LENGTH:
             return await self.gps_interface.read_gps_history_length(
                 length=self.num_gps_measurements, active=True
-            )
+            ), end_datetime
         else:
             if end_datetime is None:
                 end_datetime = datetime.now(timezone.utc).replace(microsecond=0)
@@ -84,7 +84,7 @@ class VelocityCalculator:
                     gps_history[i + 1].longitude_nmea
                 )
 
-                distance_travelled = haversine(
+                distance_travelled_nm = haversine(
                     latitude_start=latitude_start,
                     latitude_end=latitude_end,
                     longitude_start=longitude_start,
@@ -100,18 +100,18 @@ class VelocityCalculator:
                     longitude_start=longitude_start,
                     longitude_end=longitude_end,
                 )
-                try:
-                    instantaneous_speed_over_ground = (
-                        distance_travelled / time_difference
-                    )
-                except ZeroDivisionError:
+                if time_difference <= 0:
                     instantaneous_speed_over_ground = 0
+                else:
+                    instantaneous_speed_over_ground = (
+                        distance_travelled_nm / time_difference
+                    ) * 3600  # convert to knots
                 speed_over_ground_list.append(instantaneous_speed_over_ground)
                 course_over_ground_list.append(cog_degrees)
-
+            
+            logger.debug(f"Calculated a speed over ground list to be: {speed_over_ground_list}")
             speed_over_ground_avg = sum(speed_over_ground_list) / (gps_points - 1)
             course_over_ground_avg = average_bearing(course_over_ground_list)
-
         await self.write_velocity(
             GPSVelocity(
                 timestamp=datetime_now,

@@ -102,6 +102,7 @@ class Compass(BaseSettings):
 
 
 class Orchestrator(BaseSettings):
+    run_simulator: bool = Field(description="Run the simulation", default = False)
     sog_threshold: float = Field(
         description=(
             "Speed over ground threshold that sets the vessel state to underway"

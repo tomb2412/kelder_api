@@ -25,7 +25,7 @@ class UnderwayStrategy:
 
     @classmethod
     async def execute(
-        self, components: Dict[str, dict], previous_vessel_state: VesselState
+        self, components: Dict[str, dict], previous_vessel_state: VesselState, sleep_time: int
     ) -> None:
         if previous_vessel_state == VesselState.STATIONARY:
             # The log tracker when finishing sets the start journey attribute to true
@@ -37,7 +37,7 @@ class UnderwayStrategy:
                     components[sensor]["instance"], components[sensor]["method"]
                 )()
             except Exception as error:
-                logger.error(f"Exception occured processing {sensor}: {error}")
+                logger.error(f"Exception occured processing {sensor}: {error}", exc_info=True)
 
         for calculator in self.required_calculators():
             try:
@@ -45,5 +45,5 @@ class UnderwayStrategy:
                     components[calculator]["instance"], components[calculator]["method"]
                 )()
             except Exception as error:
-                logger.error(f"Exception occured processing {calculator}: {error}")
-        await asyncio.sleep(5)
+                logger.error(f"Exception occured processing {calculator}: {error}", exc_info=True)
+        await asyncio.sleep(sleep_time)

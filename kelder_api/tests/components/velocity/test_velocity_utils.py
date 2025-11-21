@@ -11,8 +11,8 @@ from src.kelder_api.components.velocity import utils
     "nmea, lon, expected",
     [
         ("00123.5000", True, 1 + 23.5 / 60),
-        ("5123.7500", False, 7.0625),
-        ("12", True, 0.2),  # zero padded input handled by zfill
+        ("5123.7500", False, 51 + 23.75 / 60),
+        ("12", True, 0.2),  # Treat as 00°12.000'
     ],
 )
 def test_convert_to_decimal_degrees(nmea: str, lon: bool, expected: float):
@@ -81,6 +81,22 @@ def test_parse_timestamp_invalid_format_raises():
 
 def test_haversine_distance_zero_when_points_match():
     assert utils.haversine(51.5, 51.5, 0.1, 0.1) == pytest.approx(0.0)
+
+
+def test_haversine_returns_nautical_miles_by_default():
+    # One degree of latitude should be close to 60 nautical miles.
+    result = utils.haversine(0.0, 1.0, 0.0, 0.0)
+    assert result == pytest.approx(60.040, rel=1e-5)
+
+
+def test_haversine_can_return_kilometers():
+    result = utils.haversine(0.0, 1.0, 0.0, 0.0, unit="kilometers")
+    assert result == pytest.approx(111.195, rel=1e-5)
+
+
+def test_haversine_invalid_unit():
+    with pytest.raises(ValueError):
+        utils.haversine(0.0, 1.0, 0.0, 0.0, unit="meters")  # type: ignore[arg-type]
 
 
 @pytest.mark.parametrize(

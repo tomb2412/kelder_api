@@ -122,7 +122,7 @@ def _expected_aggregates(
         if time_delta == 0:
             speeds.append(0.0)
         else:
-            speeds.append(distance / time_delta)
+            speeds.append(distance / time_delta * 3600)
 
     course = velocity_utils.average_bearing(bearings)
     average_speed = sum(speeds) / len(speeds)

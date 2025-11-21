@@ -1,0 +1,14 @@
+boat:
+  - speed: 2 # knts
+  - cog: 20 # degs T
+  - turn_rate: 5 # degs/s
+  - time_delta: 10
+  - heading_variation: 10
+
+# maybe should have inits and repeates
+
+similation:
+  # Runs in a straight line
+  - start_latitude: "5213.77306" # NMEA streamed
+  - start_longitude: "00211.27194"
+  - heading: 0 # compass degs T
