@@ -9,6 +9,18 @@ services:
         limits:
           memory: 128M
     #restart: "on-failure"
+  graph_db:
+    image: neo4j:2025.10.1
+    container_name: neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      NEO4J_AUTH: "none"
+    
+    volumes:
+      - $HOME/neo4j/data:/data
+
 
   kelder_api:
     build: .
