@@ -114,6 +114,7 @@ class VelocityCalculator:
             )
             speed_over_ground_avg = sum(speed_over_ground_list) / (gps_points - 1)
             course_over_ground_avg = average_bearing(course_over_ground_list)
+
         await self.write_velocity(
             GPSVelocity(
                 timestamp=datetime_now,
@@ -173,10 +174,10 @@ class VelocityCalculator:
     async def read_velocity_timeseries(
         self,
         start_datetime: datetime,
-        end_datetime: datetime = datetime.now(timezone.utc),
+        end_datetime: datetime = datetime.now(tz=timezone.utc),
         active: bool = True,
     ) -> List[GPSVelocity]:
-        logger.debug(f"Reading compass data between {start_datetime} to {end_datetime}")
+        logger.info(f"Reading velocity data between {start_datetime} to {end_datetime}")
         velocity_set = await self.redis_client.read_set(
             "VELOCITY", [start_datetime, end_datetime]
         )

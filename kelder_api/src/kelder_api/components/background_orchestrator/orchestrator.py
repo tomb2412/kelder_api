@@ -135,9 +135,9 @@ class BackgroundTaskManager:
             await self.simulator.clear_redis()
 
         self.vessel_state = VesselState.STATIONARY
-        await self.write_vessel_state()
         while True:
             logger.info("Current vessel state: %s", self.vessel_state)
+            await self.write_vessel_state()
             previous_vessel_state = self.vessel_state
             # Run the strategy matching the vessel state
             await self.strategies[self.vessel_state](

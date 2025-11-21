@@ -38,5 +38,5 @@ class JourneyData(BaseModel):
         longitude_end = convert_to_decimal_degrees(self.end_longitude)
 
         return round(
-            haversine(latitude_start, latitude_end, longitude_start, longitude_end), 1
+            haversine(latitude_start, latitude_end, longitude_start, longitude_end), 2
         )

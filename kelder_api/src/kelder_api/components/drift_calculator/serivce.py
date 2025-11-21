@@ -46,36 +46,34 @@ class DriftCalculator:
         self.settings = get_settings().drift
 
     async def instantaneous_drift_calculator(
-        self, now: datetime | None = None
-    ) -> DriftData:
-        if now:
-            end_datetime = now
-        else:
-            end_datetime = datetime.now(timezone.utc)
-        start_datetime = end_datetime - timedelta(
-            seconds=self.settings.instantaneous_history_period
-        )
-
+        self, datetime_now: datetime | None = None
+    ) -> None:
         sog_avg, cog_avg = await self._calculate_avg_velocity(
-            start_datetime=start_datetime
+            end_datetime=datetime_now
         )
-        heading_avg = await self._calculate_avg_heading(start_datetime=start_datetime)
+        heading_avg, end_datetime  = await self._calculate_avg_heading(end_datetime=datetime_now)
 
         if sog_avg and cog_avg and heading_avg:
             drift_angle = bearing_angle_difference(heading_avg, cog_avg)
-            drift_speed = sog_avg * math.sin(drift_angle)
+            drift_speed = round(sog_avg * math.sin(drift_angle),1)
         else:
             drift_speed = None
 
-        return DriftData(timestamp=end_datetime, drift_speed=drift_speed)
+        await self.write_drift(DriftData(timestamp=end_datetime, drift_speed=drift_speed))
 
     async def _calculate_avg_velocity(
-        self, start_datetime: datetime
+        self, end_datetime: datetime | None = None
     ) -> Tuple[float | None]:
-        velocity_history = await self.velocity_calculator.read_velocity_timeseries(
-            start_datetime=start_datetime, active=True
+        if end_datetime is None:
+            end_datetime = datetime.now(timezone.utc).replace(microsecond=0)
+        start_datetime = end_datetime - timedelta(
+            seconds=self.settings.instantaneous_history_period
         )
-
+        velocity_history = await self.velocity_calculator.read_velocity_timeseries(
+            end_datetime=end_datetime,
+            start_datetime=start_datetime,
+            active=True
+        )
         # TODO: catch no data
         try:
             sog_avg = fmean(
@@ -96,9 +94,16 @@ class DriftCalculator:
 
         return sog_avg, cog_avg
 
-    async def _calculate_avg_heading(self, start_datetime: datetime) -> float | None:
+    async def _calculate_avg_heading(self, end_datetime: datetime | None = None) -> float | None:
+        if end_datetime is None:
+            end_datetime = datetime.now(timezone.utc).replace(microsecond=0)
+        start_datetime = end_datetime - timedelta(
+            seconds=self.settings.instantaneous_history_period
+        )
         compass_history = await self.compass_interface.read_heading_history_timeseries(
-            start_datetime=start_datetime, active=True
+            end_datetime=end_datetime,
+            start_datetime=start_datetime,
+            active=True
         )
 
         try:
@@ -113,10 +118,10 @@ class DriftCalculator:
                 }"
             )
 
-        return heading_avg
+        return heading_avg, end_datetime
 
     async def write_drift(self, drift_data: DriftData) -> None:
-        logger.debug("Writing the drift data")
+        logger.info("Writing the drift data")
         await self.redis_client.write_set("DRIFT", drift_data)
 
     async def read_drift_latest(self, active: bool = False) -> DriftData:

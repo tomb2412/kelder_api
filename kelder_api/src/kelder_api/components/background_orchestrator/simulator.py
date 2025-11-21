@@ -60,7 +60,7 @@ class Simulator(CompassInterface, GPSInterface):
         self.gps_history = []
 
     async def clear_redis(self) -> None:
-        for sensor in ["GPS", "COMPASS", "VELOCTIY", "LOG", "DRIFT", "BILGE_DEPTH"]:
+        for sensor in ["GPS", "COMPASS", "VELOCITY", "LOG", "DRIFT", "BILGE_DEPTH"]:
             async with self.redis_client.get_connection() as redis:
                 await redis.delete(f"sensor:ts:{sensor}")
 
@@ -77,14 +77,13 @@ class Simulator(CompassInterface, GPSInterface):
             time_increment = self.UNDERWAY_SLEEP
         else:
             time_increment = self.time_increment
-        print(f"The time difference: {time_increment}")
         self.current_time = self.current_time + timedelta(seconds=time_increment)
 
         self.latitude, self.longitude = self._increment_latitude_longitude(
             lat_deg=self.latitude,
             lon_deg=self.longitude,
             speed_knots=float(self.speed),
-            bearing_deg=float(self.heading),
+            bearing_deg=float(self.cog),
             dt_seconds=float(time_increment),
         )
 

@@ -104,9 +104,9 @@ def decimal_to_dms_format(decimal_deg, is_lon=True):
     degrees = int(decimal_deg)
     minutes = (decimal_deg - degrees) * 60
     if is_lon:
-        return f"{degrees:03d}{minutes:06.3f}"
+        return f"{degrees:03d}{minutes:09.6f}"
     else:
-        return f"{degrees:02d}{minutes:06.3f}"
+        return f"{degrees:02d}{minutes:09.6f}"
 
 
 def haversine(
