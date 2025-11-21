@@ -51,7 +51,7 @@ def restart_services(_: HTTPBasicCredentials = Depends(check_auth)):
 
         if result.returncode != 0:
             raise HTTPException(500, "Restart script failed:\n" + output)
-        logging.INFO("Restart successful")
+        logging.info("Restart successful")
         return "Restart triggered successfully.\n" + output
 
     except Exception as e:
