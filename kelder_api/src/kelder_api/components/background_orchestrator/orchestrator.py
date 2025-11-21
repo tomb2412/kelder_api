@@ -1,13 +1,16 @@
 import logging
 
-from src.kelder_api.components.background_orchestrator.enums import VesselState, VesselStateModel
+from src.kelder_api.components.background_orchestrator.enums import (
+    VesselState,
+    VesselStateModel,
+)
+from src.kelder_api.components.background_orchestrator.simulator import Simulator
 from src.kelder_api.components.background_orchestrator.stationary_strategy import (
     StationaryStrategy,
 )
 from src.kelder_api.components.background_orchestrator.underway_strategy import (
     UnderwayStrategy,
 )
-from src.kelder_api.components.background_orchestrator.simulator import Simulator
 from src.kelder_api.components.compass_new.interface import CompassInterface
 from src.kelder_api.components.db_manager.service import DBManager
 from src.kelder_api.components.drift_calculator.serivce import DriftCalculator
@@ -54,9 +57,8 @@ class BackgroundTaskManager:
             bilge_depth_sensor_method = "record_bilge_depth"
         else:
             self.simulator = Simulator(
-                redis_client = self.redis_client,
-                simulation_file_name = "straight_line"
-                )
+                redis_client=self.redis_client, simulation_file_name="straight_line"
+            )
             gps_interface = self.simulator
             gps_method = "simulate_gps_sensor"
             compass_interface = self.simulator
@@ -141,7 +143,7 @@ class BackgroundTaskManager:
             await self.strategies[self.vessel_state](
                 components=self.components,
                 previous_vessel_state=previous_vessel_state,
-                sleep_time=self.sleep_time
+                sleep_time=self.sleep_time,
             )
 
             self.vessel_state = await self.calculate_new_state(self.vessel_state)
@@ -155,12 +157,10 @@ class BackgroundTaskManager:
     async def write_vessel_state(self) -> None:
         logger.info(f"Writing the vessel state to redis: {self.vessel_state.value}")
         async with self.redis_client.get_connection() as redis:
-            await redis.delete(f"sensor:ts:VESSEL_STATE")
+            await redis.delete("sensor:ts:VESSEL_STATE")
         await self.redis_client.write_set(
-            "VESSEL_STATE",
-            VesselStateModel(
-                vessel_state = self.vessel_state
-        ))
+            "VESSEL_STATE", VesselStateModel(vessel_state=self.vessel_state)
+        )
 
     async def read_vessel_state(self) -> VesselState | None:
         try:

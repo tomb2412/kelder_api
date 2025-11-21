@@ -99,6 +99,7 @@ def convert_to_decimal_degrees(degree: str, lon: bool = True) -> float:
 
     return sign * (degrees_val + minutes_val / 60.0)
 
+
 def decimal_to_dms_format(decimal_deg, is_lon=True):
     degrees = int(decimal_deg)
     minutes = (decimal_deg - degrees) * 60
@@ -106,6 +107,7 @@ def decimal_to_dms_format(decimal_deg, is_lon=True):
         return f"{degrees:03d}{minutes:06.3f}"
     else:
         return f"{degrees:02d}{minutes:06.3f}"
+
 
 def haversine(
     latitude_start: float,

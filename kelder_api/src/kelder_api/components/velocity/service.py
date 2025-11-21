@@ -108,8 +108,10 @@ class VelocityCalculator:
                     ) * 3600  # convert to knots
                 speed_over_ground_list.append(instantaneous_speed_over_ground)
                 course_over_ground_list.append(cog_degrees)
-            
-            logger.debug(f"Calculated a speed over ground list to be: {speed_over_ground_list}")
+
+            logger.debug(
+                f"Calculated a speed over ground list to be: {speed_over_ground_list}"
+            )
             speed_over_ground_avg = sum(speed_over_ground_list) / (gps_points - 1)
             course_over_ground_avg = average_bearing(course_over_ground_list)
         await self.write_velocity(

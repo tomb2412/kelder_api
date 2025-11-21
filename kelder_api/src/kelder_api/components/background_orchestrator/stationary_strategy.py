@@ -25,7 +25,10 @@ class StationaryStrategy:
 
     @classmethod
     async def execute(
-        self, components: Dict[str, dict], previous_vessel_state: VesselState, sleep_time: int
+        self,
+        components: Dict[str, dict],
+        previous_vessel_state: VesselState,
+        sleep_time: int,
     ) -> None:
         for sensor in self.required_sensors():
             try:
@@ -33,7 +36,9 @@ class StationaryStrategy:
                     components[sensor]["instance"], components[sensor]["method"]
                 )()
             except Exception as error:
-                logger.error(f"Exception occured processing {sensor}: {error}", exc_info=True)
+                logger.error(
+                    f"Exception occured processing {sensor}: {error}", exc_info=True
+                )
 
         for calculator in self.required_calculators():
             try:
@@ -41,7 +46,9 @@ class StationaryStrategy:
                     components[calculator]["instance"], components[calculator]["method"]
                 )()
             except Exception as error:
-                logger.error(f"Exception occured processing {calculator}: {error}", exc_info=True)
+                logger.error(
+                    f"Exception occured processing {calculator}: {error}", exc_info=True
+                )
 
         if previous_vessel_state == VesselState.UNDERWAY:
             logger.info("Journey finishing")

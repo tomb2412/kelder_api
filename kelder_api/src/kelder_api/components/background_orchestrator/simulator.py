@@ -1,37 +1,45 @@
-import yaml
+import logging
 import math
 import random
-import logging
-import asyncio
-
-from pathlib import Path
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+import yaml
 
 from src.kelder_api.components.background_orchestrator.enums import VesselState
-from src.kelder_api.components.compass_new.models import CompassRedisData
 from src.kelder_api.components.compass_new.interface import CompassInterface
+from src.kelder_api.components.compass_new.models import CompassRedisData
 from src.kelder_api.components.gps_new.interface import GPSInterface
-from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.gps_new.types import GPSStatus
-from src.kelder_api.configuration.settings import get_settings
-from src.kelder_api.components.velocity.utils import convert_to_decimal_degrees, decimal_to_dms_format
+from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.velocity.utils import (
+    convert_to_decimal_degrees,
+    decimal_to_dms_format,
+)
 from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.settings import get_settings
 
 setup_logging(component="simulator")
 logger = logging.getLogger(__name__)
 
 
-class Simulator(CompassInterface,GPSInterface):
-    """Injects simulation data for the hardware, using yaml behaviours"""    
-    def __init__(self,
+class Simulator(CompassInterface, GPSInterface):
+    """Injects simulation data for the hardware, using yaml behaviours"""
+
+    def __init__(
+        self,
         redis_client: RedisClient,
         simulation_file_name: str,
     ):
         self.current_time = datetime.now(tz=timezone.utc)
         self.redis_client = redis_client
-        
-        parent_path = Path(__file__).resolve().parents[0] / "simulations" / f"{simulation_file_name}.yaml"
+
+        parent_path = (
+            Path(__file__).resolve().parents[0]
+            / "simulations"
+            / f"{simulation_file_name}.yaml"
+        )
         config = yaml.safe_load(open(parent_path))
 
         self.speed = config["boat"][0]["speed"]
@@ -40,7 +48,8 @@ class Simulator(CompassInterface,GPSInterface):
         self.time_increment = config["boat"][3]["time_delta"]
         self.heading_variation = config["boat"][4]["heading_variation"]
 
-        # Not sure how to do manage the different simulations in one file w dicts or many files with one dict
+        # Not sure how to do manage the different simulations in one file,
+        #  w dicts or many files with one dict
         self.latitude = config["similation"][0]["start_latitude"]
         self.longitude = config["similation"][1]["start_longitude"]
         self.heading = config["similation"][2]["heading"]
@@ -51,15 +60,17 @@ class Simulator(CompassInterface,GPSInterface):
         self.gps_history = []
 
     async def clear_redis(self) -> None:
-        for sensor in ["GPS", "COMPASS", "VELOCTIY", "LOG", "DRIFT", 'BILGE_DEPTH']:
+        for sensor in ["GPS", "COMPASS", "VELOCTIY", "LOG", "DRIFT", "BILGE_DEPTH"]:
             async with self.redis_client.get_connection() as redis:
                 await redis.delete(f"sensor:ts:{sensor}")
-            
+
         logger.info("Cleared the redis data streams")
 
     async def simulate_gps_sensor(self):
         # Engine needed to calculate timestamp, lat and long
-        vessel_state = (await self.redis_client.read_set("VESSEL_STATE"))[0]["vessel_state"]
+        vessel_state = (await self.redis_client.read_set("VESSEL_STATE"))[0][
+            "vessel_state"
+        ]
         if vessel_state == VesselState.STATIONARY:
             time_increment = self.STATIONARY_SLEEP
         elif vessel_state == VesselState.UNDERWAY:
@@ -67,16 +78,14 @@ class Simulator(CompassInterface,GPSInterface):
         else:
             time_increment = self.time_increment
         print(f"The time difference: {time_increment}")
-        self.current_time = self.current_time + timedelta(
-            seconds=time_increment
-        )
-        
+        self.current_time = self.current_time + timedelta(seconds=time_increment)
+
         self.latitude, self.longitude = self._increment_latitude_longitude(
             lat_deg=self.latitude,
             lon_deg=self.longitude,
             speed_knots=float(self.speed),
             bearing_deg=float(self.heading),
-            dt_seconds=float(time_increment)
+            dt_seconds=float(time_increment),
         )
 
         gps_redis_data = GPSRedisData(
@@ -89,7 +98,6 @@ class Simulator(CompassInterface,GPSInterface):
             satellites_in_view={},
         )
 
-
         self.gps_history.append(gps_redis_data)
 
         await self.redis_client.write_set("GPS", gps_redis_data)
@@ -98,15 +106,16 @@ class Simulator(CompassInterface,GPSInterface):
         self.heading += random.randint(-self.heading_variation, self.heading_variation)
 
         compass_redis_data = CompassRedisData(
-            timestamp = self.current_time,
-            heading = self.heading
+            timestamp=self.current_time, heading=self.heading
         )
         await self.redis_client.write_set("COMPASS", compass_redis_data)
 
     async def simulate_ultrasound_sensor(self):
         pass
 
-    def _increment_latitude_longitude(self,lat_deg, lon_deg, speed_knots, bearing_deg, dt_seconds):
+    def _increment_latitude_longitude(
+        self, lat_deg, lon_deg, speed_knots, bearing_deg, dt_seconds
+    ):
         """Move a position using a simple flat-earth approximation."""
         lat_decimal = convert_to_decimal_degrees(lat_deg, lon=False)
         lon_decimal = convert_to_decimal_degrees(lon_deg, lon=True)
