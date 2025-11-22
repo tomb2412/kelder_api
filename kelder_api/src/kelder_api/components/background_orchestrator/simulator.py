@@ -102,7 +102,8 @@ class Simulator(CompassInterface, GPSInterface):
         await self.redis_client.write_set("GPS", gps_redis_data)
 
     async def simulate_compass_sensor(self):
-        self.heading += random.randint(-self.heading_variation, self.heading_variation)
+        if self.heading_variation != 0:
+            self.heading += random.randint(-self.heading_variation, self.heading_variation)
 
         compass_redis_data = CompassRedisData(
             timestamp=self.current_time, heading=self.heading

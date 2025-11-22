@@ -157,6 +157,12 @@ class AppRoute(Enum):
         200,
         validator=_assert_journey,
     )
+    VESSEL_STATE = RouteExpectation(
+        "GET",
+        "/vessel_state",
+        200,
+        {"vessel_state": "underway"},
+    )
     REDIS_SET_SIZE = RouteExpectation(
         "GET",
         "/get_redis_set_size",
@@ -206,6 +212,7 @@ def test_app_initialisation_sets_state(app_client):
         DummyCompassInterface,
         DummyGPSInterface,
         DummyLogTracker,
+        DummyOrchestrator,
         DummyRedisClient,
         DummyVelocityCalculator,
     )
@@ -215,6 +222,7 @@ def test_app_initialisation_sets_state(app_client):
     assert isinstance(app.state.compass_interface, DummyCompassInterface)
     assert isinstance(app.state.velocity_calculator, DummyVelocityCalculator)
     assert isinstance(app.state.log_tracker, DummyLogTracker)
+    assert isinstance(app.state.background_orchestrator, DummyOrchestrator)
 
 
 @pytest.mark.parametrize("route", list(AppRoute))

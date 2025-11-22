@@ -135,7 +135,7 @@ class Drift(BaseSettings):
         description=(
             "Number of seconds subtracted from current time to measure the history from"
         ),
-        default=60,
+        default=10,
     )
     model_config = model_config
 

@@ -53,7 +53,7 @@ class DriftCalculator:
         )
         heading_avg, end_datetime  = await self._calculate_avg_heading(end_datetime=datetime_now)
 
-        if sog_avg and cog_avg and heading_avg:
+        if sog_avg is not None and cog_avg is not None and heading_avg is not None:
             drift_angle = bearing_angle_difference(heading_avg, cog_avg)
             drift_speed = round(sog_avg * math.sin(drift_angle),1)
         else:
@@ -74,6 +74,7 @@ class DriftCalculator:
             start_datetime=start_datetime,
             active=True
         )
+        logger.debug(f"Requesting the velocity timeseries. From: {start_datetime}-{end_datetime}. Got length: {len(velocity_history)}")
         # TODO: catch no data
         try:
             sog_avg = fmean(
@@ -91,7 +92,7 @@ class DriftCalculator:
                 "No velocity data available in the last"
                 f"{self.settings.instantaneous_history_period}"
             )
-
+        logger.debug(f"The vecocity average: {sog_avg}, {cog_avg}")
         return sog_avg, cog_avg
 
     async def _calculate_avg_heading(self, end_datetime: datetime | None = None) -> float | None:
@@ -105,6 +106,7 @@ class DriftCalculator:
             start_datetime=start_datetime,
             active=True
         )
+        logger.debug(f"Requesting the compass timeseries. From: {start_datetime}-{end_datetime}. Got length: {len(compass_history)}")
 
         try:
             heading_avg = fmean(
@@ -117,7 +119,7 @@ class DriftCalculator:
                     self.settings.instantaneous_history_period
                 }"
             )
-
+        logger.debug(f"The heading average: {heading_avg}")
         return heading_avg, end_datetime
 
     async def write_drift(self, drift_data: DriftData) -> None:
