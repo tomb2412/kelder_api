@@ -1,5 +1,8 @@
 from fastapi import FastAPI
 
+from src.kelder_api.components.background_orchestrator.orchestrator import (
+    BackgroundTaskManager,
+)
 from src.kelder_api.components.compass_new.interface import CompassInterface
 from src.kelder_api.components.drift_calculator.serivce import DriftCalculator
 from src.kelder_api.components.gps_new.interface import GPSInterface
@@ -30,3 +33,7 @@ def get_log_tracker(app: FastAPI) -> LogTracker:
 
 def get_drift_calculator(app: FastAPI) -> DriftCalculator:
     return app.state.drift_calculator
+
+
+def get_orchestrator(app: FastAPI) -> BackgroundTaskManager:
+    return app.state.background_orchestrator

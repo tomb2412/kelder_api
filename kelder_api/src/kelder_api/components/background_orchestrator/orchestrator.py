@@ -162,9 +162,9 @@ class BackgroundTaskManager:
             "VESSEL_STATE", VesselStateModel(vessel_state=self.vessel_state)
         )
 
-    async def read_vessel_state(self) -> VesselState | None:
+    async def read_vessel_state(self) -> VesselStateModel | None:
         try:
-            return (await self.redis_client.read_set("VESSEL_STATE"))[0].vessel_state
+            return VesselStateModel(**(await self.redis_client.read_set("VESSEL_STATE"))[0])
         except IndexError:
             logger.error("No vessel state data available")
             return None
