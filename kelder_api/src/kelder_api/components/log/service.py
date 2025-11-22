@@ -136,7 +136,7 @@ class LogTracker:
         logger.info(f"Writing log distance: {self.journey_data.distance_travelled}")
         await self.update_redis_set(self.journey_data, self.leg_data)
 
-    async def finish_jouney(self):
+    async def finish_journey(self):
         "Writes and clears the cached journey data."
         if self.journey_data is not None:
             try:

@@ -58,6 +58,7 @@ class DriftCalculator:
             drift_speed = round(sog_avg * abs(math.sin(math.radians(drift_angle))),1)
         else:
             drift_speed = None
+            drift_angle = None
         logger.debug(f"The final drift is: {DriftData(timestamp=end_datetime, drift_speed=drift_speed, drift_angle = drift_angle)}")
         await self.write_drift(DriftData(timestamp=end_datetime, drift_speed=drift_speed, drift_angle = drift_angle))
 

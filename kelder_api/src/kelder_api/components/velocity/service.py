@@ -71,19 +71,18 @@ class VelocityCalculator:
             course_over_ground_list = []
             speed_over_ground_list = []
             for i in range(0, gps_points - 1):
-                latitude_start = convert_to_decimal_degrees(
+                latitude_end = convert_to_decimal_degrees(
                     gps_history[i].latitude_nmea, lon=False
                 )
-                latitude_end = convert_to_decimal_degrees(
+                latitude_start = convert_to_decimal_degrees(
                     gps_history[i + 1].latitude_nmea, lon=False
                 )
-                longitude_start = convert_to_decimal_degrees(
+                longitude_end = convert_to_decimal_degrees(
                     gps_history[i].longitude_nmea
                 )
-                longitude_end = convert_to_decimal_degrees(
+                longitude_start = convert_to_decimal_degrees(
                     gps_history[i + 1].longitude_nmea
                 )
-
                 distance_travelled_nm = haversine(
                     latitude_start=latitude_start,
                     latitude_end=latitude_end,
@@ -100,6 +99,7 @@ class VelocityCalculator:
                     longitude_start=longitude_start,
                     longitude_end=longitude_end,
                 )
+
                 if time_difference <= 0:
                     instantaneous_speed_over_ground = 0
                 else:
@@ -111,6 +111,9 @@ class VelocityCalculator:
 
             logger.debug(
                 f"Calculated a speed over ground list to be: {speed_over_ground_list}"
+            )
+            logger.debug(
+                f"Calculated a course over ground list to be: {course_over_ground_list}"
             )
             speed_over_ground_avg = sum(speed_over_ground_list) / (gps_points - 1)
             course_over_ground_avg = average_bearing(course_over_ground_list)
