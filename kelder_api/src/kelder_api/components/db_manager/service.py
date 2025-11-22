@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 setup_logging(component="db_manager")
 logger = logging.getLogger(__name__)
 
-DEFAULT_DB_PATH = Path(__file__).resolve().parents[3] / "assets" / "journey_history.db"
+DEFAULT_DB_PATH = Path(__file__).resolve().parents[2] / "assets" / "journey_history.db"
 
 
 class DBManager:

@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS {JOURNEY_HISTORY_TABLE}(
     departure_time TEXT NOT NULL,
     arrival_time TEXT NOT NULL,
     departure_location TEXT NOT NULL,
-    arrival_location TEXT NOT NULL
+    arrival_location TEXT NOT NULL,
+    distance_travelled REAL NOT NULL
 );
 """.strip()
 
@@ -15,24 +16,25 @@ INSERT INTO {JOURNEY_HISTORY_TABLE} (
     departure_time,
     arrival_time,
     departure_location,
-    arrival_location
-) VALUES (?, ?, ?, ?);
+    arrival_location,
+    distance_travelled
+) VALUES (?, ?, ?, ?, ?);
 """.strip()
 
 SELECT_ALL_JOURNEYS = f"""
-SELECT unique_key, departure_time, arrival_time, departure_location, arrival_location
+SELECT unique_key, departure_time, arrival_time, departure_location, arrival_location, distance_travelled
 FROM {JOURNEY_HISTORY_TABLE}
 ORDER BY departure_time DESC;
 """.strip()
 
 SELECT_JOURNEY_BY_ID = f"""
-SELECT unique_key, departure_time, arrival_time, departure_location, arrival_location
+SELECT unique_key, departure_time, arrival_time, departure_location, arrival_location, distance_travelled
 FROM {JOURNEY_HISTORY_TABLE}
 WHERE unique_key = ?;
 """.strip()
 
 SELECT_RECENT_JOURNEYS = f"""
-SELECT unique_key, departure_time, arrival_time, departure_location, arrival_location
+SELECT unique_key, departure_time, arrival_time, departure_location, arrival_location, distance_travelled
 FROM {JOURNEY_HISTORY_TABLE}
 ORDER BY departure_time DESC
 LIMIT ?;

@@ -21,6 +21,7 @@ from src.kelder_api.configuration.logging_config import setup_logging
 # Routes
 from src.kelder_api.routes.bilge_depth.views import router as bilge_depth_route
 from src.kelder_api.routes.compass.views import router as compass_router
+from src.kelder_api.routes.db_manager.views import router as db_manager_route
 from src.kelder_api.routes.gps.views import router as gps_route
 from src.kelder_api.routes.gps.views import router_card
 from src.kelder_api.routes.health.views import router as health_route
@@ -71,6 +72,7 @@ async def lifespan(app: FastAPI):
     app.state.gps_interface = gps_interface
     app.state.compass_interface = compass_interface
     app.state.velocity_calculator = velocity_calculator
+    app.state.db_manager = db_manager
     app.state.log_tracker = log_tracker
     app.state.drift_calculator = drift_calculator
     app.state.agent_workflow = AgentWorkflow(redis_client)
@@ -85,6 +87,7 @@ async def lifespan(app: FastAPI):
     del app.state.compass_interface
     del app.state.velocity_calculator
     del app.state.log_tracker
+    del app.state.db_manager
     del app.state.drift_calculator
     del app.state.agent_workflow
     del app.state.background_orchestrator
@@ -108,6 +111,7 @@ app.include_router(bilge_depth_route)
 app.include_router(compass_router)
 app.include_router(velocity_route)
 app.include_router(redis_route)
+app.include_router(db_manager_route)
 app.include_router(agent_routes)
 app.include_router(passage_plan_routes)
 app.include_router(tidal_routes)

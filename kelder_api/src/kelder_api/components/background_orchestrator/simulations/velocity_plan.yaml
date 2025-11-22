@@ -11,22 +11,22 @@ simulation:
   - heading: 0 # compass degs T
   - velocity_plan:
     - turn:
-      - iterations: 10
+      - iterations: 2
       - speed: 0
       - cog: 0
       - heading: 0
     - turn:
-      - iterations: 60
-      - speed: 10
+      - iterations: 20
+      - speed: 100
       - cog: 0
       - heading: 0
     - turn:
-      - iterations: 60
-      - speed: 10
+      - iterations: 10
+      - speed: 200
       - cog: 30
       - heading: 30
     - turn:
-      - iterations: 70
+      - iterations: 100
       - speed: 0
       - cog: 0
       - heading: 0

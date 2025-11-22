@@ -29,7 +29,8 @@ services:
     tty: true
     volumes:
       - /dev:/dev
-      - logs:/app/logs
+      - ./logs:/app/logs
+      - ./journey_history:/app/src/kelder_api/assets/
     devices:
       - /dev/gpiomem
       - /dev/mem
@@ -51,7 +52,8 @@ services:
     build: .
     privileged: true
     volumes:
-      - logs:/app/logs
+      - ./logs:/app/logs
+      - ./journey_history:/app/src/kelder_api/assets/
     environment:
       REDIS_HOST: redis
     devices:
@@ -63,6 +65,3 @@ services:
     env_file:
       - .env 
     #restart: "on-failure"
-
-volumes:
-  logs:

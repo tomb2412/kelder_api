@@ -43,6 +43,9 @@ class JourneyHistoryRecord(BaseModel):
     arrival_location: JourneyLocation = Field(
         description="Arrival coordinates stored as latitude/longitude",
     )
+    distance_travelled: float = Field(
+        description="Distance covered in nautical miles for this journey"
+    )
 
     @computed_field
     @property
@@ -50,13 +53,14 @@ class JourneyHistoryRecord(BaseModel):
         """Convenient computed field for total journey duration."""
         return int((self.arrival_time - self.departure_time).total_seconds())
 
-    def as_db_values(self) -> Tuple[str, str, str, str]:
+    def as_db_values(self) -> Tuple[str, str, str, str, float]:
         """Return the tuple used by sqlite bindings."""
         return (
             self.departure_time.isoformat(),
             self.arrival_time.isoformat(),
             self.departure_location.to_db_value(),
             self.arrival_location.to_db_value(),
+            self.distance_travelled,
         )
 
     @classmethod
@@ -67,6 +71,7 @@ class JourneyHistoryRecord(BaseModel):
             arrival_time,
             departure_location,
             arrival_location,
+            distance_travelled,
         ) = row
         return cls(
             unique_key=unique_key,
@@ -74,6 +79,7 @@ class JourneyHistoryRecord(BaseModel):
             arrival_time=datetime.fromisoformat(arrival_time),
             departure_location=JourneyLocation.from_db_value(departure_location),
             arrival_location=JourneyLocation.from_db_value(arrival_location),
+            distance_travelled=float(distance_travelled),
         )
 
     def with_unique_key(self, unique_key: int) -> "JourneyHistoryRecord":
@@ -94,4 +100,5 @@ class JourneyHistoryRecord(BaseModel):
                 latitude=journey.end_latitude,
                 longitude=journey.end_longitude,
             ),
+            distance_travelled=journey.distance_travelled,
         )

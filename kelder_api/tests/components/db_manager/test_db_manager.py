@@ -18,7 +18,7 @@ def journey_record_factory() -> Callable[..., JourneyHistoryRecord]:
     base_time = datetime(2025, 1, 10, 9, tzinfo=timezone.utc)
 
     def _factory(
-        *, days_offset: int = 0, hours_offset: int = 0
+        *, days_offset: int = 0, hours_offset: int = 0, distance: float = 12.5
     ) -> JourneyHistoryRecord:
         departure = base_time + timedelta(days=days_offset, hours=hours_offset)
         arrival = departure + timedelta(hours=6, minutes=30)
@@ -31,6 +31,7 @@ def journey_record_factory() -> Callable[..., JourneyHistoryRecord]:
             arrival_location=JourneyLocation(
                 latitude="52.14.30", longitude="002.12.30"
             ),
+            distance_travelled=distance,
         )
 
     return _factory
@@ -45,6 +46,7 @@ def test_save_trip_persists_record(db_manager: DBManager, journey_record_factory
     persisted = db_manager.fetch_trip(stored.unique_key)
     assert persisted is not None
     assert persisted.departure_location.latitude == "52.13.77"
+    assert persisted.distance_travelled == pytest.approx(record.distance_travelled)
 
 
 def test_list_trips_returns_newest_first(
@@ -83,10 +85,10 @@ def test_save_from_journey_data_round_trips(db_manager: DBManager) -> None:
     journey_data = JourneyData(
         timestamp=datetime(2025, 3, 15, 7, tzinfo=timezone.utc),
         end_datetime=datetime(2025, 3, 15, 15, tzinfo=timezone.utc),
-        start_latitude="50.45.20",
-        start_longitude="001.10.30",
-        end_latitude="50.55.10",
-        end_longitude="001.40.20",
+        start_latitude="5045.2000",
+        start_longitude="00110.3000",
+        end_latitude="5055.1000",
+        end_longitude="00140.2000",
     )
 
     stored = db_manager.save_from_journey_data(journey_data)
@@ -95,3 +97,4 @@ def test_save_from_journey_data_round_trips(db_manager: DBManager) -> None:
     assert fetched is not None
     assert fetched.departure_location.latitude == journey_data.start_latitude
     assert fetched.arrival_location.longitude == journey_data.end_longitude
+    assert fetched.distance_travelled == pytest.approx(journey_data.distance_travelled)
