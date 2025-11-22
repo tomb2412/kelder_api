@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 from src.kelder_api.components.background_orchestrator.enums import (
@@ -57,7 +58,7 @@ class BackgroundTaskManager:
             bilge_depth_sensor_method = "record_bilge_depth"
         else:
             self.simulator = Simulator(
-                redis_client=self.redis_client, simulation_file_name="straight_line"
+                redis_client=self.redis_client, simulation_file_name="velocity_plan"
             )
             gps_interface = self.simulator
             gps_method = "simulate_gps_sensor"
@@ -142,8 +143,6 @@ class BackgroundTaskManager:
             # Run the strategy matching the vessel state
             await self.strategies[self.vessel_state](
                 components=self.components,
-                previous_vessel_state=previous_vessel_state,
-                sleep_time=self.sleep_time,
             )
 
             self.vessel_state = await self.calculate_new_state(self.vessel_state)
@@ -153,6 +152,12 @@ class BackgroundTaskManager:
                     previous_vessel_state,
                     self.vessel_state,
                 )
+
+                if self.vessel_state == VesselState.STATIONARY:
+                    logger.info("Journey finishing")
+                    await self.components["LOG"]["instance"].finish_journey()
+            
+            await asyncio.sleep(self.sleep_time)
 
     async def write_vessel_state(self) -> None:
         logger.info(f"Writing the vessel state to redis: {self.vessel_state.value}")

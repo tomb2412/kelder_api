@@ -1,4 +1,3 @@
-import asyncio
 import logging
 from typing import Dict, List
 
@@ -27,8 +26,6 @@ class StationaryStrategy:
     async def execute(
         self,
         components: Dict[str, dict],
-        previous_vessel_state: VesselState,
-        sleep_time: int,
     ) -> None:
         for sensor in self.required_sensors():
             try:
@@ -49,9 +46,3 @@ class StationaryStrategy:
                 logger.error(
                     f"Exception occured processing {calculator}: {error}", exc_info=True
                 )
-
-        if previous_vessel_state == VesselState.UNDERWAY:
-            logger.info("Journey finishing")
-            await components["LOG"]["instance"].finish_journey()
-
-        await asyncio.sleep(sleep_time)

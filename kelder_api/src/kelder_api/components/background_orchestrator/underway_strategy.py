@@ -1,4 +1,3 @@
-import asyncio
 import logging
 from typing import Dict, List
 
@@ -27,13 +26,7 @@ class UnderwayStrategy:
     async def execute(
         self,
         components: Dict[str, dict],
-        previous_vessel_state: VesselState,
-        sleep_time: int,
     ) -> None:
-        if previous_vessel_state == VesselState.STATIONARY:
-            # The log tracker when finishing sets the start journey attribute to true
-            logger.info("Journey tracking starting")
-
         for sensor in self.required_sensors():
             try:
                 await getattr(
@@ -53,4 +46,3 @@ class UnderwayStrategy:
                 logger.error(
                     f"Exception occured processing {calculator}: {error}", exc_info=True
                 )
-        await asyncio.sleep(sleep_time)
