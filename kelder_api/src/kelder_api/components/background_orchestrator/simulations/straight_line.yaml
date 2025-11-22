@@ -2,7 +2,6 @@ boat:
   - speed: 2 # knts
   - cog: 20 # degs T
   - turn_rate: 5 # degs/s
-  - time_delta: 10
   - heading_variation: 10
 
 # maybe should have inits and repeates

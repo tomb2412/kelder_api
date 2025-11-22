@@ -45,14 +45,24 @@ class Simulator(CompassInterface, GPSInterface):
         self.speed = config["boat"][0]["speed"]
         self.cog = config["boat"][1]["cog"]
         self.turn_rate = config["boat"][2]["turn_rate"]
-        self.time_increment = config["boat"][3]["time_delta"]
-        self.heading_variation = config["boat"][4]["heading_variation"]
+        self.heading_variation = config["boat"][3]["heading_variation"]
 
         # Not sure how to do manage the different simulations in one file,
         #  w dicts or many files with one dict
-        self.latitude = config["similation"][0]["start_latitude"]
-        self.longitude = config["similation"][1]["start_longitude"]
-        self.heading = config["similation"][2]["heading"]
+        self.latitude = config["simulation"][0]["start_latitude"]
+        self.longitude = config["simulation"][1]["start_longitude"]
+        self.heading = config["simulation"][2]["heading"]
+        
+        try:
+            velocity_plan = config["simulation"][3]
+        
+            self.loop_count = 0
+            self.velocity_plan = []
+            self.turn = 0 # Field to track what turn is active
+            for turn in velocity_plan["velocity_plan"]:
+                self.velocity_plan.append((turn["turn"][0]["iterations"], turn["turn"][1]["speed"], turn["turn"][2]["cog"], turn["turn"][3]["heading"]))
+        except IndexError:
+            self.velocity_plan = None
 
         self.STATIONARY_SLEEP = get_settings().sleep_times.STATIONARY_SLEEP
         self.UNDERWAY_SLEEP = get_settings().sleep_times.UNDER_WAY_SLEEP
@@ -79,6 +89,15 @@ class Simulator(CompassInterface, GPSInterface):
             time_increment = self.time_increment
         self.current_time = self.current_time + timedelta(seconds=time_increment)
 
+        if self.velocity_plan is not None:
+            if self.loop_count == self.velocity_plan[self.turn][0]:
+                self.loop_count = 0
+                self.turn = (self.turn + 1) % len(self.velocity_plan)
+            
+            self.loop_count += 1
+            self.speed = self.velocity_plan[self.turn][1]
+            self.cog = self.velocity_plan[self.turn][2]
+
         self.latitude, self.longitude = self._increment_latitude_longitude(
             lat_deg=self.latitude,
             lon_deg=self.longitude,
@@ -102,6 +121,9 @@ class Simulator(CompassInterface, GPSInterface):
         await self.redis_client.write_set("GPS", gps_redis_data)
 
     async def simulate_compass_sensor(self):
+        if self.velocity_plan is not None:
+            self.heading = self.velocity_plan[self.turn][3]
+    
         if self.heading_variation != 0:
             self.heading += random.randint(-self.heading_variation, self.heading_variation)
 

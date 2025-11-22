@@ -14,6 +14,8 @@ from src.kelder_api.components.velocity.models import GPSVelocity
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.configuration.settings import get_settings
 
+from src.kelder_api.configuration.logging_config import setup_logging
+setup_logging(component="gps")
 logger = logging.getLogger(__name__)
 
 
@@ -119,7 +121,8 @@ class LogTracker:
             if (
                 abs(self.leg_data.course_over_ground - velocity_data.course_over_ground)
                 >= self.settings.tack_bearing_tolerance
-            ):
+            ):  
+                print("\nNEW LEG IDENTIFIED\n")
                 self.leg_data = LegData(
                     start_datetime=gps_data.timestamp,
                     start_latitude=gps_data.latitude_nmea,

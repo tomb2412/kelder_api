@@ -1,0 +1,33 @@
+boat:
+  - speed: 6.23 # knts
+  - cog: 0 # degs T 
+  - turn_rate: 5 # degs/s
+  - heading_variation: 0
+
+simulation:
+  # Runs in a straight line
+  - start_latitude: "5213.77306" # NMEA streamed
+  - start_longitude: "00211.27194"
+  - heading: 0 # compass degs T
+  - velocity_plan:
+    - turn:
+      - iterations: 10
+      - speed: 0
+      - cog: 0
+      - heading: 0
+    - turn:
+      - iterations: 60
+      - speed: 10
+      - cog: 0
+      - heading: 0
+    - turn:
+      - iterations: 60
+      - speed: 10
+      - cog: 30
+      - heading: 30
+    - turn:
+      - iterations: 70
+      - speed: 0
+      - cog: 0
+      - heading: 0
+

@@ -142,4 +142,4 @@ class DriftCalculator:
                 return DriftData(**drift_history[0])
         except IndexError:
             logger.debug("No drift history available")
-            return DriftData(timestamp=datetime.now(timezone.utc), drift_speed=None)
+            return DriftData(timestamp=datetime.now(timezone.utc), drift_speed=None, drift_angle = None)
