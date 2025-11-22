@@ -55,11 +55,11 @@ class DriftCalculator:
 
         if sog_avg is not None and cog_avg is not None and heading_avg is not None:
             drift_angle = bearing_angle_difference(heading_avg, cog_avg)
-            drift_speed = round(sog_avg * math.sin(drift_angle),1)
+            drift_speed = round(sog_avg * abs(math.sin(math.radians(drift_angle))),1)
         else:
             drift_speed = None
-
-        await self.write_drift(DriftData(timestamp=end_datetime, drift_speed=drift_speed))
+        logger.debug(f"The final drift is: {DriftData(timestamp=end_datetime, drift_speed=drift_speed, drift_angle = drift_angle)}")
+        await self.write_drift(DriftData(timestamp=end_datetime, drift_speed=drift_speed, drift_angle = drift_angle))
 
     async def _calculate_avg_velocity(
         self, end_datetime: datetime | None = None

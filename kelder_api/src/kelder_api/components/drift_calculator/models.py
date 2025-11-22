@@ -8,3 +8,4 @@ class DriftData(BaseModel):
     drift_speed: float | None = Field(
         description="Knots perpendicular to direction of motion"
     )
+    drift_angle: float | None = Field(description="The angle between heading and cog")
