@@ -35,7 +35,7 @@ from src.kelder_api.components.agentic_workflow.utils import (
 # TODO: Do we need getter agents and deletion agents.
 # TODO: task pass or fail communication? - flag in Node model.
 # TODO: do we need to allow nodes to directly communicate with the chatbot?
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("agent_workflow.nodes")
 
 MARKS_FILE = Path(__file__).resolve().parents[3] / "assets" / "marks.json"
 SOLENT_COASTLINE_FILE = Path(__file__).resolve().parents[3] / "assets" / "seas.json"

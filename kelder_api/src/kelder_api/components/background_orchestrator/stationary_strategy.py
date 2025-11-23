@@ -3,7 +3,7 @@ from typing import Dict, List
 
 from src.kelder_api.components.background_orchestrator.enums import VesselState
 
-logger = logging.getLogger("worker.stationary_strategy")
+logger = logging.getLogger("background_orchestrator.stationary_strategy")
 
 
 class StationaryStrategy:

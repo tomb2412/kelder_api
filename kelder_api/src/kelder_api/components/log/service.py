@@ -15,8 +15,8 @@ from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.configuration.settings import get_settings
 
 from src.kelder_api.configuration.logging_config import setup_logging
-setup_logging(component="gps")
-logger = logging.getLogger("gps.log_service")
+setup_logging(component="log")
+logger = logging.getLogger("log")
 
 
 class LogTracker:

@@ -42,7 +42,7 @@ origins = [
 
 setup_logging(component="api")
 
-logger = logging.getLogger("api.main")
+logger = logging.getLogger("api")
 
 
 @asynccontextmanager

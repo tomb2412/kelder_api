@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from src.kelder_api.components.log.models import JourneyData
 
 setup_logging(component="db_manager")
-logger = logging.getLogger("db_manager.service")
+logger = logging.getLogger("db_manager")
 
 DEFAULT_DB_PATH = Path(__file__).resolve().parents[2] / "assets" / "journey_history.db"
 

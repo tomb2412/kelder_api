@@ -22,7 +22,7 @@ from src.kelder_api.components.ultrasound.service import BilgeDepthSensor
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.configuration.settings import get_settings
 
-logger = logging.getLogger("worker.orchestrator")
+logger = logging.getLogger("background_orchestrator")
 
 
 class BackgroundTaskManager:

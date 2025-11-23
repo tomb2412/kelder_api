@@ -114,6 +114,7 @@ class GPSInterface:
 
     async def read_gps_latest(self, active: bool = False) -> GPSRedisData:
         """Retrieves the lastest gps measurement regardless of status"""
+        logger.info("Reading the latest GPS measurement")
         try:
             if active:
                 return (await self.read_active_gps_measurements())[0]

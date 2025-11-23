@@ -10,7 +10,7 @@ from src.kelder_api.components.agentic_workflow.models import (
     State,
 )
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("agent_workflow")
 
 
 def clean_user_message(new_messages, users_message):

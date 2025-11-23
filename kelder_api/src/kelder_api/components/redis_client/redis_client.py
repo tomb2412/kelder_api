@@ -10,8 +10,8 @@ from redis.asyncio import ConnectionPool, Redis
 from src.kelder_api.configuration.logging_config import setup_logging
 from src.kelder_api.configuration.settings import get_settings
 
-setup_logging(component="redis")
-logger = logging.getLogger("redis.client")
+setup_logging(component="redis_client")
+logger = logging.getLogger("redis_client")
 
 
 class RedisClient:
@@ -42,16 +42,13 @@ class RedisClient:
     async def get_connection(self) -> AsyncGenerator[Redis, None]:
         connection_pool = await self._ensure_connection_pool()
         redis = Redis(connection_pool=connection_pool)
-
         try:
-            logger.debug("Connected to redis through the pool")
             yield redis
         except Exception as error:
             logger.error("Redis connection error: %s", error)
             raise error
         finally:
             await redis.close()
-            logger.debug("Closed redis connection")
 
     async def write_value(self, key: str, value: str, expiration: Optional[int] = None):
         async with self.get_connection() as redis:

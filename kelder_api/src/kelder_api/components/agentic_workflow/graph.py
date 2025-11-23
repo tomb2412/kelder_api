@@ -12,8 +12,10 @@ from src.kelder_api.components.agentic_workflow.nodes import (
     TidalSearchNode,
 )
 from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.configuration.logging_config import setup_logging
 
-logger = logging.getLogger(__name__)
+setup_logging(component="agent_workflow")
+logger = logging.getLogger("agent_workflow")
 
 
 class AgentWorkflow:

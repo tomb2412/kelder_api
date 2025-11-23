@@ -17,7 +17,7 @@ from src.kelder_api.configuration.logging_config import setup_logging
 from src.kelder_api.configuration.settings import get_settings
 
 setup_logging(component="velocity")
-logger = logging.getLogger("velocity.service")
+logger = logging.getLogger("velocity")
 
 
 class VelocityCalculator:
@@ -55,7 +55,7 @@ class VelocityCalculator:
         gps_points = len(gps_history)
 
         logger.info(
-            "Identified %s GPS points in the last %s measurements",
+            "Identified %s GPS points in the last %s units",
             gps_points,
             self.num_gps_measurements,
         )

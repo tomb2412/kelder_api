@@ -10,7 +10,7 @@ from src.kelder_api.routes.tidal_measurements.tidal_clients import (
 
 THREE_HOURS_IN_SECONDS = 10800
 
-logger = logging.getLogger("core status")
+logger = logging.getLogger("api.routes.tidal_measurements")
 router = APIRouter(tags=["Tidal Information"])
 
 
