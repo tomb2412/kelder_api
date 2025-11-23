@@ -7,7 +7,7 @@ from src.kelder_api.components.background_orchestrator.orchestrator import (
     BackgroundTaskManager,
 )
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("api.routes.ships_status")
 
 router = APIRouter(tags=["Ships status"])
 

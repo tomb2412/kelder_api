@@ -7,7 +7,7 @@ from src.kelder_api.app.getters import get_db_manager
 from src.kelder_api.components.db_manager.models import JourneyHistoryRecord
 from src.kelder_api.components.db_manager.service import DBManager
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("api.routes.db_manager")
 
 router = APIRouter(tags=["DB Manager"])
 

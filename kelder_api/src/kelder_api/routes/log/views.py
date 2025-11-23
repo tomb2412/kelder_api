@@ -8,7 +8,7 @@ from src.kelder_api.app.getters import get_log_tracker
 from src.kelder_api.components.log.models import JourneyData
 from src.kelder_api.components.log.service import LogTracker
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("api.routes.log")
 
 router = APIRouter(tags=["LOG"])
 

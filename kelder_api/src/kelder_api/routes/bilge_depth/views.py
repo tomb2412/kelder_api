@@ -9,7 +9,7 @@ from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.ultrasound.models import BilgeDepth
 from src.kelder_api.configuration.settings import get_settings
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("api.routes.bilge_depth")
 
 router = APIRouter(tags=["Core Sensing"])
 

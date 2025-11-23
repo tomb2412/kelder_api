@@ -7,7 +7,7 @@ from src.kelder_api.app.getters import get_velocity_calculator
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.configuration.settings import get_settings
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("api.routes.velocity")
 
 router = APIRouter(tags=["Core Sensing"])
 

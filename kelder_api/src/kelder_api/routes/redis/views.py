@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, Request
 from src.kelder_api.app.getters import get_redis_client
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("api.routes.redis")
 
 router = APIRouter(tags=["Redis management"])
 

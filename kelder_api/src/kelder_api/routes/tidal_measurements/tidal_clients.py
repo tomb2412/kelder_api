@@ -16,7 +16,7 @@ PORTSMOUTH_STATION_ID_ENV_AGENCY = "E71839"
 
 # https://environment.data.gov.uk/flood-monitoring/id/stations/E71839/readings.json?today&_sorted
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("api.routes.tidal_measurements")
 
 
 async def get_height_of_tide_now() -> TideInfo:

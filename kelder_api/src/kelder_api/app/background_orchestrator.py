@@ -7,7 +7,7 @@ from src.kelder_api.components.background_orchestrator.orchestrator import (
 from src.kelder_api.configuration.logging_config import setup_logging
 
 setup_logging(component="worker")
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("worker")
 
 if __name__ == "__main__":
     logger.info("Starting background orchestrator worker")

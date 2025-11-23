@@ -8,7 +8,7 @@ from src.kelder_api.components.compass_new.interface import CompassInterface
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.routes.compass.models import CompassCard
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("api.routes.compass")
 
 router = APIRouter(tags=["Core Sensing"])
 

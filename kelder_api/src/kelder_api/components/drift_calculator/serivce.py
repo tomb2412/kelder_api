@@ -25,7 +25,7 @@ Few approaches here perhaps worth building in and configuring
 # Ensure all measurements are UTC so timedeltas capture the correct values
 
 setup_logging(component="drift calculator")
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("drift calculator.service")
 
 # TODO: make the active = True consistant across the read set methods
 

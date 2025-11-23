@@ -21,7 +21,7 @@ from src.kelder_api.configuration.logging_config import setup_logging
 from src.kelder_api.configuration.settings import get_settings
 
 setup_logging(component="gps")
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("gps")
 
 
 class GPSInterface:

@@ -19,7 +19,7 @@ from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.routes.gps.models import GPSCard
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("api.routes.gps")
 
 router = APIRouter(tags=["GPS"])
 router_card = APIRouter(tags=["Card routes"])

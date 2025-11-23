@@ -10,7 +10,7 @@ from src.kelder_api.components.agentic_workflow.graph import AgentWorkflow
 from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.routes.inference.utils import error_stream, extract_user_prompt
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("api.routes.inference")
 
 router = APIRouter(tags=["Agentic"])
 

@@ -17,14 +17,14 @@ simulation:
       - heading: 0
     - turn:
       - iterations: 20
-      - speed: 100
-      - cog: 0
+      - speed: 10
+      - cog: 10
       - heading: 0
     - turn:
       - iterations: 10
-      - speed: 200
-      - cog: 30
-      - heading: 30
+      - speed: 20
+      - cog: 20
+      - heading: 10
     - turn:
       - iterations: 100
       - speed: 0

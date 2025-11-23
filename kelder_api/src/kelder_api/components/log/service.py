@@ -16,7 +16,7 @@ from src.kelder_api.configuration.settings import get_settings
 
 from src.kelder_api.configuration.logging_config import setup_logging
 setup_logging(component="gps")
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("gps.log_service")
 
 
 class LogTracker:
