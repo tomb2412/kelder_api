@@ -24,7 +24,7 @@ Few approaches here perhaps worth building in and configuring
 
 # Ensure all measurements are UTC so timedeltas capture the correct values
 
-setup_logging(component="drift calculator")
+setup_logging(component="drift_calculator")
 logger = logging.getLogger("drift_calculator")
 
 # TODO: make the active = True consistant across the read set methods
@@ -44,11 +44,12 @@ class DriftCalculator:
         self.velocity_calculator = velocity_calculator
 
         self.settings = get_settings().drift
+        logger.info("Initialised the drift calculator")
 
     async def instantaneous_drift_calculator(
         self, datetime_now: datetime | None = None
     ) -> None:
-        sog_avg, cog_avg = await self._calculate_avg_velocity(
+        sog_avg, cog_avg = await self._get_velocity(
             end_datetime=datetime_now
         )
         heading_avg, end_datetime  = await self._calculate_avg_heading(end_datetime=datetime_now)
@@ -65,6 +66,10 @@ class DriftCalculator:
     async def _calculate_avg_velocity(
         self, end_datetime: datetime | None = None
     ) -> Tuple[float | None]:
+        """General method to retrieve the gps.
+        
+        NOT USED because isn't instantanous though as it will always be behind the velocity.
+        """
         if end_datetime is None:
             end_datetime = datetime.now(timezone.utc).replace(microsecond=0)
         start_datetime = end_datetime - timedelta(
@@ -95,6 +100,29 @@ class DriftCalculator:
             )
         logger.debug(f"The vecocity average: {sog_avg}, {cog_avg}")
         return sog_avg, cog_avg
+
+    async def _get_velocity(self, end_datetime: datetime | None = None) -> Tuple[float | None]:
+        """
+        A method to simply request the latest velocity within the time period avgd for the compass
+        """
+        if end_datetime is None:
+            end_datetime = datetime.now(timezone.utc).replace(microsecond=0)
+        start_datetime = end_datetime - timedelta(
+            seconds=self.settings.instantaneous_history_period
+        )
+        
+        velocity_history = await self.velocity_calculator.read_velocity_timeseries(
+            end_datetime=end_datetime,
+            start_datetime=start_datetime,
+            active=True
+        )
+        logger.debug(f"Requesting the velocity timeseries. From: {start_datetime}-{end_datetime}. Got length: {len(velocity_history)}")
+        try:
+            return velocity_history[0].speed_over_ground, velocity_history[0].course_over_ground
+        except IndexError:
+            logger.debug("Got no velocity in the time series. HOW IS THE STATUS UNDERWAY???")
+            return None, None
+
 
     async def _calculate_avg_heading(self, end_datetime: datetime | None = None) -> float | None:
         if end_datetime is None:
