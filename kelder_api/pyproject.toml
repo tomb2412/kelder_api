@@ -44,13 +44,12 @@ dependencies = [
     "neo4j>=6.0.3",
 ]
 
-[tool.poetry]
-packages = [{include = "kelder_api", from = "src"}]
-
-
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling>=1.21.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/kelder_api"]
 
 [dependency-groups]
 dev = [
