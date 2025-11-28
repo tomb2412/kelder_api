@@ -122,7 +122,7 @@ class LogTracker:
                 abs(self.leg_data.course_over_ground - velocity_data.course_over_ground)
                 >= self.settings.tack_bearing_tolerance
             ):  
-                print("\nNEW LEG IDENTIFIED\n")
+                logger.info("Identified a new leg.")
                 self.leg_data = LegData(
                     start_datetime=gps_data.timestamp,
                     start_latitude=gps_data.latitude_nmea,
