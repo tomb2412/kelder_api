@@ -1,51 +1,48 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+HOST_API_CONTAINER="host_api"
 PORT=9090
+PRUNE="${PRUNE:-false}"
 
-echo "Stopping host restart API (port $PORT)..."
+# Allow an optional flag: ./stop_app.sh --prune
+if [[ "${1:-}" == "--prune" || "${1:-}" == "-p" ]]; then
+    PRUNE="true"
+    shift
+fi
 
-# Get ALL PIDs listening on the port (each on its own line)
-PIDS=$(lsof -ti :$PORT 2>/dev/null || true)
-
-if [ -z "$PIDS" ]; then
-    echo "No API process running on port $PORT."
+echo "Stopping host restart API container..."
+if docker ps -a --format '{{.Names}}' | grep -qx "$HOST_API_CONTAINER"; then
+    docker stop "$HOST_API_CONTAINER" >/dev/null || true
+    docker rm "$HOST_API_CONTAINER" >/dev/null || true
+    echo "Host restart API container stopped."
 else
-    echo "Found running PIDs:"
-    echo "$PIDS"
+    echo "No host restart API container found."
+fi
 
-    # Kill each PID one by one
+# Fallback: clean up any stray local process that might still be bound to the port
+echo "Checking for stray processes on port $PORT..."
+PIDS=$(lsof -ti :$PORT 2>/dev/null || true)
+if [ -n "$PIDS" ]; then
     while IFS= read -r PID; do
         if [[ "$PID" =~ ^[0-9]+$ ]]; then
-            echo "Killing PID: $PID"
             kill "$PID" || true
         fi
     done <<< "$PIDS"
-
-    # Wait briefly
-    sleep 1
-
-    # Force kill if anything is left
-    LEFT=$(lsof -ti :$PORT 2>/dev/null || true)
-    if [ -n "$LEFT" ]; then
-        echo "Force killing remaining PIDs:"
-        echo "$LEFT"
-        while IFS= read -r PID; do
-            kill -9 "$PID" || true
-        done <<< "$LEFT"
-    fi
 fi
 
 echo "Stopping Docker containers..."
 docker compose down || true
 
-echo "Cleaning Docker resources..."
-
-docker container prune -f
-docker image prune -f
-docker builder prune -f
-
-echo "Docker cleanup complete."
+if [[ "$PRUNE" == "true" ]]; then
+    echo "Pruning Docker resources..."
+    docker container prune -f
+    docker image prune -f
+    docker builder prune -f
+    echo "Docker cleanup complete."
+else
+    echo "Skipping Docker resource prune (set PRUNE=true or pass --prune to enable)."
+fi
 
 
 echo "All services stopped."

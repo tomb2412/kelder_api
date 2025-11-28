@@ -5,7 +5,8 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 echo "Restarting Docker Compose services..."
-docker compose restart || true
+docker compose down || true
+docker compose up --build -d || true
 
 echo ""
 echo "Checking container states..."
