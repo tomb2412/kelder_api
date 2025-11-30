@@ -30,5 +30,9 @@ async def get_latest_journey(
             status_code=HTTPStatus.NOT_FOUND,
             detail="No journey history available",
         )
-
+    
+    else: 
+        for journey in latest_journey[:limit]:
+            journey.gps_data = "[]"
+    
     return JourneyHistory(journeys=latest_journey[:limit], limit = len(latest_journey))
