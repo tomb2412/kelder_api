@@ -5,6 +5,7 @@ from typing import List, Tuple
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.velocity.models import CalculationType, GPSVelocity
 from src.kelder_api.components.velocity.utils import (
     average_bearing,
@@ -129,7 +130,7 @@ class VelocityCalculator:
 
     async def write_velocity(self, gps_velocity: GPSVelocity) -> None:
         logger.debug("Writing gps reading")
-        await self.redis_client.write_set("VELOCITY", gps_velocity)
+        await self.redis_client.write_set(RedisSetNames.VELOCITY, gps_velocity)
 
     async def read_velocity_latest(self, active: bool = False) -> GPSVelocity:
         """
@@ -141,7 +142,7 @@ class VelocityCalculator:
         logger.debug("Reading latest velocity measurement")
         try:
             if active:
-                velocities = await self.redis_client.read_set("VELOCITY")
+                velocities = await self.redis_client.read_set(RedisSetNames.VELOCITY)
                 latest_active_velocity = [
                     active_sog
                     for active_sog in velocities
@@ -149,7 +150,9 @@ class VelocityCalculator:
                 ][0]
                 return GPSVelocity(**latest_active_velocity)
             else:
-                return GPSVelocity(**(await self.redis_client.read_set("VELOCITY"))[0])
+                return GPSVelocity(
+                    **(await self.redis_client.read_set(RedisSetNames.VELOCITY))[0]
+                )
         except IndexError:
             logger.info("No velocity data found in redis")
             return GPSVelocity(
@@ -162,7 +165,7 @@ class VelocityCalculator:
     async def read_velocity_all(self, active: bool = False) -> List[GPSVelocity]:
         logger.debug("Reading all velocity measurement")
         if active:
-            velocities = await self.redis_client.read_set("VELOCITY")
+            velocities = await self.redis_client.read_set(RedisSetNames.VELOCITY)
             return [
                 GPSVelocity(**active_sog)
                 for active_sog in velocities
@@ -171,7 +174,9 @@ class VelocityCalculator:
         else:
             return [
                 GPSVelocity(**velocity)
-                for velocity in await self.redis_client.read_set("VELOCITY")
+                for velocity in await self.redis_client.read_set(
+                    RedisSetNames.VELOCITY
+                )
             ]
 
     async def read_velocity_timeseries(
@@ -182,7 +187,7 @@ class VelocityCalculator:
     ) -> List[GPSVelocity]:
         logger.info(f"Reading velocity data between {start_datetime} to {end_datetime}")
         velocity_set = await self.redis_client.read_set(
-            "VELOCITY", [start_datetime, end_datetime]
+            RedisSetNames.VELOCITY, [start_datetime, end_datetime]
         )
         if active:
             return [

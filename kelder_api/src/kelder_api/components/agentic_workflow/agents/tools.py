@@ -3,6 +3,7 @@ import logging
 
 from src.kelder_api.components.agentic_workflow.agents.models import PassagePlan
 from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.redis_client.types import RedisSetNames
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,7 @@ async def save_passage_plan(
 
     try:
         async with asyncio.timeout(2):
-            await redis_client.write_set("PASSAGE_PLAN", passage_plan)
+            await redis_client.write_set(RedisSetNames.PASSAGE_PLAN, passage_plan)
             logger.debug("Passage plan created and saved")
         return True
 

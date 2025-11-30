@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from gpiozero import DistanceSensor
 
 from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.ultrasound.models import BilgeDepth
 
 from src.kelder_api.configuration.logging_config import setup_logging
@@ -47,11 +48,11 @@ class BilgeDepthSensor:
 
     async def write_bilge_depth(self, bilge_depth: BilgeDepth) -> None:
         logger.debug("Writing bilge_depth data")
-        await self.redis_client.write_set("BILGE_DEPTH", bilge_depth)
+        await self.redis_client.write_set(RedisSetNames.BILGE_DEPTH, bilge_depth)
 
     async def read_latest_bilge_depth(self) -> BilgeDepth:
         logger.debug("Reading latest bilge depth data from Redis")
-        depth = await self.redis_client.read_set("BILGE_DEPTH")
+        depth = await self.redis_client.read_set(RedisSetNames.BILGE_DEPTH)
         try:
             return BilgeDepth(**depth[0])
         except IndexError:

@@ -13,6 +13,7 @@ from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.gps_new.types import GPSStatus
 from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.velocity.utils import (
     convert_to_decimal_degrees,
     decimal_to_dms_format,
@@ -70,17 +71,24 @@ class Simulator(CompassInterface, GPSInterface):
         self.gps_history = []
 
     async def clear_redis(self) -> None:
-        for sensor in ["GPS", "COMPASS", "VELOCITY", "LOG", "DRIFT", "BILGE_DEPTH"]:
+        for sensor in [
+            RedisSetNames.GPS,
+            RedisSetNames.COMPASS,
+            RedisSetNames.VELOCITY,
+            RedisSetNames.LOG,
+            RedisSetNames.DRIFT,
+            RedisSetNames.BILGE_DEPTH,
+        ]:
             async with self.redis_client.get_connection() as redis:
-                await redis.delete(f"sensor:ts:{sensor}")
+                await redis.delete(f"sensor:ts:{sensor.value}")
 
         logger.info("Cleared the redis data streams")
 
     async def simulate_gps_sensor(self):
         # Engine needed to calculate timestamp, lat and long
-        vessel_state = (await self.redis_client.read_set("VESSEL_STATE"))[0][
-            "vessel_state"
-        ]
+        vessel_state = (
+            await self.redis_client.read_set(RedisSetNames.VESSEL_STATE)
+        )[0]["vessel_state"]
         if vessel_state == VesselState.STATIONARY:
             time_increment = self.STATIONARY_SLEEP
         elif vessel_state == VesselState.UNDERWAY:
@@ -118,7 +126,7 @@ class Simulator(CompassInterface, GPSInterface):
 
         self.gps_history.append(gps_redis_data)
 
-        await self.redis_client.write_set("GPS", gps_redis_data)
+        await self.redis_client.write_set(RedisSetNames.GPS, gps_redis_data)
 
     async def simulate_compass_sensor(self):
         if self.velocity_plan is not None:
@@ -130,7 +138,7 @@ class Simulator(CompassInterface, GPSInterface):
         compass_redis_data = CompassRedisData(
             timestamp=self.current_time, heading=self.heading
         )
-        await self.redis_client.write_set("COMPASS", compass_redis_data)
+        await self.redis_client.write_set(RedisSetNames.COMPASS, compass_redis_data)
 
     async def simulate_ultrasound_sensor(self):
         pass

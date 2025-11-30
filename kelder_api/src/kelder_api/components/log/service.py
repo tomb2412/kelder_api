@@ -11,6 +11,7 @@ from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.log.exceptions import DataValidationError
 from src.kelder_api.components.log.models import JourneyData, LegData
 from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.velocity.models import GPSVelocity
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.configuration.settings import get_settings
@@ -171,15 +172,19 @@ class LogTracker:
         self, journey_data: JourneyData, leg_data: LegData
     ) -> None:
         logger.debug("Writing the log and journey data")
-        await self.redis_client.write_hashed_set("JOURNEY", journey_data)
-        await self.redis_client.write_hashed_set("LEG", leg_data)
+        await self.redis_client.write_hashed_set(RedisSetNames.JOURNEY, journey_data)
+        await self.redis_client.write_hashed_set(RedisSetNames.LEG, leg_data)
 
     async def get_journey_set(
         self, datetime: datetime = datetime.now(timezone.utc)
     ) -> JourneyData:
         try:
             return JourneyData(
-                **(await self.redis_client.read_hashed_set("JOURNEY", datetime))
+                **(
+                    await self.redis_client.read_hashed_set(
+                        RedisSetNames.JOURNEY, datetime
+                    )
+                )
             )
         except ValidationError:
             logger.debug("No data in the leg set")
@@ -189,7 +194,13 @@ class LogTracker:
         self, datetime: datetime = datetime.now(timezone.utc)
     ) -> LegData | None:
         try:
-            return LegData(**(await self.redis_client.read_hashed_set("LEG", datetime)))
+            return LegData(
+                **(
+                    await self.redis_client.read_hashed_set(
+                        RedisSetNames.LEG, datetime
+                    )
+                )
+            )
         except ValidationError:
             logger.debug("No data in the leg set")
             return None

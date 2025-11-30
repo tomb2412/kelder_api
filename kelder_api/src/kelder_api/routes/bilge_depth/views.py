@@ -6,6 +6,7 @@ from pydantic import ValidationError
 
 from src.kelder_api.app.getters import get_redis_client
 from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.ultrasound.models import BilgeDepth
 from src.kelder_api.configuration.settings import get_settings
 
@@ -24,7 +25,7 @@ async def get_bilge_depth(
 ) -> BilgeDepth:
     logger.info("Requesting latest bilge depth reading")
 
-    readings = await redis_client.read_set("BILGE_DEPTH")
+    readings = await redis_client.read_set(RedisSetNames.BILGE_DEPTH)
     if not readings:
         raise HTTPException(status_code=404, detail="No bilge depth data available")
 

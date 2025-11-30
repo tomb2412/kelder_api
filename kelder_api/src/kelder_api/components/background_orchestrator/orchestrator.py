@@ -18,6 +18,7 @@ from src.kelder_api.components.drift_calculator.serivce import DriftCalculator
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.log.service import LogTracker
 from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.ultrasound.service import BilgeDepthSensor
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.configuration.settings import get_settings
@@ -162,14 +163,17 @@ class BackgroundTaskManager:
     async def write_vessel_state(self) -> None:
         logger.info(f"Writing the vessel state to redis: {self.vessel_state.value}")
         async with self.redis_client.get_connection() as redis:
-            await redis.delete("sensor:ts:VESSEL_STATE")
+            await redis.delete(f"sensor:ts:{RedisSetNames.VESSEL_STATE.value}")
         await self.redis_client.write_set(
-            "VESSEL_STATE", VesselStateModel(vessel_state=self.vessel_state)
+            RedisSetNames.VESSEL_STATE,
+            VesselStateModel(vessel_state=self.vessel_state),
         )
 
     async def read_vessel_state(self) -> VesselStateModel | None:
         try:
-            return VesselStateModel(**(await self.redis_client.read_set("VESSEL_STATE"))[0])
+            return VesselStateModel(
+                **(await self.redis_client.read_set(RedisSetNames.VESSEL_STATE))[0]
+            )
         except IndexError:
             logger.error("No vessel state data available")
             return None

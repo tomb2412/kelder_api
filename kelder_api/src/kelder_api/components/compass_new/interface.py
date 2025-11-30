@@ -7,6 +7,7 @@ import numpy as np
 
 from src.kelder_api.components.compass_new.models import CompassRedisData
 from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.configuration.logging_config import setup_logging
 
 setup_logging(component="compass")
@@ -73,13 +74,13 @@ class CompassInterface:
 
     async def write_heading(self, compass_redis_data: CompassRedisData) -> None:
         logger.debug("Writing compass data")
-        await self.redis_client.write_set("COMPASS", compass_redis_data)
+        await self.redis_client.write_set(RedisSetNames.COMPASS, compass_redis_data)
 
     async def read_heading_history_latest(
         self, active: bool = False
     ) -> CompassRedisData:
         logger.debug("Reading latest compass data")
-        heading_history = await self.redis_client.read_set("COMPASS")
+        heading_history = await self.redis_client.read_set(RedisSetNames.COMPASS)
         if active:
             return CompassRedisData(
                 **[
@@ -100,7 +101,7 @@ class CompassInterface:
         self, active: bool = False
     ) -> List[CompassRedisData]:
         logger.debug("Reading all compass data")
-        heading_history = await self.redis_client.read_set("COMPASS")
+        heading_history = await self.redis_client.read_set(RedisSetNames.COMPASS)
         if active:
             return [
                 CompassRedisData(**heading)
@@ -114,7 +115,7 @@ class CompassInterface:
         self, length: int, active: bool = False
     ) -> List[CompassRedisData]:
         logger.debug(f"Reading compass data of length {length}")
-        heading_history = await self.redis_client.read_set("COMPASS")
+        heading_history = await self.redis_client.read_set(RedisSetNames.COMPASS)
         if active:
             return [
                 CompassRedisData(**heading)
@@ -134,7 +135,7 @@ class CompassInterface:
     ) -> List[CompassRedisData]:
         logger.debug(f"Reading compass data between {start_datetime} to {end_datetime}")
         heading_history = await self.redis_client.read_set(
-            "COMPASS", [start_datetime, end_datetime]
+            RedisSetNames.COMPASS, [start_datetime, end_datetime]
         )
         if active:
             return [

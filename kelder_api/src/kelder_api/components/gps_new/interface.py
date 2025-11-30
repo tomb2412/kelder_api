@@ -17,6 +17,7 @@ from src.kelder_api.components.gps_new.models import (
     GPSRedisData,
 )
 from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.configuration.logging_config import setup_logging
 from src.kelder_api.configuration.settings import get_settings
 
@@ -110,7 +111,7 @@ class GPSInterface:
             satellites_in_view=gpgsv_satellites_in_view.satellites,
         )
         logger.debug("Writing GPS reading.")
-        await self.redis_client.write_set("GPS", gps_redis_data)
+        await self.redis_client.write_set(RedisSetNames.GPS, gps_redis_data)
 
     async def read_gps_latest(self, active: bool = False) -> GPSRedisData:
         """Retrieves the lastest gps measurement regardless of status"""
@@ -119,7 +120,9 @@ class GPSInterface:
             if active:
                 return (await self.read_active_gps_measurements())[0]
             else:
-                return GPSRedisData(**(await self.redis_client.read_set("GPS"))[0])
+                return GPSRedisData(
+                    **(await self.redis_client.read_set(RedisSetNames.GPS))[0]
+                )
         except IndexError:
             logger.error("No GPS data available")
             return None
@@ -133,7 +136,9 @@ class GPSInterface:
         else:
             gps_history = [
                 GPSRedisData(**gps_measurement)
-                for gps_measurement in await self.redis_client.read_set("GPS")
+                for gps_measurement in await self.redis_client.read_set(
+                    RedisSetNames.GPS
+                )
             ]
 
         try:
@@ -153,7 +158,7 @@ class GPSInterface:
     ) -> List[GPSRedisData]:
         """Retrieves the gps measurement within a datetime range"""
         gps_time_series = await self.redis_client.read_set(
-            "GPS", [start_datetime, end_datetime]
+            RedisSetNames.GPS, [start_datetime, end_datetime]
         )
 
         if active:
@@ -174,14 +179,18 @@ class GPSInterface:
         else:
             return [
                 GPSRedisData(**gps_measurement)
-                for gps_measurement in await self.redis_client.read_set("GPS")
+                for gps_measurement in await self.redis_client.read_set(
+                    RedisSetNames.GPS
+                )
             ]
 
     async def read_active_gps_measurements(self) -> List[GPSRedisData]:
         """Returns only active GPS measurements from all history"""
         return [
             GPSRedisData(**active_measurement)
-            for active_measurement in await self.redis_client.read_set("GPS")
+            for active_measurement in await self.redis_client.read_set(
+                RedisSetNames.GPS
+            )
             if active_measurement["status"] == "A"
         ]
 

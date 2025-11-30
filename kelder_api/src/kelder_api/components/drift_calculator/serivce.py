@@ -8,6 +8,7 @@ from src.kelder_api.components.compass_new.interface import CompassInterface
 from src.kelder_api.components.drift_calculator.models import DriftData
 from src.kelder_api.components.drift_calculator.utils import bearing_angle_difference
 from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.configuration.logging_config import setup_logging
 from src.kelder_api.configuration.settings import get_settings
@@ -153,11 +154,11 @@ class DriftCalculator:
 
     async def write_drift(self, drift_data: DriftData) -> None:
         logger.info("Writing the drift data")
-        await self.redis_client.write_set("DRIFT", drift_data)
+        await self.redis_client.write_set(RedisSetNames.DRIFT, drift_data)
 
     async def read_drift_latest(self, active: bool = False) -> DriftData:
         logger.debug("Reading the latest drift")
-        drift_history = await self.redis_client.read_set("DRIFT")
+        drift_history = await self.redis_client.read_set(RedisSetNames.DRIFT)
         try:
             if active:
                 return DriftData(
