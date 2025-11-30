@@ -25,6 +25,7 @@ async def getVelocityLatest(
     logger.info(f"Successfully read velocity data: {velocity_data}")
     return velocity_data
 
+
 @router.get("/velocity_all")
 async def getVelocityAll(
     velocity_calculator: VelocityCalculator = Depends(get_dependancy),
@@ -33,6 +34,7 @@ async def getVelocityAll(
     velocity_data = await velocity_calculator.read_velocity_all(active=True)
     logger.info("Successfully read all velocity data.")
     return velocity_data
+
 
 @router.get("/velocity_timeseries")
 async def getVelocityTimeSeries(
@@ -43,13 +45,10 @@ async def getVelocityTimeSeries(
 ):
     logger.info("Requesting velocity data")
     velocity_data = await velocity_calculator.read_velocity_timeseries(
-        start_datetime=start_datetime,
-        end_datetime=end_datetime,
-        active=True)
+        start_datetime=start_datetime, end_datetime=end_datetime, active=True
+    )
     logger.info("Successfully read all velocity data.")
     return velocity_data
-
-
 
 
 # TODO unify this logging and error catching for the front

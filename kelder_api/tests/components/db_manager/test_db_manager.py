@@ -1,17 +1,17 @@
 from __future__ import annotations
 
+import sqlite3
 from datetime import datetime, timedelta, timezone
 from typing import Callable
 
 import pytest
-import sqlite3
 
 from src.kelder_api.components.db_manager.models import (
     JourneyHistoryRecord,
     JourneyLocation,
 )
-from src.kelder_api.components.db_manager.service import DBManager
 from src.kelder_api.components.db_manager.queries import JOURNEY_HISTORY_TABLE
+from src.kelder_api.components.db_manager.service import DBManager
 from src.kelder_api.components.log.models import JourneyData
 
 

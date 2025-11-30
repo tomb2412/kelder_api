@@ -50,25 +50,31 @@ class DriftCalculator:
     async def instantaneous_drift_calculator(
         self, datetime_now: datetime | None = None
     ) -> None:
-        sog_avg, cog_avg = await self._get_velocity(
+        sog_avg, cog_avg = await self._get_velocity(end_datetime=datetime_now)
+        heading_avg, end_datetime = await self._calculate_avg_heading(
             end_datetime=datetime_now
         )
-        heading_avg, end_datetime  = await self._calculate_avg_heading(end_datetime=datetime_now)
 
         if sog_avg is not None and cog_avg is not None and heading_avg is not None:
             drift_angle = bearing_angle_difference(heading_avg, cog_avg)
-            drift_speed = round(sog_avg * abs(math.sin(math.radians(drift_angle))),1)
+            drift_speed = round(sog_avg * abs(math.sin(math.radians(drift_angle))), 1)
         else:
             drift_speed = None
             drift_angle = None
-        logger.debug(f"The final drift is: {DriftData(timestamp=end_datetime, drift_speed=drift_speed, drift_angle = drift_angle)}")
-        await self.write_drift(DriftData(timestamp=end_datetime, drift_speed=drift_speed, drift_angle = drift_angle))
+        logger.debug(
+            f"The final drift is: {DriftData(timestamp=end_datetime, drift_speed=drift_speed, drift_angle=drift_angle)}"
+        )
+        await self.write_drift(
+            DriftData(
+                timestamp=end_datetime, drift_speed=drift_speed, drift_angle=drift_angle
+            )
+        )
 
     async def _calculate_avg_velocity(
         self, end_datetime: datetime | None = None
     ) -> Tuple[float | None]:
         """General method to retrieve the gps.
-        
+
         NOT USED because isn't instantanous though as it will always be behind the velocity.
         """
         if end_datetime is None:
@@ -77,11 +83,11 @@ class DriftCalculator:
             seconds=self.settings.instantaneous_history_period
         )
         velocity_history = await self.velocity_calculator.read_velocity_timeseries(
-            end_datetime=end_datetime,
-            start_datetime=start_datetime,
-            active=True
+            end_datetime=end_datetime, start_datetime=start_datetime, active=True
         )
-        logger.debug(f"Requesting the velocity timeseries. From: {start_datetime}-{end_datetime}. Got length: {len(velocity_history)}")
+        logger.debug(
+            f"Requesting the velocity timeseries. From: {start_datetime}-{end_datetime}. Got length: {len(velocity_history)}"
+        )
         # TODO: catch no data
         try:
             sog_avg = fmean(
@@ -102,7 +108,9 @@ class DriftCalculator:
         logger.debug(f"The vecocity average: {sog_avg}, {cog_avg}")
         return sog_avg, cog_avg
 
-    async def _get_velocity(self, end_datetime: datetime | None = None) -> Tuple[float | None]:
+    async def _get_velocity(
+        self, end_datetime: datetime | None = None
+    ) -> Tuple[float | None]:
         """
         A method to simply request the latest velocity within the time period avgd for the compass
         """
@@ -111,32 +119,37 @@ class DriftCalculator:
         start_datetime = end_datetime - timedelta(
             seconds=self.settings.instantaneous_history_period
         )
-        
+
         velocity_history = await self.velocity_calculator.read_velocity_timeseries(
-            end_datetime=end_datetime,
-            start_datetime=start_datetime,
-            active=True
+            end_datetime=end_datetime, start_datetime=start_datetime, active=True
         )
-        logger.debug(f"Requesting the velocity timeseries. From: {start_datetime}-{end_datetime}. Got length: {len(velocity_history)}")
+        logger.debug(
+            f"Requesting the velocity timeseries. From: {start_datetime}-{end_datetime}. Got length: {len(velocity_history)}"
+        )
         try:
-            return velocity_history[0].speed_over_ground, velocity_history[0].course_over_ground
+            return velocity_history[0].speed_over_ground, velocity_history[
+                0
+            ].course_over_ground
         except IndexError:
-            logger.debug("Got no velocity in the time series. HOW IS THE STATUS UNDERWAY???")
+            logger.debug(
+                "Got no velocity in the time series. HOW IS THE STATUS UNDERWAY???"
+            )
             return None, None
 
-
-    async def _calculate_avg_heading(self, end_datetime: datetime | None = None) -> float | None:
+    async def _calculate_avg_heading(
+        self, end_datetime: datetime | None = None
+    ) -> float | None:
         if end_datetime is None:
             end_datetime = datetime.now(timezone.utc).replace(microsecond=0)
         start_datetime = end_datetime - timedelta(
             seconds=self.settings.instantaneous_history_period
         )
         compass_history = await self.compass_interface.read_heading_history_timeseries(
-            end_datetime=end_datetime,
-            start_datetime=start_datetime,
-            active=True
+            end_datetime=end_datetime, start_datetime=start_datetime, active=True
         )
-        logger.debug(f"Requesting the compass timeseries. From: {start_datetime}-{end_datetime}. Got length: {len(compass_history)}")
+        logger.debug(
+            f"Requesting the compass timeseries. From: {start_datetime}-{end_datetime}. Got length: {len(compass_history)}"
+        )
 
         try:
             heading_avg = fmean(
@@ -172,4 +185,6 @@ class DriftCalculator:
                 return DriftData(**drift_history[0])
         except IndexError:
             logger.debug("No drift history available")
-            return DriftData(timestamp=datetime.now(timezone.utc), drift_speed=None, drift_angle = None)
+            return DriftData(
+                timestamp=datetime.now(timezone.utc), drift_speed=None, drift_angle=None
+            )

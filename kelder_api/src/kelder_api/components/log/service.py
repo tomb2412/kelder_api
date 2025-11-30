@@ -1,6 +1,6 @@
-import logging
 import json
-from datetime import datetime, timezone, timedelta
+import logging
+from datetime import datetime, timedelta, timezone
 from typing import Tuple
 
 from pydantic import ValidationError
@@ -14,9 +14,9 @@ from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.velocity.models import GPSVelocity
 from src.kelder_api.components.velocity.service import VelocityCalculator
+from src.kelder_api.configuration.logging_config import setup_logging
 from src.kelder_api.configuration.settings import get_settings
 
-from src.kelder_api.configuration.logging_config import setup_logging
 setup_logging(component="log")
 logger = logging.getLogger("log")
 
@@ -123,7 +123,7 @@ class LogTracker:
             if (
                 abs(self.leg_data.course_over_ground - velocity_data.course_over_ground)
                 >= self.settings.tack_bearing_tolerance
-            ):  
+            ):
                 logger.info("Identified a new leg.")
                 self.leg_data = LegData(
                     start_datetime=gps_data.timestamp,
@@ -145,24 +145,29 @@ class LogTracker:
                 gps_data = await self.gps_interface.read_gps_history_time_series(
                     start_datetime=self.journey_data.timestamp,
                     end_datetime=self.journey_data.end_datetime,
-                    active=True
+                    active=True,
                 )
 
-                self.journey_data.gps_data = json.dumps([
-                    {
-                        "timestamp": measurement.timestamp,
-                        "nmea_lat": measurement.latitude_nmea,
-                        "nmea_lon":measurement.longitude_nmea
-                    } for measurement in gps_data
-                ], default=str)
+                self.journey_data.gps_data = json.dumps(
+                    [
+                        {
+                            "timestamp": measurement.timestamp,
+                            "nmea_lat": measurement.latitude_nmea,
+                            "nmea_lon": measurement.longitude_nmea,
+                        }
+                        for measurement in gps_data
+                    ],
+                    default=str,
+                )
 
                 self.db_manager.save_from_journey_data(self.journey_data)
                 logger.info("Persisted journey data to sqlite history")
             except Exception:
                 logger.exception("Failed to persist journey history record")
 
-
-        await self.redis_client.clear_set(end_datetime=self.journey_data.end_datetime - timedelta(minutes=10))
+        await self.redis_client.clear_set(
+            end_datetime=self.journey_data.end_datetime - timedelta(minutes=10)
+        )
         del self.journey_data
         del self.leg_data
         self.start_journey = True
@@ -195,11 +200,7 @@ class LogTracker:
     ) -> LegData | None:
         try:
             return LegData(
-                **(
-                    await self.redis_client.read_hashed_set(
-                        RedisSetNames.LEG, datetime
-                    )
-                )
+                **(await self.redis_client.read_hashed_set(RedisSetNames.LEG, datetime))
             )
         except ValidationError:
             logger.debug("No data in the leg set")

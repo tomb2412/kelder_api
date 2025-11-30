@@ -7,9 +7,9 @@ from typing import AsyncGenerator, List, Optional
 from pydantic import BaseModel
 from redis.asyncio import ConnectionPool, Redis
 
+from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.configuration.logging_config import setup_logging
 from src.kelder_api.configuration.settings import get_settings
-from src.kelder_api.components.redis_client.types import RedisSetNames
 
 setup_logging(component="redis_client")
 logger = logging.getLogger("redis_client")
@@ -134,25 +134,31 @@ class RedisClient:
                 raise error
 
     async def clear_set(
-        self, 
+        self,
         set_name: RedisSetNames | None = None,
-        end_datetime: datetime = datetime.now(timezone.utc)
-    ) -> None: 
+        end_datetime: datetime = datetime.now(timezone.utc),
+    ) -> None:
         """
         Method to clear the redis data, of a particular set.
-        
+
         None will delete all sets
         """
 
         if set_name:
             async with self.get_connection() as redis:
-                await redis.zremrangebyscore(f"sensor:ts:{set_name.value}", "-inf", end_datetime.timestamp())
-            
-            logger.info("Cleared %s redis sets before: %s" %(set_name.value, end_datetime))
+                await redis.zremrangebyscore(
+                    f"sensor:ts:{set_name.value}", "-inf", end_datetime.timestamp()
+                )
+
+            logger.info(
+                "Cleared %s redis sets before: %s" % (set_name.value, end_datetime)
+            )
 
         else:
             async with self.get_connection() as redis:
                 for set_name in RedisSetNames:
-                    await redis.zremrangebyscore(f"sensor:ts:{set_name.value}", "-inf", end_datetime.timestamp())
+                    await redis.zremrangebyscore(
+                        f"sensor:ts:{set_name.value}", "-inf", end_datetime.timestamp()
+                    )
 
             logger.info("Cleared all redis sets before: %s", end_datetime)

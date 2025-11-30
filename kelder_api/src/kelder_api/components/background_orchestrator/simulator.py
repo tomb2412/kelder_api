@@ -53,15 +53,22 @@ class Simulator(CompassInterface, GPSInterface):
         self.latitude = config["simulation"][0]["start_latitude"]
         self.longitude = config["simulation"][1]["start_longitude"]
         self.heading = config["simulation"][2]["heading"]
-        
+
         try:
             velocity_plan = config["simulation"][3]
-        
+
             self.loop_count = 0
             self.velocity_plan = []
-            self.turn = 0 # Field to track what turn is active
+            self.turn = 0  # Field to track what turn is active
             for turn in velocity_plan["velocity_plan"]:
-                self.velocity_plan.append((turn["turn"][0]["iterations"], turn["turn"][1]["speed"], turn["turn"][2]["cog"], turn["turn"][3]["heading"]))
+                self.velocity_plan.append(
+                    (
+                        turn["turn"][0]["iterations"],
+                        turn["turn"][1]["speed"],
+                        turn["turn"][2]["cog"],
+                        turn["turn"][3]["heading"],
+                    )
+                )
         except IndexError:
             self.velocity_plan = None
 
@@ -86,9 +93,9 @@ class Simulator(CompassInterface, GPSInterface):
 
     async def simulate_gps_sensor(self):
         # Engine needed to calculate timestamp, lat and long
-        vessel_state = (
-            await self.redis_client.read_set(RedisSetNames.VESSEL_STATE)
-        )[0]["vessel_state"]
+        vessel_state = (await self.redis_client.read_set(RedisSetNames.VESSEL_STATE))[
+            0
+        ]["vessel_state"]
         if vessel_state == VesselState.STATIONARY:
             time_increment = self.STATIONARY_SLEEP
         elif vessel_state == VesselState.UNDERWAY:
@@ -101,7 +108,7 @@ class Simulator(CompassInterface, GPSInterface):
             if self.loop_count == self.velocity_plan[self.turn][0]:
                 self.loop_count = 0
                 self.turn = (self.turn + 1) % len(self.velocity_plan)
-            
+
             self.loop_count += 1
             self.speed = self.velocity_plan[self.turn][1]
             self.cog = self.velocity_plan[self.turn][2]
@@ -131,9 +138,11 @@ class Simulator(CompassInterface, GPSInterface):
     async def simulate_compass_sensor(self):
         if self.velocity_plan is not None:
             self.heading = self.velocity_plan[self.turn][3]
-    
+
         if self.heading_variation != 0:
-            self.heading += random.randint(-self.heading_variation, self.heading_variation)
+            self.heading += random.randint(
+                -self.heading_variation, self.heading_variation
+            )
 
         compass_redis_data = CompassRedisData(
             timestamp=self.current_time, heading=self.heading

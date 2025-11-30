@@ -7,7 +7,6 @@ from gpiozero import DistanceSensor
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.ultrasound.models import BilgeDepth
-
 from src.kelder_api.configuration.logging_config import setup_logging
 
 # GPIO pins

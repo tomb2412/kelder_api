@@ -174,9 +174,7 @@ class VelocityCalculator:
         else:
             return [
                 GPSVelocity(**velocity)
-                for velocity in await self.redis_client.read_set(
-                    RedisSetNames.VELOCITY
-                )
+                for velocity in await self.redis_client.read_set(RedisSetNames.VELOCITY)
             ]
 
     async def read_velocity_timeseries(

@@ -108,7 +108,7 @@ async def get_gps_card(
     drift_data = await drift_calculator.read_drift_latest(active=True)
 
     # TODO will this return the previous journeys stats?
-    if journey_data and velocity_data.speed_over_ground:    
+    if journey_data and velocity_data.speed_over_ground:
         log = journey_data.distance_travelled
     else:
         log = "error"

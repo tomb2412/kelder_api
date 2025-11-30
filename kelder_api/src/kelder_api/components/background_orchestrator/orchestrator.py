@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 
 from src.kelder_api.components.background_orchestrator.enums import (
     VesselState,
@@ -138,9 +138,10 @@ class BackgroundTaskManager:
             await self.simulator.clear_redis()
 
         self.vessel_state = VesselState.STATIONARY
+        await self.write_vessel_state()
+
         while True:
             logger.info("Current vessel state: %s", self.vessel_state)
-            await self.write_vessel_state()
             previous_vessel_state = self.vessel_state
             # Run the strategy matching the vessel state
             await self.strategies[self.vessel_state](
@@ -148,6 +149,7 @@ class BackgroundTaskManager:
             )
 
             self.vessel_state = await self.calculate_new_state(self.vessel_state)
+            await self.write_vessel_state()
             if self.vessel_state != previous_vessel_state:
                 logger.info(
                     "Vessel state change detected: %s -> %s",
@@ -158,10 +160,12 @@ class BackgroundTaskManager:
                 if self.vessel_state == VesselState.STATIONARY:
                     logger.info("Journey finishing")
                     await self.components["LOG"]["instance"].finish_journey()
-            
+
             # Clear all the data in the last 10 mins
             if self.vessel_state == VesselState.STATIONARY:
-                await self.redis_client.clear_set(end_datetime=datetime.now(timezone.utc) - timedelta(minutes=10))
+                await self.redis_client.clear_set(
+                    end_datetime=datetime.now(timezone.utc) - timedelta(minutes=10)
+                )
 
             await asyncio.sleep(self.sleep_time)
 

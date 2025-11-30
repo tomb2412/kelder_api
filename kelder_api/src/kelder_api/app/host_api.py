@@ -1,3 +1,4 @@
+import logging
 import os
 import secrets
 import subprocess
@@ -7,8 +8,6 @@ from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.responses import PlainTextResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
-import logging
-
 
 # Configure logging to dedicated host_api log and aggregate logs
 from src.kelder_api.configuration.logging_config import setup_logging  # noqa: E402
@@ -34,7 +33,9 @@ def check_auth(credentials: HTTPBasicCredentials = Depends(security)):
     correct_pass = secrets.compare_digest(credentials.password, ADMIN_PASS)
     if not (correct_user and correct_pass):
         logger.info(f"{type(credentials.username)}")
-        logger.warning(f"Unauthorized restart attempt with\n username: {credentials.username}\npassword: {credentials.password}")
+        logger.warning(
+            f"Unauthorized restart attempt with\n username: {credentials.username}\npassword: {credentials.password}"
+        )
         raise HTTPException(401, "Unauthorized")
     logger.debug("Authentication succeeded")
 
