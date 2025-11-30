@@ -1,6 +1,6 @@
 import logging
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import Tuple
 
 from pydantic import ValidationError
@@ -162,7 +162,7 @@ class LogTracker:
                 logger.exception("Failed to persist journey history record")
 
 
-
+        await self.redis_client.clear_set(end_datetime=self.journey_data.end_datetime - timedelta(minutes=10))
         del self.journey_data
         del self.leg_data
         self.start_journey = True
