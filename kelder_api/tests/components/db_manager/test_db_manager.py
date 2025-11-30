@@ -4,12 +4,14 @@ from datetime import datetime, timedelta, timezone
 from typing import Callable
 
 import pytest
+import sqlite3
 
 from src.kelder_api.components.db_manager.models import (
     JourneyHistoryRecord,
     JourneyLocation,
 )
 from src.kelder_api.components.db_manager.service import DBManager
+from src.kelder_api.components.db_manager.queries import JOURNEY_HISTORY_TABLE
 from src.kelder_api.components.log.models import JourneyData
 
 
@@ -18,7 +20,11 @@ def journey_record_factory() -> Callable[..., JourneyHistoryRecord]:
     base_time = datetime(2025, 1, 10, 9, tzinfo=timezone.utc)
 
     def _factory(
-        *, days_offset: int = 0, hours_offset: int = 0, distance: float = 12.5
+        *,
+        days_offset: int = 0,
+        hours_offset: int = 0,
+        distance: float = 12.5,
+        gps_data: str | None = None,
     ) -> JourneyHistoryRecord:
         departure = base_time + timedelta(days=days_offset, hours=hours_offset)
         arrival = departure + timedelta(hours=6, minutes=30)
@@ -32,6 +38,7 @@ def journey_record_factory() -> Callable[..., JourneyHistoryRecord]:
                 latitude="52.14.30", longitude="002.12.30"
             ),
             distance_travelled=distance,
+            gps_data=gps_data,
         )
 
     return _factory
@@ -47,6 +54,7 @@ def test_save_trip_persists_record(db_manager: DBManager, journey_record_factory
     assert persisted is not None
     assert persisted.departure_location.latitude == "52.13.77"
     assert persisted.distance_travelled == pytest.approx(record.distance_travelled)
+    assert persisted.gps_data is None
 
 
 def test_list_trips_returns_newest_first(
@@ -81,6 +89,17 @@ def test_latest_trip_returns_most_recent(
     assert db_manager.latest_trip().unique_key == latest.unique_key
 
 
+def test_save_trip_persists_gps_data(db_manager: DBManager, journey_record_factory):
+    gps_blob = "0123456789," * 1000
+    record = journey_record_factory(gps_data=gps_blob)
+
+    stored = db_manager.save_trip(record)
+    fetched = db_manager.fetch_trip(stored.unique_key)
+
+    assert fetched is not None
+    assert fetched.gps_data == gps_blob
+
+
 def test_save_from_journey_data_round_trips(db_manager: DBManager) -> None:
     journey_data = JourneyData(
         timestamp=datetime(2025, 3, 15, 7, tzinfo=timezone.utc),
@@ -89,6 +108,7 @@ def test_save_from_journey_data_round_trips(db_manager: DBManager) -> None:
         start_longitude="00110.3000",
         end_latitude="5055.1000",
         end_longitude="00140.2000",
+        gps_data="[]",
     )
 
     stored = db_manager.save_from_journey_data(journey_data)
@@ -98,3 +118,33 @@ def test_save_from_journey_data_round_trips(db_manager: DBManager) -> None:
     assert fetched.departure_location.latitude == journey_data.start_latitude
     assert fetched.arrival_location.longitude == journey_data.end_longitude
     assert fetched.distance_travelled == pytest.approx(journey_data.distance_travelled)
+    assert fetched.gps_data == journey_data.gps_data
+
+
+def test_existing_database_is_migrated_to_include_gps_column(db_path) -> None:
+    with sqlite3.connect(db_path) as connection:
+        connection.execute(
+            f"""
+            CREATE TABLE {JOURNEY_HISTORY_TABLE}(
+                unique_key INTEGER PRIMARY KEY AUTOINCREMENT,
+                departure_time TEXT NOT NULL,
+                arrival_time TEXT NOT NULL,
+                departure_location TEXT NOT NULL,
+                arrival_location TEXT NOT NULL,
+                distance_travelled REAL NOT NULL
+            );
+            """
+        )
+
+    manager = DBManager(db_path)
+    manager.list_trips()
+
+    with sqlite3.connect(db_path) as connection:
+        columns = {
+            row[1]
+            for row in connection.execute(
+                f"PRAGMA table_info({JOURNEY_HISTORY_TABLE});"
+            )
+        }
+
+    assert "gps_data" in columns

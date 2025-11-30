@@ -1,4 +1,5 @@
 import logging
+import json
 from datetime import datetime, timezone
 from typing import Tuple
 
@@ -140,10 +141,26 @@ class LogTracker:
         "Writes and clears the cached journey data."
         if self.journey_data is not None:
             try:
+                gps_data = await self.gps_interface.read_gps_history_time_series(
+                    start_datetime=self.journey_data.timestamp,
+                    end_datetime=self.journey_data.end_datetime,
+                    active=True
+                )
+
+                self.journey_data.gps_data = json.dumps([
+                    {
+                        "timestamp": measurement.timestamp,
+                        "nmea_lat": measurement.latitude_nmea,
+                        "nmea_lon":measurement.longitude_nmea
+                    } for measurement in gps_data
+                ], default=str)
+
                 self.db_manager.save_from_journey_data(self.journey_data)
                 logger.info("Persisted journey data to sqlite history")
             except Exception:
                 logger.exception("Failed to persist journey history record")
+
+
 
         del self.journey_data
         del self.leg_data

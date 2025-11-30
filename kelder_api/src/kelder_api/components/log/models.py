@@ -28,6 +28,7 @@ class JourneyData(BaseModel):
     start_longitude: str = Field(description="The lat and lon of the leg start coords")
     end_latitude: str = Field(description="The lat and lon of the leg end coords")
     end_longitude: str = Field(description="The lat and lon of the leg end coords")
+    gps_data: str = Field(description="The complete gps track for the journey.", default = "[]")
 
     @computed_field
     @property
