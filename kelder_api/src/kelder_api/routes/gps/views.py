@@ -17,7 +17,8 @@ from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.log.service import LogTracker
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.configuration.settings import get_settings
-from src.kelder_api.routes.gps.models import GPSCard
+from src.kelder_api.routes.gps.models import GPSCard, GPSMap
+from src.kelder_api.components.velocity.utils import convert_to_decimal_degrees
 
 logger = logging.getLogger("api.routes.gps")
 
@@ -39,6 +40,8 @@ def _format_gps_payload(
 def get_dependancy(request: Request) -> GPSInterface:
     return get_gps_interface(request.app)
 
+def get_velocity_dependancy(request: Request) -> VelocityCalculator:
+    return get_velocity_calculator(request.app)
 
 def get_card_dependancies(
     request: Request,
@@ -125,6 +128,29 @@ async def get_gps_card(
             else "error",
             log=log,
             drift=drift_data.drift_speed,
+        )
+    else:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND, detail="No GPS data available"
+        )
+
+
+@router_card.get("/gps_map_position")
+async def get_gps_card(
+        gps_interface: GPSInterface = Depends(get_dependancy),
+        velocity_calculator: VelocityCalculator = Depends(get_velocity_dependancy)
+        ) -> GPSMap:
+    """Decimal degree gps position with compass orientation (to be implementent)."""
+
+    # TODO: This should be a time window, so the latest gps within say 1 hour
+    gps_data = await gps_interface.read_gps_latest(active=True)
+    velocity_data = await velocity_calculator.read_velocity_latest(active=True)
+
+    if gps_data:
+        return GPSMap(
+            longitude = str(convert_to_decimal_degrees(gps_data.longitude_nmea)),
+            latitude = str(convert_to_decimal_degrees(gps_data.latitude_nmea)),
+            cog = str(velocity_data.course_over_ground) if velocity_data.course_over_ground else "0"
         )
     else:
         raise HTTPException(

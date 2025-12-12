@@ -61,18 +61,26 @@ def average_bearing(bearings):
 
 
 def convert_to_decimal_degrees(degree: str, lon: bool = True) -> float:
-    """Convert NMEA ddmm.mmmm / dddmm.mmmm strings into decimal degrees."""
+    """
+    Convert NMEA ddmm.mmmm / dddmm.mmmm strings into decimal degrees.
+
+    Handles leading signs (e.g. "-0018.9046"), trailing direction letters
+    ("5123.45S"), or legacy strings where the minus sign is embedded in the
+    minutes portion (e.g. "000-18.9046").
+    """
     if degree is None:
         raise ValueError("Invalid NMEA degree value: None")
 
-    value = degree.strip()
+    value = str(degree).strip()
     if not value:
         raise ValueError("Invalid NMEA degree value: empty string")
 
     sign = 1.0
-    if value[0] in "+-":
+
+    # Leading explicit sign
+    if value and value[0] in "+-":
         if value[0] == "-":
-            sign = -1.0
+            sign *= -1.0
         value = value[1:]
 
     if not value:
@@ -87,26 +95,29 @@ def convert_to_decimal_degrees(degree: str, lon: bool = True) -> float:
         degrees_str = "0"
         minutes_str = whole.zfill(2)
     else:
-        degrees_str = whole[:-2]
+        degrees_str = whole[:-2] or "0"
         minutes_str = whole[-2:]
 
     minutes_val = minutes_str
     if frac:
         minutes_val = f"{minutes_val}.{frac}"
 
-    degrees_val = float(degrees_str) if degrees_str else 0.0
+    degrees_val = float(degrees_str)
     minutes_val = float(minutes_val)
 
     return sign * (degrees_val + minutes_val / 60.0)
 
 
 def decimal_to_dms_format(decimal_deg, is_lon=True):
-    degrees = int(decimal_deg)
-    minutes = (decimal_deg - degrees) * 60
-    if is_lon:
-        return f"{degrees:03d}{minutes:09.6f}"
-    else:
-        return f"{degrees:02d}{minutes:09.6f}"
+    """Format decimal degrees into NMEA-style degrees/minutes."""
+    sign = "-" if decimal_deg < 0 else ""
+    absolute_deg = abs(decimal_deg)
+    degrees = int(absolute_deg)
+    minutes = (absolute_deg - degrees) * 60
+    # Use 3 digits for longitudes of 100° or more, otherwise keep 2 to avoid
+    # inserting an extra leading zero for small negative longitudes.
+    width = 3 if is_lon and degrees >= 100 else 2
+    return f"{sign}{degrees:0{width}d}{minutes:09.6f}"
 
 
 def haversine(

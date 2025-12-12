@@ -22,3 +22,8 @@ class GPSCard(BaseModel):
     dtw: float = Field(
         description="The distance to the next waypoint / nautical miles", default=4.7
     )
+
+class GPSMap(BaseModel):
+    longitude: str = Field(description="decimal degrees")
+    latitude: str = Field(description="decimal degrees")
+    cog: str = Field(description = "The cog from the velocity")
