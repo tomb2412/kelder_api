@@ -27,3 +27,7 @@ class GPSMap(BaseModel):
     longitude: str = Field(description="decimal degrees")
     latitude: str = Field(description="decimal degrees")
     cog: str = Field(description = "The cog from the velocity")
+    track: list[dict] | None = Field(
+        default=None,
+        description="Full journey track as decimal degree points with timestamps",
+    )

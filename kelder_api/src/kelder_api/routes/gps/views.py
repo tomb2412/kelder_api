@@ -1,3 +1,4 @@
+import json
 import logging
 from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
@@ -42,6 +43,9 @@ def get_dependancy(request: Request) -> GPSInterface:
 
 def get_velocity_dependancy(request: Request) -> VelocityCalculator:
     return get_velocity_calculator(request.app)
+
+def get_log_dependancy(request: Request) -> LogTracker:
+    return get_log_tracker(request.app)
 
 def get_card_dependancies(
     request: Request,
@@ -137,20 +141,32 @@ async def get_gps_card(
 
 @router_card.get("/gps_map_position")
 async def get_gps_card(
-        gps_interface: GPSInterface = Depends(get_dependancy),
-        velocity_calculator: VelocityCalculator = Depends(get_velocity_dependancy)
-        ) -> GPSMap:
+    gps_interface: GPSInterface = Depends(get_dependancy),
+    velocity_calculator: VelocityCalculator = Depends(get_velocity_dependancy),
+    log_tracker: LogTracker = Depends(get_log_dependancy),
+) -> GPSMap:
     """Decimal degree gps position with compass orientation (to be implementent)."""
 
     # TODO: This should be a time window, so the latest gps within say 1 hour
     gps_data = await gps_interface.read_gps_latest(active=True)
     velocity_data = await velocity_calculator.read_velocity_latest(active=True)
+    journey_data = await log_tracker.get_journey_set()
+
+    track = None
+    if journey_data and journey_data.gps_data:
+        try:
+            track = json.loads(journey_data.gps_data)
+        except json.JSONDecodeError:
+            logger.warning("Failed to parse journey gps_data track; returning None")
 
     if gps_data:
         return GPSMap(
-            longitude = str(convert_to_decimal_degrees(gps_data.longitude_nmea)),
-            latitude = str(convert_to_decimal_degrees(gps_data.latitude_nmea)),
-            cog = str(velocity_data.course_over_ground) if velocity_data.course_over_ground else "0"
+            longitude=str(convert_to_decimal_degrees(gps_data.longitude_nmea)),
+            latitude=str(convert_to_decimal_degrees(gps_data.latitude_nmea)),
+            cog=str(velocity_data.course_over_ground)
+            if velocity_data.course_over_ground
+            else "0",
+            track=track,
         )
     else:
         raise HTTPException(

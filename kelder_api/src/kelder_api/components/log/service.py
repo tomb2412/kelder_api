@@ -14,6 +14,7 @@ from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.velocity.models import GPSVelocity
 from src.kelder_api.components.velocity.service import VelocityCalculator
+from src.kelder_api.components.velocity.utils import convert_to_decimal_degrees
 from src.kelder_api.configuration.logging_config import setup_logging
 from src.kelder_api.configuration.settings import get_settings
 
@@ -87,6 +88,29 @@ class LogTracker:
 
         return gps_data, velocity_data
 
+    def _append_decimal_gps_point(self, gps_data: GPSRedisData) -> None:
+        """Append the current GPS point in decimal degrees to the journey trace."""
+        try:
+            track = json.loads(self.journey_data.gps_data) if self.journey_data else []
+        except json.JSONDecodeError:
+            logger.debug("Unable to parse existing gps_data, resetting journey trace")
+            track = []
+
+        track.append(
+            {
+                "timestamp": gps_data.timestamp.isoformat(),
+                "latitude": convert_to_decimal_degrees(
+                    gps_data.latitude_nmea, lon=False
+                ),
+                "longitude": convert_to_decimal_degrees(
+                    gps_data.longitude_nmea, lon=True
+                ),
+            }
+        )
+
+        if self.journey_data:
+            self.journey_data.gps_data = json.dumps(track)
+
     async def increment_log(self, now: datetime | None = None):
         """
         Private method which uses class wide variables to incement:
@@ -135,6 +159,9 @@ class LogTracker:
             else:
                 self.leg_data.course_over_ground = velocity_data.course_over_ground
 
+        # Update journey trace with the latest decimal degree coordinates
+        self._append_decimal_gps_point(gps_data)
+
         logger.info(f"Writing log distance: {self.journey_data.distance_travelled}")
         await self.update_redis_set(self.journey_data, self.leg_data)
 
@@ -151,13 +178,16 @@ class LogTracker:
                 self.journey_data.gps_data = json.dumps(
                     [
                         {
-                            "timestamp": measurement.timestamp,
-                            "nmea_lat": measurement.latitude_nmea,
-                            "nmea_lon": measurement.longitude_nmea,
+                            "timestamp": measurement.timestamp.isoformat(),
+                            "latitude": convert_to_decimal_degrees(
+                                measurement.latitude_nmea, lon=False
+                            ),
+                            "longitude": convert_to_decimal_degrees(
+                                measurement.longitude_nmea, lon=True
+                            ),
                         }
                         for measurement in gps_data
                     ],
-                    default=str,
                 )
 
                 self.db_manager.save_from_journey_data(self.journey_data)
@@ -177,12 +207,18 @@ class LogTracker:
         self, journey_data: JourneyData, leg_data: LegData
     ) -> None:
         logger.debug("Writing the log and journey data")
+        print(f"\n writing to the sets: {journey_data}")
         await self.redis_client.write_hashed_set(RedisSetNames.JOURNEY, journey_data)
         await self.redis_client.write_hashed_set(RedisSetNames.LEG, leg_data)
 
     async def get_journey_set(
         self, datetime: datetime = datetime.now(timezone.utc)
     ) -> JourneyData:
+        data = await self.redis_client.read_hashed_set(
+            RedisSetNames.JOURNEY, datetime
+        )
+        
+        print(f"data: {data}")
         try:
             return JourneyData(
                 **(
@@ -194,6 +230,8 @@ class LogTracker:
         except ValidationError:
             logger.debug("No data in the leg set")
             return None
+        except Exception:
+            raise
 
     async def get_leg_set(
         self, datetime: datetime = datetime.now(timezone.utc)
