@@ -207,7 +207,6 @@ class LogTracker:
         self, journey_data: JourneyData, leg_data: LegData
     ) -> None:
         logger.debug("Writing the log and journey data")
-        print(f"\n writing to the sets: {journey_data}")
         await self.redis_client.write_hashed_set(RedisSetNames.JOURNEY, journey_data)
         await self.redis_client.write_hashed_set(RedisSetNames.LEG, leg_data)
 
@@ -217,8 +216,6 @@ class LogTracker:
         data = await self.redis_client.read_hashed_set(
             RedisSetNames.JOURNEY, datetime
         )
-        
-        print(f"data: {data}")
         try:
             return JourneyData(
                 **(
