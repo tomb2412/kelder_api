@@ -32,6 +32,7 @@ API to serve Kelder sensing features and ship controlfas
 
 - docker compose `docker compose up --build`
 - To see the keys `docker compose exec redis redis-cli`  and then `KEYS *`. GPS history: `docker compose exec redis redis-cli LRANGE gps:History 0 10`
+- To clear unused containers: `sudo docker system prune -af`
 
 w- Docs are available at: http://localhost:8000/docs#/ or http://raspberrypi.local:8000/docs#/ or http://192.168.1.167:8000/docs#/
 
@@ -55,12 +56,17 @@ w- Docs are available at: http://localhost:8000/docs#/ or http://raspberrypi.loc
 - Component NEO-6M GPS [data sheet](https://components101.com/sites/default/files/component_datasheet/NEO6MV2%20GPS%20Module%20Datasheet.pdf)
 - NMEA GPRMB data: [GPRMB structure](https://aprs.gids.nl/nmea/#rmc)
 - pynmea2 parsing data: [git hub](https://github.com/Knio/pynmea2)
-- Minicom command to see serial stream: `sudo minicom -b 9600 -o -D /dev/ttyAMA0`
+- Minicom command to see serial stream: 
+    - to see which divice: `ls /dev/ttyAMA* /dev/ttyS* /dev/ttyUSB*`
+    - `sudo minicom -b 9600 -o -D /dev/ttyS0`
 
 # The Ultasound
-
+ - [Wiring guide](https://gpiozero.readthedocs.io/en/stable/recipes.html#distance-sensor)
+ - [Module docs](https://gpiozero.readthedocs.io/en/stable/api_input.html#distancesensor-hc-sr04)
  - install package: `sudo apt install python3-gpiozero python3-rpi.gpio`
  - Enable gpio through the interface options `sudo raspi-config` -> Go to Interface Options -> Enable GPIO
+ - Resistor guide:
+    - 
 
 
  # The Compass
@@ -76,3 +82,16 @@ w- Docs are available at: http://localhost:8000/docs#/ or http://raspberrypi.loc
  # The Cellular Modem
 
  - [Clipper HAT Mini](https://learn.pimoroni.com/article/getting-started-with-clipper-hat)
+ - See the minicom port: `ls -l /dev/ttyAMA* /dev/serial*`
+ - Usefull commands: enter minicom: `minicom -b 115200 -D /dev/ttyAMA2`
+    - `AT` -> "OK"
+    - `ATI` -> 
+    - `AT+CPIN?` -> SIM inserted and ready
+
+# Future features:
+ - [] Fix the chatbot and define global waypoints
+ - [] Introduce drift and dtx status
+ - [] Compass calibrator
+ - [] Redis set expiration and TTL
+ - [] Build in new vessel states: achored, moored, motoring
+ - [] Custom logger with an ochestration, and redis level. SMS notifations for KO?

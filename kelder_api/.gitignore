@@ -2,3 +2,4 @@
 **/_pychache__
 *.pyc
 **/.vscode
+.env

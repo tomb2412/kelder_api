@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   redis:
     image: redis:alpine
@@ -10,6 +8,19 @@ services:
       resources:
         limits:
           memory: 128M
+    #restart: "on-failure"
+  graph_db:
+    image: neo4j:2025.10.1
+    container_name: neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      NEO4J_AUTH: "none"
+    
+    volumes:
+      - $HOME/neo4j/data:/data
+
 
   kelder_api:
     build: .
@@ -18,7 +29,8 @@ services:
     tty: true
     volumes:
       - /dev:/dev
-      - logs:/app/logs
+      - ./logs:/app/logs
+      - ./journey_history:/app/src/kelder_api/assets/
     devices:
       - /dev/gpiomem
       - /dev/mem
@@ -32,21 +44,24 @@ services:
       - REDIS_HOST=redis
     env_file:
       - .env 
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    #restart: "on-failure"
 
   worker:
     build: .
     privileged: true
     volumes:
-      - logs:/app/logs
+      - ./logs:/app/logs
+      - ./journey_history:/app/src/kelder_api/assets/
     environment:
       REDIS_HOST: redis
     devices:
-      - "/dev/ttyyAMA0:/dev/ttyyAMA0"
-    command: [ "poetry", "run", "python", "-m", "src.kelder_api.app.background_orchestrator" ]
+      - "/dev/ttyAMA0:/dev/ttyAMA0"
+      - "/dev/ttyS0:/dev/ttyS0"
+    command: [ "uv", "run", "python", "-m", "src.kelder_api.app.background_orchestrator" ]
     depends_on:
       - redis
     env_file:
       - .env 
-
-volumes:
-  logs:
+    #restart: "on-failure"

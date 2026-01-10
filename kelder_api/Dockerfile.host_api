@@ -1,0 +1,39 @@
+FROM python:3.12-slim-bookworm AS base
+
+# Install Docker CLI + Compose plugin (no daemon) so restart_compose.sh can run `docker compose`
+ARG DOCKER_CLI_VERSION=27.2.0
+ARG COMPOSE_VERSION=2.29.7
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends ca-certificates curl tar build-essential; \
+    rm -rf /var/lib/apt/lists/*; \
+    ARCH="$(uname -m)"; \
+    curl -SL "https://download.docker.com/linux/static/stable/${ARCH}/docker-${DOCKER_CLI_VERSION}.tgz" \
+      | tar -xz docker/docker; \
+    mv docker/docker /usr/local/bin/docker; \
+    rmdir docker; \
+    mkdir -p /usr/local/lib/docker/cli-plugins; \
+    curl -SL "https://github.com/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-linux-${ARCH}" \
+      -o /usr/local/lib/docker/cli-plugins/docker-compose; \
+    chmod +x /usr/local/lib/docker/cli-plugins/docker-compose; \
+    docker --version; \
+    docker compose version
+
+
+WORKDIR /app
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app/src
+
+# Only install what host_api.py needs
+RUN pip install --no-cache-dir fastapi uvicorn[standard] python-dotenv
+
+COPY src/ src/
+COPY restart_compose.sh docker-compose.yml ./
+
+RUN chmod +x /app/restart_compose.sh
+
+EXPOSE 9090
+
+CMD ["uvicorn", "src.kelder_api.app.host_api:app", "--host", "0.0.0.0", "--port", "9090"]

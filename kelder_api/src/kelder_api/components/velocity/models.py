@@ -1,0 +1,26 @@
+from datetime import datetime
+from enum import Enum
+
+from pydantic import BaseModel, Field
+
+
+class CalculationType(str, Enum):
+    LENGTH = "length"
+    TIMESERIES = "timeseries"
+
+
+class GPSVelocity(BaseModel):
+    """Output from the velocity calculation"""
+
+    timestamp: datetime = Field(
+        description="Timestamp from when the velocity was taken"
+    )
+    speed_over_ground: float | None = Field(
+        description=("Average speed over ground in knots; None when data is unreliable")
+    )
+    course_over_ground: float | None = Field(
+        description="Average true bearing of the GPS course in degrees"
+    )
+    number_of_measurements: int = Field(
+        description="datapoint count used in calculation"
+    )

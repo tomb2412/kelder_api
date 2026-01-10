@@ -1,0 +1,71 @@
+from dataclasses import field
+from enum import Enum
+from typing import Awaitable, Callable, List
+
+from pydantic import BaseModel, ConfigDict, Field, computed_field
+from pydantic_ai.messages import ModelMessage
+
+from src.kelder_api.components.agentic_workflow.agents.models import PassagePlan
+from src.kelder_api.components.redis_client.redis_client import RedisClient
+
+"""
+Feautures:
+- Waypoint / passage plan
+- Weather and tides
+
+"""
+
+
+class ReasoningEndNodes(Enum):
+    PASSAGE_PLAN = "passage_plan"
+    TIDAL_SEARCH = "tidal_search"
+
+
+class GeneratePassagePlan(BaseModel):
+    # TODO: add Field descriptions
+    departure_location: str
+    destination_location: str
+    departure_time: str | None = None
+    destination_time: str | None = None
+    extra_considerations: str | None = None
+
+
+class Node(BaseModel):
+    # TODO: Potentially node_type and node_input may lead to conflicting results?
+    node_type: ReasoningEndNodes = Field(
+        description="The node which will be called in the output."
+    )
+    condifence: int = Field(
+        description="Out of 10, confidence level that this node is required."
+    )
+    justification: str = Field(
+        description="A consise, very short reason why this node is required."
+    )
+    node_input: str | GeneratePassagePlan = Field(
+        description="The required input for the node type of what the node needs to do."
+    )
+    node_output: str | None = Field(
+        description="Completed by the tool as a summary of their tool."
+    )
+
+
+# @dataclass
+class State(BaseModel):
+    redis_client: RedisClient
+    user_message: str | None = field(default=None)
+    message_history: list[ModelMessage] = field(default_factory=list)
+
+    workflow_plan: List[Node] = field(default_factory=list)
+    job_count: int = 0
+
+    passage_plan: PassagePlan | None = field(default=None)
+    progress_callback: Callable[[str], Awaitable[None]] | None = Field(
+        default=None, exclude=True
+    )
+
+    @computed_field
+    @property
+    def workflow_length(self) -> int:
+        return len(self.workflow_plan)
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)

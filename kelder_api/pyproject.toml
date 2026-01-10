@@ -6,7 +6,7 @@ authors = [
     {name = "Your Name",email = "you@example.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<4.0"
 dependencies = [
     "fastapi (>=0.115.11,<0.116.0)",
     "pydantic (>=2.10.6,<3.0.0)",
@@ -14,26 +14,47 @@ dependencies = [
     "pynmea2 (>=1.19.0,<2.0.0)",
     "pyserial-asyncio (>=0.6,<0.7)",
     "asyncio (>=3.4.3,<4.0.0)",
-    "ipykernel (>=6.29.5,<7.0.0)",
+    "ipykernel>=6.29.5,<7.0.0",
     "gpiozero (>=2.0.1,<3.0.0)",
     "redis (>=5.2.1,<6.0.0)",
     "adafruit-circuitpython-lsm303-accel (>=1.1.23,<2.0.0)",
     "sudo (>=1.0.0,<2.0.0)",
     "adafruit-circuitpython-lis2mdl (>=2.1.25,<3.0.0)",
-    "lgpio (>=0.2.2.0,<0.3.0.0)",
+    "lgpio (>=0.2.2.0,<0.3.0.0); sys_platform == 'linux'",
     "numpy (>=2.2.5,<3.0.0)",
     "ruff (>=0.11.9,<0.12.0)",
     "minimalmodbus (>=2.1.1,<3.0.0)",
     "pydantic-settings (>=2.9.1,<3.0.0)",
+    "adafruit-blinka (>=8.58.1,<9.0.0)",
+    "rpi-gpio (>=0.7.1,<0.8.0); sys_platform == 'linux'",
+    "openai (>=1.106.1,<2.0.0)",
+    "openai-agents (==0.0.15)",
+    "pydantic-ai (>=1.0.15,<2.0.0)",
+    "httpx>=0.28.1",
+    "async-lru>=2.0.5",
+    "pydantic-extra-types>=2.10.5",
+    "pytest>=8.4.2",
+    "pytest-asyncio>=1.2.0",
+    "pydantic-graph>=1.0.2",
+    "gradio>=5.49.1",
+    "statistics>=1.0.3.5",
+    "python-dotenv (>=1.0.1,<2.0.0)",
+    "shapely>=2.1.2",
+    "rtree>=1.4.1",
+    "neo4j>=6.0.3",
 ]
 
-[tool.poetry]
-packages = [{include = "kelder_api", from = "src"}]
-
-
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling>=1.21.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/kelder_api"]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6.30.1",
+]
 
 [tool.ruff.lint]
 ignore = []
