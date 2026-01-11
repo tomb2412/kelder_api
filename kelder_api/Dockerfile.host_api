@@ -30,9 +30,10 @@ ENV PYTHONUNBUFFERED=1 \
 RUN pip install --no-cache-dir fastapi uvicorn[standard] python-dotenv
 
 COPY src/ src/
-COPY restart_compose.sh docker-compose.yml ./
+COPY scripts/restart_compose.sh scripts/restart_compose.sh
+COPY docker-compose.yml docker-compose.yml
 
-RUN chmod +x /app/restart_compose.sh
+RUN chmod +x /app/scripts/restart_compose.sh
 
 EXPOSE 9090
 

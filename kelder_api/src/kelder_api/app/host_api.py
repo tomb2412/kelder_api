@@ -18,7 +18,7 @@ load_dotenv()
 ADMIN_USER = os.getenv("HOST_API_USERNAME")
 ADMIN_PASS = os.getenv("HOST_API_PASSWORD")
 
-RESTART_SCRIPT = Path(__file__).resolve().parents[3] / "restart_compose.sh"
+RESTART_SCRIPT = Path(__file__).resolve().parents[3] / "scripts" / "restart_compose.sh"
 LOG_DIR = Path("/logs")
 
 

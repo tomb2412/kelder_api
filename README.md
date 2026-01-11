@@ -15,7 +15,7 @@ For run scripts and developer setup notes, see the API run guide: [kelder_api/RE
 
 ## Main App Entry Point
 
-The main app entry point is managed via the scripts in `kelder_api/start_app.sh` and `kelder_api/stop_app.sh`:
+The main app entry point is managed via the scripts in `kelder_api/scripts/start_app.sh` and `kelder_api/scripts/stop_app.sh`:
 
 - `start_app.sh` optionally builds the host restart API image, starts the `host_api` container, and brings up the Docker Compose stack.
 - `stop_app.sh` stops and removes the `host_api` container, brings the Compose stack down, and can optionally prune Docker resources.

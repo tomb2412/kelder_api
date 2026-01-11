@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$PROJECT_ROOT"
+
 HOST_API_CONTAINER="host_api"
 PORT=9090
 PRUNE="${PRUNE:-false}"
 
-# Allow an optional flag: ./stop_app.sh --prune
+# Allow an optional flag: ./scripts/stop_app.sh --prune
 if [[ "${1:-}" == "--prune" || "${1:-}" == "-p" ]]; then
     PRUNE="true"
     shift
