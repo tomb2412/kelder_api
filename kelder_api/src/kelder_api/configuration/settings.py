@@ -140,6 +140,15 @@ class Drift(BaseSettings):
     model_config = model_config
 
 
+class ExternalAPISettings(BaseSettings):
+    tidal_api_key: str = Field(
+        description="Subscription key for the Admiralty API",
+        validation_alias=AliasChoices("TIDAL_API_KEY"),
+    )
+
+    model_config = model_config
+
+
 class HostAPISettings(BaseSettings):
     restart_url: str = Field(
         description="URL for the host endpoint",
@@ -187,6 +196,9 @@ class Settings(BaseModel):
         description="Inference service configuration", default_factory=Inference
     )
     drift: Drift = Field(description="Drift calculator config", default_factory=Drift)
+    external_apis: ExternalAPISettings = Field(
+        description="External API credentials", default_factory=ExternalAPISettings
+    )
     host_api: HostAPISettings = Field(
         description="Host restart API configuration", default_factory=HostAPISettings
     )

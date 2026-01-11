@@ -5,6 +5,7 @@ from typing import List
 from async_lru import alru_cache
 from httpx import AsyncClient
 
+from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.routes.tidal_measurements.models import TideInfo
 
 PORTSMOUTH_STATION_ID = "0065"
@@ -50,10 +51,11 @@ async def get_tide_predictions(date: date) -> List[TideInfo]:
     """
     logger.debug(f"Requesting tidal prediction on: {date.strftime('%d/%m/%Y')}")
     tidal_events = []
+    tidal_api_key = get_settings().external_apis.tidal_api_key
     async with AsyncClient() as client:
         response = await client.get(
             f"https://admiraltyapi.azure-api.net/uktidalapi/api/V1/Stations/{PORTSMOUTH_STATION_ID}/TidalEvents?duration=7",
-            headers={"Ocp-Apim-Subscription-Key": "cc5e647a8e5e4353b622a62abb220432"},
+            headers={"Ocp-Apim-Subscription-Key": tidal_api_key},
         )
 
     for tidal_event in response.json():
