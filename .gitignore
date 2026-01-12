@@ -2,3 +2,4 @@ kelder_api/src/kelder_api/app/__pycache__/main.cpython-312.pyc
 *.tar
 kelder_api/uvicorn.pid
 kelder_api/journey_history/*
+kelder_api/raw_maps/*
