@@ -33,6 +33,38 @@ RETURN
   polygonCount
 """
 
+CREATE_CARDNAL_MARK = """
+// 1) Create danger mark (POINT)
+CREATE (dm:Mark {
+    name: $name,
+    type: $direction + ' CARDINAL',
+    light: $light,
+    latitude: $coordinates[1],
+    longitude: $coordinates[0]
+})
+SET dm.location = point(dm)
+
+WITH dm
+
+CALL spatial.addNodes($point_layer, [dm])
+YIELD count AS pointCount
+
+CREATE (dz:dangerZone {
+    name: $name,
+    type: $direction + ' CARDINAL',
+    danger_zone: 'POLYGON((' + $danger_zone + '))'
+})
+
+WITH dm, dz, pointCount
+
+CALL spatial.addNodes($danger_layer, [dz])
+YIELD count AS polygonCount
+
+RETURN
+  pointCount,
+  polygonCount
+"""
+
 CREATE_SPECIAL_PURPOSE_MARK = """
 CREATE (n:Mark {
     name: $name,
@@ -86,8 +118,7 @@ WHERE NOT EXISTS {
     CALL spatial.intersects('danger_zones', edgeWkt)
     YIELD node as d
     WITH d
-    WHERE d.type = 'DANGER'
-      AND d.danger_zone IS NOT NULL
+    WHERE d.danger_zone IS NOT NULL
     RETURN d
   }
 MERGE (m1)-[:SAFE_EDGE]->(m2)

@@ -1,5 +1,3 @@
-import math
-
 from typing import List
 
 from neo4j import GraphDatabase
@@ -10,13 +8,16 @@ from tests.notebooks.graph_ingestion.queries import (
     ADD_DANGER_LAYERS,
     CREATE_SPECIAL_PURPOSE_MARK,
     CREATE_DANGER_MARK,
+    CREATE_CARDNAL_MARK,
     CREATE_GENERAL_MARK_BATCH,
     DELETE_ALL_NODES,
     CREATE_SAFE_EDGES
 )
 from tests.notebooks.graph_ingestion.utils import (
     process_special_purpose,
-    process_isolated_danger
+    process_isolated_danger,
+    process_cardinal_marks,
+    build_danger_zone_coords
 )
 
 class Neo4jClient():
@@ -53,53 +54,56 @@ class Neo4jClient():
                 mark=marks,
             )
             added = result.single()["count"]
-        
-    def create_danger_mark(
+
+    def injest_cardinal_mark(
         self,
-        mark: dict,
+        feature: dict,
         radius_deg: float = 0.0018,
-        segments: int = 16,
     ):
-        """
-        Generate a ring geometry around a point for Neo4j Spatial.
-
-        :param mark: cleaned dict with mark properties name and coordinates.
-        :param radius_deg: Radius in degrees (hardcoded approximation)
-        :param segments: Number of segments in the ring
-        :return: GeoJSON geometry dict
-        """
-
-        coords = []
-
-        for i in range(segments):
-            # RELIES ON FORMATE LAT,LON - IN THAT SPECIFIC ORDER!
-            angle = 2 * math.pi * i / segments
-            x = mark["coordinates"][1] + radius_deg * math.cos(angle)
-            y = mark["coordinates"][0] + radius_deg * math.sin(angle)
-            coords.append([x, y])
-
-        # Close the ring
-        coords.append(coords[0])
-
-        coords_string = [f"{lon} {lat}" for lat, lon in coords]
-        coords_string = str(coords_string).replace(
-            "[","").replace(
-            "]","").replace(
-            "\"", "").replace(
-            "\'","")
-        
-        print(coords_string)
-        print(mark["coordinates"])
+        processed_features = process_cardinal_marks(feature, "buoy_cardinal")
+        coords_string = build_danger_zone_coords(
+            coordinates=processed_features["coordinates"],
+            radius_deg=radius_deg,
+            cardinal=processed_features["catagory"]
+        )
 
         with self.create_session() as session:
             result = session.run(
-                CREATE_DANGER_MARK,
-                name=mark["name"],
-                coordinates=mark["coordinates"],
+                CREATE_CARDNAL_MARK,
+                name=processed_features["name"],
+                direction=processed_features["catagory"].upper(),
+                light=processed_features['light'],
+                coordinates=processed_features["coordinates"],
                 danger_zone=coords_string,
                 point_layer='solent_marks',
                 danger_layer='danger_zones'
             )
+        
+    def injest_isolated_danger_mark(
+        self,
+        feature: dict,
+        radius_deg: float = 0.0018,
+        segments: int = 16,
+    ):
+        processed_features = process_isolated_danger(feature)
+        coords_string = build_danger_zone_coords(
+            coordinates=processed_features["coordinates"],
+            radius_deg=radius_deg,
+            segments=segments,
+        )
+
+        with self.create_session() as session:
+            try:
+                result = session.run(
+                    CREATE_DANGER_MARK,
+                    name=processed_features["name"],
+                    coordinates=processed_features["coordinates"],
+                    danger_zone=coords_string,
+                    point_layer='solent_marks',
+                    danger_layer='danger_zones'
+                )
+            except KeyError as e:
+                print(e)
             
 
     def injest_special_purpose_mark(self, feature: dict):
@@ -119,13 +123,6 @@ class Neo4jClient():
             except KeyError as e:
                 print(e)
 
-    def injest_isolated_danger_mark(self, feature: dict):
-        processed_features = process_isolated_danger(feature)
-        try: 
-            self.create_danger_mark(processed_features)
-        except KeyError as e:
-            print(e)
-
     def delete_all_nodes(self):
         with self.create_session() as session:
             try:
@@ -140,7 +137,7 @@ class Neo4jClient():
             try:
                 result = session.run(
                     CREATE_SAFE_EDGES,
-                    max_distance_km = 1,
+                    max_distance_km = 2,
                 )
                 return result.single()
             except Exception as e:
