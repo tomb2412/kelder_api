@@ -6,6 +6,8 @@ from contextlib import contextmanager
 from tests.notebooks.graph_ingestion.queries import (
     ADD_NATIVE_LAYER,
     ADD_DANGER_LAYERS,
+    ADD_COASTLINE_LAYER,
+    CREATE_COASTLINE,
     CREATE_SPECIAL_PURPOSE_MARK,
     CREATE_DANGER_MARK,
     CREATE_CARDNAL_MARK,
@@ -17,7 +19,8 @@ from tests.notebooks.graph_ingestion.utils import (
     process_special_purpose,
     process_isolated_danger,
     process_cardinal_marks,
-    build_danger_zone_coords
+    build_danger_zone_coords,
+    process_coastline
 )
 
 class Neo4jClient():
@@ -26,6 +29,7 @@ class Neo4jClient():
         self.layers = {
             "solent_marks": ADD_NATIVE_LAYER,
             "danger_zones": ADD_DANGER_LAYERS,
+            "coastlines": ADD_COASTLINE_LAYER,
         }
 
     @contextmanager
@@ -139,6 +143,22 @@ class Neo4jClient():
                     CREATE_SAFE_EDGES,
                     max_distance_km = 2,
                 )
-                return result.single()
+                return result.data()
             except Exception as e:
                 print(e)
+
+    def injest_coastline(self, feature: dict):
+        processed_features = process_coastline(feature)
+        with self.create_session() as session:
+            try:
+                result = session.run(
+                    CREATE_COASTLINE,
+                    name = processed_features["name"],
+                    type = processed_features["type"],
+                    linestring = processed_features["linestring"],
+                    coastline_layer = "coastlines",
+                )
+                assert result.data()
+            except Exception as e:
+                print(e)
+                raise

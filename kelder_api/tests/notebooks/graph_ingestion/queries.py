@@ -1,5 +1,20 @@
 ADD_NATIVE_LAYER = """CALL spatial.addNativePointLayer($layer_name)"""
 ADD_DANGER_LAYERS = """CALL spatial.addLayer($layer_name, 'wkt', 'danger_zone');"""
+ADD_COASTLINE_LAYER = """CALL spatial.addLayer($layer_name, 'wkt', 'coastline');"""
+
+CREATE_COASTLINE = """
+CREATE (coastline:Coastline {
+    name: $name,
+    type: $type,
+    coastline: 'LINESTRING(' + $linestring + ')'
+})
+WITH coastline
+
+CALL spatial.addNodes($coastline_layer, [coastline])
+YIELD count as coastlineCount
+
+RETURN coastlineCount
+"""
 
 CREATE_DANGER_MARK = """
 // 1) Create danger mark (POINT)
@@ -121,6 +136,14 @@ WHERE NOT EXISTS {
     WHERE d.danger_zone IS NOT NULL
     RETURN d
   }
+WITH m1, m2, distance
+WHERE NOT EXISTS {
+    CALL spatial.intersects('coastlines', edgeWkt)
+    YIELD node as cl
+    WITH cl
+    WHERE cl.coastline IS NOT NULL
+    RETURN cl
+}
 MERGE (m1)-[:SAFE_EDGE]->(m2)
 RETURN 
     m1.name as from,

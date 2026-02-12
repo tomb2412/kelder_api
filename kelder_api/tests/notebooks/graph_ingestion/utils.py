@@ -2,8 +2,15 @@ import math
 
 from shapely.geometry import shape
 
+def _parse_wkt_coordinates(
+    coordinates: list[list[float, float]]
+) -> str:
+    coords_string = [f"{lon} {lat}" for lon, lat in coordinates]
+    return str(coords_string).replace("[", "").replace("]", "").replace("\"", "").replace("\'", "")
+
+
 def build_danger_zone_coords(
-    coordinates: list[float],
+    coordinates: list[list[float, float]],
     radius_deg: float = 0.0018,
     segments: int = 32,
     cardinal: str | None = None,
@@ -48,10 +55,7 @@ def build_danger_zone_coords(
     # Close the ring
     coords.append(coords[0])
 
-    coords_string = [f"{lon} {lat}" for lon, lat in coords]
-    coords_tuple = [(lon, lat) for lon, lat in coords]
-    print(coords_tuple)
-    return str(coords_string).replace("[", "").replace("]", "").replace("\"", "").replace("\'", "")
+    return _parse_wkt_coordinates(coords)
 
 def process_harbour(feature: dict) -> dict:
     # print(feature)
@@ -190,3 +194,26 @@ def process_isolated_danger(feature: dict) -> dict:
     coordinates = feature["geometry"]["coordinates"]
 
     return {"name": name, "type": "isolated_danger", "coordinates": coordinates}
+
+def process_coastline(feature: dict) -> dict:
+    try:
+        name = feature["properties"]["name"]
+    except KeyError:
+        name = None
+
+    # island, islet, mainland
+    try:
+        type = feature["properties"]["place"]
+    except KeyError:
+        type = 'mainland'
+
+    if feature["geometry"]["type"]=="Polygon":
+        coordinates = _parse_wkt_coordinates(feature["geometry"]["coordinates"][0])
+    elif feature["geometry"]["type"]=="LineString":
+        coordinates = _parse_wkt_coordinates(feature["geometry"]["coordinates"])
+    else:
+        raise TypeError("Unsupported coordinate WKT type")
+
+
+    return {"name": name, "type": type, "linestring": coordinates}
+    
