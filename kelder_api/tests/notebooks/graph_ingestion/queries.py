@@ -80,7 +80,7 @@ RETURN
   polygonCount
 """
 
-CREATE_SPECIAL_PURPOSE_MARK = """
+CREATE_GENERAL_MARK = """
 CREATE (n:Mark {
     name: $name,
     type: $type,
@@ -149,4 +149,18 @@ RETURN
     m1.name as from,
     m2.name as to,
     distance as distanceKm
+"""
+
+CREATE_HARBOUR = """
+CREATE (n:Harbour {
+    name: $name,
+    latitude: $coordinates[1],
+    longitude: $coordinates[0]
+})
+SET
+    n.location=point(n)
+WITH n AS node
+CALL spatial.addNodes($layer_name, [node])
+YIELD count
+RETURN count;
 """

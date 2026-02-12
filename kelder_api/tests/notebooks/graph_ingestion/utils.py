@@ -216,4 +216,56 @@ def process_coastline(feature: dict) -> dict:
 
 
     return {"name": name, "type": type, "linestring": coordinates}
-    
+
+def process_lateral_marks(feature: dict) -> dict:
+    try:
+        name = feature["properties"]["seamark:name"]
+    except KeyError:
+        name = None
+
+    coordinates = feature["geometry"]["coordinates"]
+
+    try:
+        catagory = feature["properties"][f"seamark:buoy_lateral:category"]
+    except KeyError:
+        colour = feature["properties"][f"seamark:buoy_lateral:colour"]
+        catagory = "port" if colour == "red" else "green"
+
+    try:
+        light_character = feature["properties"]["seamark:light:character"]
+        light_colour = feature["properties"]["seamark:light:colour"]
+        light_group = feature["properties"]["seamark:light:group"]
+        light_period = feature["properties"]["seamark:light:period"]
+
+        light_characteristic = f"{light_character}-{light_colour}-group:{light_group}-period:{light_period}"
+
+    except KeyError:
+        light_characteristic = None
+
+    return {
+        "name": name,
+        "type": f"{catagory}_lateral_mark",
+        "coordinates": coordinates,
+        "light": light_characteristic,
+    }
+
+
+def process_harbour(feature: dict) -> dict:
+    # print(feature)
+    try:
+        name = feature["properties"]["name"]
+    except KeyError:
+        name = None
+    # get the lat and long
+    geometry = shape(feature["geometry"])
+
+    centroid = geometry.centroid
+    latitude = centroid.y
+    longitude = centroid.x
+
+    try:
+        type = feature["properties"]["seamark:harbour:category"]
+    except KeyError:
+        type = None
+
+    return {"name": name, "type": type, "coordinates": [longitude, latitude]}

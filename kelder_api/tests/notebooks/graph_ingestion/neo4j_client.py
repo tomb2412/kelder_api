@@ -8,19 +8,22 @@ from tests.notebooks.graph_ingestion.queries import (
     ADD_DANGER_LAYERS,
     ADD_COASTLINE_LAYER,
     CREATE_COASTLINE,
-    CREATE_SPECIAL_PURPOSE_MARK,
+    CREATE_GENERAL_MARK,
     CREATE_DANGER_MARK,
     CREATE_CARDNAL_MARK,
     CREATE_GENERAL_MARK_BATCH,
     DELETE_ALL_NODES,
-    CREATE_SAFE_EDGES
+    CREATE_SAFE_EDGES,
+    CREATE_HARBOUR
 )
 from tests.notebooks.graph_ingestion.utils import (
     process_special_purpose,
     process_isolated_danger,
     process_cardinal_marks,
     build_danger_zone_coords,
-    process_coastline
+    process_coastline,
+    process_lateral_marks,
+    process_harbour,
 )
 
 class Neo4jClient():
@@ -116,7 +119,7 @@ class Neo4jClient():
         with self.create_session() as session:
             try:
                 result = session.run(
-                    CREATE_SPECIAL_PURPOSE_MARK,
+                    CREATE_GENERAL_MARK,
                     layer_name='solent_marks',
                     name = processed_features["name"],
                     type = processed_features["type"],
@@ -162,3 +165,36 @@ class Neo4jClient():
             except Exception as e:
                 print(e)
                 raise
+
+    def injest_lateral_mark(self, feature: dict):
+        processed_features = process_lateral_marks(feature)
+
+        with self.create_session() as session:
+            try:
+                result = session.run(
+                    CREATE_GENERAL_MARK,
+                    layer_name='solent_marks',
+                    name = processed_features["name"],
+                    type = processed_features["type"],
+                    light = processed_features["light"],
+                    coordinates = processed_features["coordinates"]
+                )
+                added = result.data()
+            except KeyError as e:
+                print(e)
+
+    def injest_harbours(self, feature: dict):
+        processed_features = process_harbour(feature)
+
+        with self.create_session() as session:
+            try:
+                result = session.run(
+                    CREATE_HARBOUR,
+                    layer_name='solent_marks',
+                    name = processed_features["name"],
+                    coordinates = processed_features["coordinates"]
+                )
+                added = result.data()
+            except KeyError as e:
+                print(e)
+            
