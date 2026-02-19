@@ -14,7 +14,8 @@ from tests.notebooks.graph_ingestion.queries import (
     CREATE_GENERAL_MARK_BATCH,
     DELETE_ALL_NODES,
     CREATE_SAFE_EDGES,
-    CREATE_HARBOUR
+    CREATE_HARBOUR,
+    CREATE_WRECK
 )
 from tests.notebooks.graph_ingestion.utils import (
     process_special_purpose,
@@ -24,6 +25,7 @@ from tests.notebooks.graph_ingestion.utils import (
     process_coastline,
     process_lateral_marks,
     process_harbour,
+    process_wreck,
 )
 
 class Neo4jClient():
@@ -197,4 +199,26 @@ class Neo4jClient():
                 added = result.data()
             except KeyError as e:
                 print(e)
+
+    def injest_wreck(
+        self,
+        feature: dict,
+        radius_deg: float = 0.0018,
+        segments: int = 16,
+    ):
+        processed_features = process_wreck(feature)
+        with self.create_session() as session:
+            try:
+                result = session.run(
+                    CREATE_WRECK,
+                    name=processed_features["name"],
+                    type="WRECK",
+                    coordinates=processed_features["coordinates"],
+                    danger_zone=processed_features["danger_zone"],
+                    point_layer='solent_marks',
+                    danger_layer='danger_zones'
+                )
+            except KeyError as e:
+                print(e)
+    
             

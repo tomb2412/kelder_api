@@ -152,8 +152,9 @@ RETURN
 """
 
 CREATE_HARBOUR = """
-CREATE (n:Harbour {
+CREATE (n:Mark {
     name: $name,
+    type: 'Habour',
     latitude: $coordinates[1],
     longitude: $coordinates[0]
 })
@@ -163,4 +164,35 @@ WITH n AS node
 CALL spatial.addNodes($layer_name, [node])
 YIELD count
 RETURN count;
+"""
+
+CREATE_WRECK = """
+// 1) Create wreck (POINT)
+CREATE (dm:Mark {
+    name: $name,
+    type: $type,
+    latitude: $coordinates[1],
+    longitude: $coordinates[0]
+})
+SET dm.location = point(dm)
+
+WITH dm
+
+CALL spatial.addNodes($point_layer, [dm])
+YIELD count AS pointCount
+
+CREATE (dz:dangerZone {
+    name: $name,
+    type: 'WRECK',
+    danger_zone: 'POLYGON((' + $danger_zone + '))'
+})
+
+WITH dm, dz, pointCount
+
+CALL spatial.addNodes($danger_layer, [dz])
+YIELD count AS polygonCount
+
+RETURN
+  pointCount,
+  polygonCount
 """

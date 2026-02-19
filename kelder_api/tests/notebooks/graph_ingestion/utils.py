@@ -269,3 +269,29 @@ def process_harbour(feature: dict) -> dict:
         type = None
 
     return {"name": name, "type": type, "coordinates": [longitude, latitude]}
+
+def process_wreck(feature: dict) -> dict:
+    try:
+        name = feature["properties"]["name"]
+    except KeyError:
+        name = None
+
+    geometry = shape(feature["geometry"])
+
+    centroid = geometry.centroid
+    latitude = centroid.y
+    longitude = centroid.x
+
+    if feature["geometry"]["type"] == "Polygon":
+        polygon = _parse_wkt_coordinates(feature["geometry"]["coordinates"][0])
+    elif feature["geometry"]["type"] == "LineString":
+        polygon = _parse_wkt_coordinates(feature["geometry"]["coordinates"])
+    elif feature["geometry"]["type"] == "Point":
+        polygon = build_danger_zone_coords([latitude, longitude])
+    else:
+        raise TypeError(f"Unsupported wreck type {feature["properties"]}")
+    return {
+        "name": name,
+        "coordinates": [latitude, longitude],
+        "danger_zone": polygon  
+    }
