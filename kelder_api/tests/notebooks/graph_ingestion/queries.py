@@ -2,6 +2,14 @@ ADD_NATIVE_LAYER = """CALL spatial.addNativePointLayer($layer_name)"""
 ADD_DANGER_LAYERS = """CALL spatial.addLayer($layer_name, 'wkt', 'danger_zone');"""
 ADD_COASTLINE_LAYER = """CALL spatial.addLayer($layer_name, 'wkt', 'coastline');"""
 
+CREATE_GRAPH = """
+CALL gds.graph.project(
+  '$graph_name',
+  {Mark: {properties: ['latitude','longitude']}},
+  {SAFE_EDGE: {type: 'SAFE_EDGE', orientation: 'UNDIRECTED', properties: 'distance_km'}}
+);
+"""
+
 CREATE_COASTLINE = """
 CREATE (coastline:Coastline {
     name: $name,
@@ -144,11 +152,12 @@ WHERE NOT EXISTS {
     WHERE cl.coastline IS NOT NULL
     RETURN cl
 }
-MERGE (m1)-[:SAFE_EDGE]->(m2)
+MERGE (m1)-[r:SAFE_EDGE]->(m2)
+SET r.distance_km = distance
 RETURN 
     m1.name as from,
     m2.name as to,
-    distance as distanceKm
+    r.distance as distanceKm
 """
 
 CREATE_HARBOUR = """
@@ -195,4 +204,25 @@ YIELD count AS polygonCount
 RETURN
   pointCount,
   polygonCount
+"""
+
+A_STAR_ROUTE_OPTIMISATION_WITH_NAMES = """
+MATCH (source:Mark {name: $name_from}), (target:Mark {name: $name_to})
+CALL gds.shortestPath.astar.stream($gds_graph, {
+    sourceNode: source,
+    targetNode: target,
+    latitudeProperty: 'latitude',
+    longitudeProperty: 'longitude',
+    relationshipWeightProperty: 'distance_km'
+})
+YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
+RETURN
+    index,
+    gds.util.asNode(sourceNode).name AS sourceNodeName,
+    gds.util.asNode(targetNode).name AS targetNodeName,
+    totalCost,
+    [nodeId IN nodeIds | gds.util.asNode(nodeId).name] AS nodeNames,
+    costs,
+    nodes(path) as path
+ORDER BY index
 """

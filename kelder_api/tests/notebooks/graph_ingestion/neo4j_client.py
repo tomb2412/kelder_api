@@ -4,6 +4,7 @@ from neo4j import GraphDatabase
 from contextlib import contextmanager
 
 from tests.notebooks.graph_ingestion.queries import (
+    CREATE_GRAPH,
     ADD_NATIVE_LAYER,
     ADD_DANGER_LAYERS,
     ADD_COASTLINE_LAYER,
@@ -15,7 +16,8 @@ from tests.notebooks.graph_ingestion.queries import (
     DELETE_ALL_NODES,
     CREATE_SAFE_EDGES,
     CREATE_HARBOUR,
-    CREATE_WRECK
+    CREATE_WRECK,
+    A_STAR_ROUTE_OPTIMISATION_WITH_NAMES
 )
 from tests.notebooks.graph_ingestion.utils import (
     process_special_purpose,
@@ -27,6 +29,8 @@ from tests.notebooks.graph_ingestion.utils import (
     process_harbour,
     process_wreck,
 )
+
+GDS_GRAPH_NAME = 'solent_graph'
 
 class Neo4jClient():
     def __init__(self):
@@ -47,6 +51,10 @@ class Neo4jClient():
             finally:
                 self.driver.close
     
+    def project_spatial_to_graph(self) -> None:
+        with self.create_session() as session:
+            session.run(CREATE_GRAPH, graph_name = GDS_GRAPH_NAME)
+
     def create_layers(self, name = None):
         with self.create_session() as session:
             for layer_name, layer_query in self.layers.items():
@@ -222,3 +230,21 @@ class Neo4jClient():
                 print(e)
     
             
+    def a_star_by_name(
+        self,
+        name_from,
+        name_to
+    ):
+        with self.create_session() as session:
+            try: 
+                result = session.run(
+                    A_STAR_ROUTE_OPTIMISATION_WITH_NAMES,
+                    name_from=name_from,
+                    name_to=name_to,
+                    gds_graph=GDS_GRAPH_NAME
+                )
+            except Exception as e:
+                print(e)
+                raise
+            else:
+                return result.data()
