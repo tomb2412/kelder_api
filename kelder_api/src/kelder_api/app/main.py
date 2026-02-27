@@ -38,6 +38,7 @@ origins = [
     "http://localhost:5173",  # Vite dev server
     "http://192.168.1.167:5173",
     "http://192.168.1.131:5173",
+    "https://www.sailkelder.uk"
 ]
 
 setup_logging(component="api")
