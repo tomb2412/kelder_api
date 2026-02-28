@@ -33,4 +33,5 @@ def restart_container():
         r.raise_for_status()
         return {"status": "ok", "output": r.text}
     except Exception as e:
+        logger.error(f"Failed to call host restart API: {e}")
         raise HTTPException(500, f"Failed to call host restart API: {e}")

@@ -157,6 +157,9 @@ class RedisClient:
         else:
             async with self.get_connection() as redis:
                 for set_name in RedisSetNames:
+                    if set_name == RedisSetNames.VESSEL_STATE:
+                        continue
+
                     await redis.zremrangebyscore(
                         f"sensor:ts:{set_name.value}", "-inf", end_datetime.timestamp()
                     )
