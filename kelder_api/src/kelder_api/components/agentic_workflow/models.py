@@ -1,4 +1,3 @@
-from dataclasses import field
 from enum import Enum
 from typing import Awaitable, Callable, List
 
@@ -45,20 +44,20 @@ class Node(BaseModel):
         description="The required input for the node type of what the node needs to do."
     )
     node_output: str | None = Field(
-        description="Completed by the tool as a summary of their tool."
+        default=None,
+        description="Completed by the tool as a summary of their tool.",
     )
 
 
-# @dataclass
 class State(BaseModel):
     redis_client: RedisClient
-    user_message: str | None = field(default=None)
-    message_history: list[ModelMessage] = field(default_factory=list)
+    user_message: str | None = Field(default=None)
+    message_history: list[ModelMessage] = Field(default_factory=list)
 
-    workflow_plan: List[Node] = field(default_factory=list)
+    workflow_plan: List[Node] = Field(default_factory=list)
     job_count: int = 0
 
-    passage_plan: PassagePlan | None = field(default=None)
+    passage_plan: PassagePlan | None = Field(default=None)
     progress_callback: Callable[[str], Awaitable[None]] | None = Field(
         default=None, exclude=True
     )

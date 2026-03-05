@@ -72,6 +72,11 @@ async def stream_chat(user_prompt: str, agent_workflow: AgentWorkflow):
         for chunk in error_stream("Agent workflow failed", message_id=message_id):
             yield chunk
         return
+    finally:
+        if not graph_future.done():
+            graph_future.cancel()
+        if not queue_future.done():
+            queue_future.cancel()
 
     # Stream the workflow response in chunks to match existing SSE expectations
     for index in range(0, len(workflow_response), chunk_size):

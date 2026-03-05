@@ -1,5 +1,6 @@
 import json
 import logging
+from pathlib import Path
 from typing import Any, List
 
 from rtree import index
@@ -30,16 +31,17 @@ async def notify_progress(state: State, node_name: str):
     await callback(node_name)
 
 
-def load_map(map_path: str) -> list[dict[str, Any]]:
+def load_map(map_path: Path) -> list[dict[str, Any]]:
     """Load seamark metadata from disk."""
     try:
-        with map.open() as marks_file:
+        with map_path.open() as marks_file:
             return json.load(marks_file)
     except FileNotFoundError:
-        logger.warning("Marks file %s was not found", map)
-        raise
+        logger.warning("Map file %s was not found", map_path)
+        return []
     except json.JSONDecodeError:
-        logger.exception("Marks file %s contains invalid JSON", map)
+        logger.exception("Map file %s contains invalid JSON", map_path)
+        return []
 
 
 def build_marks_index(marks: list[dict[str, Any]]):
