@@ -25,7 +25,7 @@ async def test_agent_workflow_returns_direct_chat_response(
     chatbot_responses(ChatResponse(message="Hello skipper"))
     workflow = AgentWorkflow(redis_client=mock_redis_client)
 
-    result = await workflow.run("Hi")
+    result = await workflow.run("test_user", "Hi")
 
     assert result == "Hello skipper"
     assert fake_reasoning.calls == []
@@ -65,6 +65,7 @@ async def test_agent_workflow_executes_reasoning_plan_and_reports_progress(
 
     workflow = AgentWorkflow(redis_client=mock_redis_client)
     result = await workflow.run(
+        "test_user",
         "Plan a short hop from Cowes to Southampton",
         progress_callback=progress_callback,
     )

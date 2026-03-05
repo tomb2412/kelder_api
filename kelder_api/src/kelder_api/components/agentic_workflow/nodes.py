@@ -101,10 +101,6 @@ class BuildPassageNode(BaseNode[State]):
         logger.debug("Passage planing agent called")
         await notify_progress(ctx.state, "Generating a passage plan")
 
-        MARKS_DATA = load_map(MARKS_FILE)
-        SEA_DATA = load_map(SOLENT_COASTLINE_FILE)
-        MARKS_INDEX = build_marks_index(MARKS_DATA)
-
         prompt = (
             f"Users message: {ctx.state.user_message}\n"
             f"Task description: {self.passage_plan_description}"
@@ -123,17 +119,26 @@ class BuildPassageNode(BaseNode[State]):
         if len(tidal_nodes) > 0:
             prompt += f"Latest tidal analysis: {tidal_nodes[-1].node_output}"
 
-        result = await passage_plan_agent.run(
-            prompt,
-            deps={
-                "redis_client": ctx.state.redis_client,
-                "marks_index": MARKS_INDEX,
-                "marks_data": MARKS_DATA,
-                "sea_boundries": SEA_DATA,
-            },
-        )
-        ctx.state.workflow_plan[ctx.state.job_count].node_output = result.output
-        ctx.state.passage_plan = result.output
+        try:
+            MARKS_DATA = load_map(MARKS_FILE)
+            SEA_DATA = load_map(SOLENT_COASTLINE_FILE)
+            MARKS_INDEX = build_marks_index(MARKS_DATA)
+            result = await passage_plan_agent.run(
+                prompt,
+                deps={
+                    "redis_client": ctx.state.redis_client,
+                    "marks_index": MARKS_INDEX,
+                    "marks_data": MARKS_DATA,
+                    "sea_boundries": SEA_DATA,
+                },
+            )
+            ctx.state.workflow_plan[ctx.state.job_count].node_output = result.output
+            ctx.state.passage_plan = result.output
+        except Exception:
+            logger.exception("Passage plan agent failed")
+            ctx.state.workflow_plan[ctx.state.job_count].node_output = (
+                "Passage planning failed — could not generate a route."
+            )
         ctx.state.job_count += 1
 
         return ReasoningAgent()
@@ -163,9 +168,14 @@ class TidalSearchNode(BaseNode[State]):
             f"Task description: {self.input_prompt}"
         )
 
-        result = await tidal_agent.run(prompt)
-
-        ctx.state.workflow_plan[ctx.state.job_count].node_output = result.output
+        try:
+            result = await tidal_agent.run(prompt)
+            ctx.state.workflow_plan[ctx.state.job_count].node_output = result.output
+        except Exception:
+            logger.exception("Tidal agent failed")
+            ctx.state.workflow_plan[ctx.state.job_count].node_output = (
+                "Tidal data unavailable — could not retrieve tidal information."
+            )
         ctx.state.job_count += 1
 
         return ReasoningAgent()

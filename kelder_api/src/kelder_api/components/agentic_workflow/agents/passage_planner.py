@@ -7,7 +7,6 @@ from pydantic_ai import Agent, RunContext
 
 from src.kelder_api.components.agentic_workflow.agents.models import PassagePlan
 from src.kelder_api.components.agentic_workflow.agents.tools import save_passage_plan
-from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.velocity.utils import (
     haversine,
 )
@@ -43,12 +42,14 @@ system_prompt = textwrap.dedent(
     *How to select a waypoint*
     - At the begining of the journey search for marks near the start position.
      Use a marina or named bouy or beacon if possible.
-    - After identifying a start mark. Search again for a similar
+    - After identifying a start mark, search again for a similar mark near the
+     destination, then build intermediate waypoints linking them via safe pilotage
+     marks along the route.
 """
 ).strip()
 
 passage_plan_agent = Agent(
-    "gpt-5-nano",
+    "openai:gpt-4o-mini",
     system_prompt=system_prompt,
     output_type=PassagePlan,
 )
@@ -56,7 +57,7 @@ passage_plan_agent = Agent(
 
 @passage_plan_agent.tool
 async def save_passage_plan_tool(
-    ctx: RunContext[RedisClient], passage_plan: PassagePlan
+    ctx: RunContext[dict[str, Any]], passage_plan: PassagePlan
 ) -> bool:
     """Persist the passage plan to display to the user"""
     return await save_passage_plan(passage_plan, ctx.deps["redis_client"])
@@ -65,16 +66,16 @@ async def save_passage_plan_tool(
 @passage_plan_agent.tool
 def calculate_distance_between_waypoints(
     ctx: RunContext,
-    start_latitude: int = Field(
+    start_latitude: float = Field(
         description="The start waypoint latitude in decimal degrees"
     ),
-    start_longitude: int = Field(
+    start_longitude: float = Field(
         description="The start waypoint longitude in decimal degrees"
     ),
-    end_latitude: int = Field(
+    end_latitude: float = Field(
         description="The end waypoint latitude in decimal degrees"
     ),
-    end_longitude: int = Field(
+    end_longitude: float = Field(
         description="The end waypoint longitude in decimal degrees"
     ),
 ):
@@ -132,7 +133,8 @@ def find_nearest_marks(
     )
 
     if len(results) == 0:
-        raise RuntimeError("No marks could be found for the supplied query")
+        logger.warning("No marks found near %s, %s", latitude, longitude)
+        return "No marks found near this position — try a nearby coordinate."
 
-    print(f"Identified marks \n{results}")
+    logger.debug("Identified marks near %s, %s: %s", latitude, longitude, results)
     return results

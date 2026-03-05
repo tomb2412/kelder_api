@@ -148,6 +148,7 @@ class DummyRedisClient:
             "PASSAGE_PLAN": [{"summary": "Sample passage"}],
             "GPS": [gps_record],
         }
+        self._values: Dict[str, str] = {}
 
     async def _close_connection_pool(self) -> None:  # pragma: no cover - defensive
         self.closed = True
@@ -181,6 +182,12 @@ class DummyRedisClient:
             yield self
         finally:
             return
+
+    async def write_value(self, key: str, value: str) -> None:
+        self._values[key] = value
+
+    async def read_value(self, key: str) -> str | None:
+        return self._values.get(key)
 
     async def delete(self, key: str) -> None:
         self.sorted_sets.pop(key, None)
@@ -348,14 +355,15 @@ class FakeStream:
 
 class FakeAgentWorkflow:
     def __init__(self, *_, **__):
-        self.state = SimpleNamespace(
-            message_history=[], workflow_plan=[], job_count=0, passage_plan=None
-        )
+        pass
 
-    async def run(self, user_message: str, progress_callback=None):
+    async def run(self, user_id: str, user_message: str, progress_callback=None):
         if progress_callback is not None:
             await progress_callback("chat")
         return f"Echo: {user_message}"
+
+    async def clear_user_history(self, user_id: str) -> None:
+        pass
 
 
 @pytest.fixture()

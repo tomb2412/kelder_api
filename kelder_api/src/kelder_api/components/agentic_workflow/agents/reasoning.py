@@ -73,7 +73,7 @@ prompt = textwrap.dedent(
 ).strip()
 
 reasoning_agent = Agent(
-    model="gpt-5-mini",
+    model="openai:gpt-4o-mini",
     output_type=OchestrationPlan,
     system_prompt=prompt,
 )

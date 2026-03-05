@@ -149,4 +149,5 @@ def tidal_outputs(fake_tidal_agent: _SimpleAgentStub):
 def mock_redis_client() -> AsyncMock:
     """Provide an async mock of the redis client for GPSInterface tests."""
     client = AsyncMock(spec=RedisClient)
+    client.read_value.return_value = None
     return client

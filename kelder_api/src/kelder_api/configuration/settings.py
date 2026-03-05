@@ -166,6 +166,15 @@ class HostAPISettings(BaseSettings):
     model_config = model_config
 
 
+class ClerkSettings(BaseSettings):
+    jwks_url: str = Field(
+        description="Clerk JWKS URL. Empty string disables signature verification.",
+        validation_alias=AliasChoices("CLERK_JWKS_URL"),
+        default="",
+    )
+    model_config = model_config
+
+
 class Settings(BaseModel):
     redis: Redis = Field(
         description="Redis server connection config", default_factory=Redis
@@ -201,6 +210,9 @@ class Settings(BaseModel):
     )
     host_api: HostAPISettings = Field(
         description="Host restart API configuration", default_factory=HostAPISettings
+    )
+    clerk: ClerkSettings = Field(
+        description="Clerk authentication configuration", default_factory=ClerkSettings
     )
 
 
