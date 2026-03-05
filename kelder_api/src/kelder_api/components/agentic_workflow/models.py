@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field, computed_field
 from pydantic_ai.messages import ModelMessage
 
 from src.kelder_api.components.agentic_workflow.agents.models import PassagePlan
+from src.kelder_api.components.neo4j_client import Neo4jClient
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 
 """
@@ -51,6 +52,7 @@ class Node(BaseModel):
 
 class State(BaseModel):
     redis_client: RedisClient
+    neo4j_client: Neo4jClient | None = Field(default=None)
     user_message: str | None = Field(default=None)
     message_history: list[ModelMessage] = Field(default_factory=list)
 
