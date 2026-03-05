@@ -3,10 +3,11 @@ import json
 import logging
 from uuid import uuid4
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Depends, Request
 from starlette.responses import StreamingResponse
 
 from src.kelder_api.components.agentic_workflow.graph import AgentWorkflow
+from src.kelder_api.components.auth.clerk import get_optional_user_id
 from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.routes.inference.utils import error_stream, extract_user_prompt
 
@@ -15,7 +16,7 @@ logger = logging.getLogger("api.routes.inference")
 router = APIRouter(tags=["Agentic"])
 
 
-async def stream_chat(user_prompt: str, agent_workflow: AgentWorkflow):
+async def stream_chat(user_prompt: str, user_id: str, agent_workflow: AgentWorkflow):
     # define some stream metadata:
     chunk_size = get_settings().inference.stream_chunk_size
     logger.info("Requesting inference with chunk size %s", chunk_size)
@@ -30,7 +31,7 @@ async def stream_chat(user_prompt: str, agent_workflow: AgentWorkflow):
     async def notify(message: str):
         await queue.put({"processing_update": message})
 
-    run_coroutine = agent_workflow.run(user_prompt, notify)
+    run_coroutine = agent_workflow.run(user_id, user_prompt, notify)
 
     graph_future = asyncio.ensure_future(run_coroutine)
     queue_future = asyncio.ensure_future(queue.get())
@@ -94,8 +95,10 @@ async def stream_chat(user_prompt: str, agent_workflow: AgentWorkflow):
 
 
 @router.post("/chat_stream")
-async def StreamChatResponse(request: Request):
-    # read incoming request body minimally / adapt if you already get `request.message`
+async def StreamChatResponse(
+    request: Request,
+    user_id: str = Depends(get_optional_user_id),
+):
     print("Chat stream hit")
     body = await request.json()
     user_prompt = extract_user_prompt(body)
@@ -109,7 +112,7 @@ async def StreamChatResponse(request: Request):
             media_type="text/event-stream",
         )
     return StreamingResponse(
-        stream_chat(user_prompt, agent_workflow),
+        stream_chat(user_prompt, user_id, agent_workflow),
         media_type="text/event-stream",  # SSE
         headers={
             # required by Vercel UI data-stream protocol
@@ -120,11 +123,12 @@ async def StreamChatResponse(request: Request):
     )
 
 
-@router.post("/chat_clear")
-async def ClearChatHistory(request: Request):
+@router.get("/chat_clear")
+async def ClearChatHistory(
+    request: Request,
+    user_id: str = Depends(get_optional_user_id),
+):
     agent_workflow = request.app.state.agent_workflow
-    agent_workflow.state.message_history = []
-    agent_workflow.state.workflow_plan = []
-    agent_workflow.state.job_count = 0
-    logger.info("Cleared chat history for agent workflow")
+    await agent_workflow.clear_user_history(user_id)
+    logger.info("Cleared chat history for user %s", user_id)
     return {"status": "ok"}

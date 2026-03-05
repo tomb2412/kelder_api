@@ -204,6 +204,7 @@ class AppRoute(Enum):
         request_json={"message": "Hi"},
         is_stream=True,
     )
+    CHAT_CLEAR = RouteExpectation("GET", "/chat_clear", 200, expected_json={"status": "ok"})
 
 
 def test_app_initialisation_sets_state(app_client):
