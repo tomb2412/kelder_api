@@ -1,5 +1,6 @@
 import logging
 import textwrap
+from datetime import datetime, timezone
 from typing import Any
 
 from pydantic import Field
@@ -26,12 +27,11 @@ system_prompt = textwrap.dedent(
     1. Create a plan that includes this information:
         - Title: departure to destination (e.g. 'Cowes to Plymouth').
         - Course to steer: list continuous waypoints for the route.
-            * Use the tool: find_nearest_marks to find pilotage marks in the area.
-            * Select appropriate marks or marinas as the start and end waypoints
-             for each leg.
+            * If exact mark names are provided, use find_route_between_marks to get
+             the optimised safe route from the graph database — prefer this tool.
+            * Otherwise use find_nearest_marks to find pilotage marks in the area.
             * Only use marks from the dataset.
             * Ensure each leg is navigable with direct lines of sight.
-            * If no marks are returned try again with a different coordinate input.
         - Include departure time and ETA.
 
     2. Before responding, persist the structured plan by calling the
@@ -53,6 +53,11 @@ passage_plan_agent = Agent(
     system_prompt=system_prompt,
     output_type=PassagePlan,
 )
+
+
+@passage_plan_agent.system_prompt
+def passage_planner_datetime_prompt() -> str:
+    return f"Current UTC datetime: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')} UTC."
 
 
 @passage_plan_agent.tool
@@ -117,12 +122,15 @@ def find_nearest_marks(
     ),
 ):
     """Lookup nearby marks such as harbours, buoys, and cardinal markers."""
-    MARKS_DATA = ctx.deps["marks_data"]
-    MARKS_INDEX = ctx.deps["marks_index"]
+    MARKS_DATA = ctx.deps.get("marks_data")
+    MARKS_INDEX = ctx.deps.get("marks_index")
+
+    if not MARKS_DATA or not MARKS_INDEX:
+        return "Spatial mark index unavailable — use find_route_between_marks instead."
 
     # TODO: Import this as an agent setting
     neighbours = 20
-    print(f"Looking for {neighbours} marks near {latitude},{longitude}")
+    logger.debug("Looking for %s marks near %s, %s", neighbours, latitude, longitude)
 
     results = _neighbour_search(
         latitude=latitude,
@@ -138,3 +146,46 @@ def find_nearest_marks(
 
     logger.debug("Identified marks near %s, %s: %s", latitude, longitude, results)
     return results
+
+
+@passage_plan_agent.tool
+def find_route_between_marks(
+    ctx: RunContext,
+    name_from: str = Field(description="Exact name of the departure mark"),
+    name_to: str = Field(description="Exact name of the destination mark"),
+):
+    """Find the optimal safe route between two named marks using A* graph pathfinding.
+
+    Returns an ordered list of waypoints (name, latitude, longitude) from departure
+    to destination. Use these as the course_to_steer in the passage plan.
+    """
+    neo4j_client = ctx.deps.get("neo4j_client")
+    if neo4j_client is None:
+        logger.warning("neo4j_client not available in deps")
+        return "Graph routing unavailable — neo4j client not configured."
+
+    logger.debug("Finding route from %s to %s", name_from, name_to)
+    rows = neo4j_client.a_star_by_name(name_from=name_from, name_to=name_to)
+
+    if not rows:
+        return f"No route found between '{name_from}' and '{name_to}'."
+
+    route_row = rows[0]
+    path_nodes = route_row.get("path", [])
+
+    waypoints = [
+        {
+            "name": node["name"],
+            "latitude": node["latitude"],
+            "longitude": node["longitude"],
+        }
+        for node in path_nodes
+        if "latitude" in node and "longitude" in node
+    ]
+
+    logger.debug(
+        "Route found: %s waypoints, total cost %.3f km",
+        len(waypoints),
+        route_row.get("totalCost", 0),
+    )
+    return waypoints

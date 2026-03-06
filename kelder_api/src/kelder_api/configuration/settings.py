@@ -175,6 +175,26 @@ class ClerkSettings(BaseSettings):
     model_config = model_config
 
 
+class Neo4j(BaseSettings):
+    neo4j_uri: str = Field(
+        description="Neo4j bolt URI",
+        validation_alias=AliasChoices("NEO4J_URI"),
+        default="bolt://graph_db:7687",
+    )
+    neo4j_username: str = Field(
+        description="Neo4j username",
+        validation_alias=AliasChoices("NEO4J_USERNAME"),
+        default="neo4j",
+    )
+    neo4j_password: str = Field(
+        description="Neo4j password",
+        validation_alias=AliasChoices("NEO4J_PASSWORD"),
+        default="neo4j",
+    )
+
+    model_config = model_config
+
+
 class Settings(BaseModel):
     redis: Redis = Field(
         description="Redis server connection config", default_factory=Redis
@@ -213,6 +233,9 @@ class Settings(BaseModel):
     )
     clerk: ClerkSettings = Field(
         description="Clerk authentication configuration", default_factory=ClerkSettings
+    )
+    neo4j: Neo4j = Field(
+        description="Neo4j graph database configuration", default_factory=Neo4j
     )
 
 

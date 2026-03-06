@@ -1,4 +1,5 @@
 import textwrap
+from datetime import datetime, timezone
 
 from pydantic_ai import Agent
 
@@ -29,3 +30,8 @@ tidal_agent = Agent(
     system_prompt=prompt,
     tools=[get_height_of_tide_now, get_tide_predictions],
 )
+
+
+@tidal_agent.system_prompt
+def tidal_datetime_prompt() -> str:
+    return f"Current UTC datetime: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')} UTC."

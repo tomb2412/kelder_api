@@ -16,6 +16,7 @@ from src.kelder_api.components.agentic_workflow.nodes import (
     ResponseEvaluatorNode,
     TidalSearchNode,
 )
+from src.kelder_api.components.neo4j_client import Neo4jClient
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.configuration.logging_config import setup_logging
 
@@ -24,8 +25,9 @@ logger = logging.getLogger("agent_workflow")
 
 
 class AgentWorkflow:
-    def __init__(self, redis_client: RedisClient):
+    def __init__(self, redis_client: RedisClient, neo4j_client: Neo4jClient | None = None):
         self.redis_client = redis_client
+        self.neo4j_client = neo4j_client
         self.graph = Graph(
             nodes=(
                 ChatBotAgent,
@@ -43,7 +45,11 @@ class AgentWorkflow:
         progress_callback: Callable[[str], Awaitable[None]] | None = None,
     ) -> str:
         history = await load_history(self.redis_client, user_id)
-        state = State(redis_client=self.redis_client, message_history=history)
+        state = State(
+            redis_client=self.redis_client,
+            neo4j_client=self.neo4j_client,
+            message_history=history,
+        )
         state.user_message = user_message
         state.progress_callback = progress_callback
         try:

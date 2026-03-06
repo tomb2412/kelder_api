@@ -14,9 +14,11 @@ from src.kelder_api.components.db_manager.service import DBManager
 from src.kelder_api.components.drift_calculator.serivce import DriftCalculator
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.log.service import LogTracker
+from src.kelder_api.components.neo4j_client import Neo4jClient
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.settings import get_settings
 
 # Routes
 from src.kelder_api.routes.bilge_depth.views import router as bilge_depth_route
@@ -28,6 +30,7 @@ from src.kelder_api.routes.health.views import router as health_route
 from src.kelder_api.routes.inference.views import router as agent_routes
 from src.kelder_api.routes.log.views import router as log_route
 from src.kelder_api.routes.passage_plan.views import router as passage_plan_routes
+from src.kelder_api.routes.routing.views import router as routing_routes
 from src.kelder_api.routes.redis.views import router as redis_route
 from src.kelder_api.routes.ships_status.views import router as ships_status_route
 from src.kelder_api.routes.tidal_measurements.views import router as tidal_routes
@@ -49,6 +52,12 @@ logger = logging.getLogger("api")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Initialising API stateful dependencies")
+    settings = get_settings()
+    neo4j_client = Neo4jClient(
+        uri=settings.neo4j.neo4j_uri,
+        username=settings.neo4j.neo4j_username,
+        password=settings.neo4j.neo4j_password,
+    )
     redis_client = RedisClient()
     gps_interface = GPSInterface(redis_client)
     compass_interface = CompassInterface(redis_client)
@@ -69,6 +78,7 @@ async def lifespan(app: FastAPI):
     )
     background_orchestrator = BackgroundTaskManager()
 
+    app.state.neo4j_client = neo4j_client
     app.state.redis_client = redis_client
     app.state.gps_interface = gps_interface
     app.state.compass_interface = compass_interface
@@ -76,13 +86,15 @@ async def lifespan(app: FastAPI):
     app.state.db_manager = db_manager
     app.state.log_tracker = log_tracker
     app.state.drift_calculator = drift_calculator
-    app.state.agent_workflow = AgentWorkflow(redis_client)
+    app.state.agent_workflow = AgentWorkflow(redis_client, neo4j_client=neo4j_client)
     app.state.background_orchestrator = background_orchestrator
     logger.debug("API dependencies initialised and stored on app state")
 
     yield
 
     # Shutdown
+    app.state.neo4j_client.close()
+    del app.state.neo4j_client
     del app.state.redis_client
     del app.state.gps_interface
     del app.state.compass_interface
@@ -115,6 +127,7 @@ app.include_router(redis_route)
 app.include_router(db_manager_route)
 app.include_router(agent_routes)
 app.include_router(passage_plan_routes)
+app.include_router(routing_routes)
 app.include_router(tidal_routes)
 app.include_router(log_route)
 app.include_router(ships_status_route)

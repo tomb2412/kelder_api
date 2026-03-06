@@ -127,6 +127,7 @@ class BuildPassageNode(BaseNode[State]):
                 prompt,
                 deps={
                     "redis_client": ctx.state.redis_client,
+                    "neo4j_client": ctx.state.neo4j_client,
                     "marks_index": MARKS_INDEX,
                     "marks_data": MARKS_DATA,
                     "sea_boundries": SEA_DATA,
