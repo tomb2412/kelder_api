@@ -57,6 +57,7 @@ async def lifespan(app: FastAPI):
         uri=settings.neo4j.neo4j_uri,
         username=settings.neo4j.neo4j_username,
         password=settings.neo4j.neo4j_password,
+        auth_disabled=settings.neo4j.neo4j_auth_disabled,
     )
     redis_client = RedisClient()
     gps_interface = GPSInterface(redis_client)

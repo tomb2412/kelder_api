@@ -88,6 +88,79 @@ w- Docs are available at: http://localhost:8000/docs#/ or http://raspberrypi.loc
     - `ATI` -> 
     - `AT+CPIN?` -> SIM inserted and ready
 
+# Graph Database (Neo4j)
+
+The API uses Neo4j Spatial + Graph Data Science (GDS) to store sea marks, danger zones, and coastlines, and to run A* route optimisation between named marks.
+
+### Services
+
+The `graph_db` service is defined in `docker-compose.yml` and runs Neo4j with the Spatial and GDS plugins mounted at `~/neo4j/plugins`. Start it alongside the API with:
+
+```bash
+docker compose up --build
+```
+
+### Environment variables
+
+| Variable | Default | Description |
+|---|---|---|
+| `NEO4J_URI` | `bolt://graph_db:7687` | Bolt URI used by the API container |
+| `NEO4J_AUTH_DISABLED` | `true` | Set `false` if Neo4j auth is enabled |
+| `NEO4J_USERNAME` | `neo4j` | Username (ignored when auth disabled) |
+| `NEO4J_PASSWORD` | `neo4j` | Password (ignored when auth disabled) |
+
+### Ingesting sea marks
+
+Before routing works the graph must be populated from a GeoJSON seamarks file. Run the CLI script from the project root:
+
+```bash
+# Against the local Docker service (default)
+uv run python -m src.kelder_api.components.graph_ingestion.ingest \
+    --map-path raw_maps/seamarks_and_coastlines_solent.geojson
+
+# Against a remote Neo4j instance with auth enabled
+uv run python -m src.kelder_api.components.graph_ingestion.ingest \
+    --map-path raw_maps/seamarks_and_coastlines_solent.geojson \
+    --neo4j-uri bolt://my-host:7687 \
+    --no-auth-disabled \
+    --neo4j-password secret
+```
+
+Key options:
+
+| Flag | Default | Description |
+|---|---|---|
+| `--map-path` | `raw_maps/seamarks_and_coastlines_solent.geojson` | Path to GeoJSON input |
+| `--neo4j-uri` | `bolt://localhost:7687` | Neo4j bolt URI |
+| `--no-clear-existing` | _(clear by default)_ | Skip deleting existing nodes |
+| `--max-distance-km` | `2.0` | Maximum edge distance for safe-edge creation |
+| `--graph-name` | `solent_graph` | GDS projection name |
+
+The pipeline runs in order: **reset → create layers → ingest marks & coastlines → create safe edges → project GDS graph**.
+
+A Metaflow version of the same pipeline is available at `src/kelder_api/components/graph_ingestion/flow.py` and can be run with:
+
+```bash
+uv run python src/kelder_api/components/graph_ingestion/flow.py run \
+    --map_path raw_maps/seamarks_and_coastlines_solent.geojson
+```
+
+### Routing endpoints
+
+| Method | Path | Description |
+|---|---|---|
+| `POST` | `/routing/a_star` | A* shortest path between two named marks |
+| `POST` | `/passage_plan` | Full passage plan via the planning agent using graph routing |
+
+Example request body for both endpoints:
+
+```json
+{ "from_mark": "EC11", "to_mark": "Hook" }
+```
+
+The A* endpoint returns the ordered list of waypoints (name, latitude, longitude) and total cost in km. On startup the API automatically ensures the GDS projection exists — no manual step required after ingestion.
+
+
 # Future features:
  - [] Fix the chatbot and define global waypoints
  - [] Introduce drift and dtx status

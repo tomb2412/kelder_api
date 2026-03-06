@@ -4,21 +4,19 @@ from pathlib import Path
 
 from metaflow import FlowSpec, Parameter, step
 
-from src.kelder_api.components.graph_ingestion.neo4j_client import (
-    GraphIngestionNeo4jClient,
-)
 from src.kelder_api.components.graph_ingestion.service import (
     DEFAULT_GEOJSON_PATH,
     ingest_geojson_map,
     load_geojson,
 )
+from src.kelder_api.components.neo4j_client import Neo4jClient
 
 
 class SeaMarksGraphIngestionFlow(FlowSpec):
     """
     Metaflow pipeline that ingests sea marks and coastlines into Neo4j Spatial.
 
-    Equivalent stages to the notebook POC:
+    Stages:
     1) reset + create layers
     2) ingest seamarks and coastlines
     3) create safe edges
@@ -57,7 +55,7 @@ class SeaMarksGraphIngestionFlow(FlowSpec):
     )
     neo4j_auth_disabled = Parameter(
         "neo4j_auth_disabled",
-        help="Disable Neo4j auth (default matches docker-compose setup)",
+        help="Disable Neo4j auth (matches docker-compose NEO4J_AUTH=none)",
         default=True,
         type=bool,
     )
@@ -72,12 +70,6 @@ class SeaMarksGraphIngestionFlow(FlowSpec):
         help="Maximum distance used for safe-edge creation",
         default=2.0,
         type=float,
-    )
-    create_graph_projection = Parameter(
-        "create_graph_projection",
-        help="Create GDS projection after edge generation",
-        default=True,
-        type=bool,
     )
     graph_name = Parameter(
         "graph_name",
@@ -131,27 +123,26 @@ class SeaMarksGraphIngestionFlow(FlowSpec):
 
     @step
     def project_graph(self):
-        if self.create_graph_projection:
-            client = self._client()
-            try:
-                client.project_spatial_to_graph(graph_name=self.graph_name)
-            finally:
-                client.close()
+        client = self._client()
+        try:
+            client.project_spatial_to_graph(graph_name=self.graph_name)
+        finally:
+            client.close()
         self.next(self.end)
 
     @step
     def end(self):
-        print(f"GeoJSON source: {self.resolved_map_path}")
-        print(f"Total features: {self.total_features}")
-        print(f"Marks inserted: {self.marks_inserted}")
-        print(f"Coastlines inserted: {self.coastlines_inserted}")
-        print(f"Safe edges created: {self.safe_edge_count}")
-        print(f"Unsupported seamark types: {self.unsupported_mark_types}")
+        print(f"GeoJSON source:         {self.resolved_map_path}")
+        print(f"Total features:         {self.total_features}")
+        print(f"Marks inserted:         {self.marks_inserted}")
+        print(f"Coastlines inserted:    {self.coastlines_inserted}")
+        print(f"Safe edges created:     {self.safe_edge_count}")
+        print(f"Unsupported types:      {self.unsupported_mark_types}")
 
-    def _client(self) -> GraphIngestionNeo4jClient:
-        return GraphIngestionNeo4jClient(
+    def _client(self) -> Neo4jClient:
+        return Neo4jClient(
             uri=self.neo4j_uri,
-            user=self.neo4j_user,
+            username=self.neo4j_user,
             password=self.neo4j_password,
             database=self.neo4j_database,
             auth_disabled=self.neo4j_auth_disabled,

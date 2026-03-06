@@ -191,6 +191,11 @@ class Neo4j(BaseSettings):
         validation_alias=AliasChoices("NEO4J_PASSWORD"),
         default="neo4j",
     )
+    neo4j_auth_disabled: bool = Field(
+        description="Disable Neo4j authentication (set true when NEO4J_AUTH=none)",
+        validation_alias=AliasChoices("NEO4J_AUTH_DISABLED"),
+        default=True,
+    )
 
     model_config = model_config
 

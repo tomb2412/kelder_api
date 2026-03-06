@@ -6,9 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable
 
 if TYPE_CHECKING:
-    from src.kelder_api.components.graph_ingestion.neo4j_client import (
-        GraphIngestionNeo4jClient,
-    )
+    from src.kelder_api.components.neo4j_client import Neo4jClient
 
 DEFAULT_GEOJSON_PATH = (
     Path(__file__).resolve().parents[4]
@@ -40,7 +38,7 @@ def load_geojson(path: str | Path) -> dict[str, Any]:
 
 
 def ingest_geojson_map(
-    raw_map: dict[str, Any], client: "GraphIngestionNeo4jClient"
+    raw_map: dict[str, Any], client: "Neo4jClient"
 ) -> IngestionSummary:
     seamark_processors: dict[str, Callable[[dict], None]] = {
         "buoy_special_purpose": client.ingest_special_purpose_mark,
@@ -70,12 +68,18 @@ def ingest_geojson_map(
                 if seamark_type not in unsupported_types:
                     unsupported_types.append(seamark_type)
             else:
-                processor(feature)
-                mark_count += 1
+                try:
+                    processor(feature)
+                    mark_count += 1
+                except Exception as exc:
+                    print(f"Failed to ingest {seamark_type}: {exc}")
 
         if properties.get("natural") == "coastline":
-            client.ingest_coastline(feature)
-            coastline_count += 1
+            try:
+                client.ingest_coastline(feature)
+                coastline_count += 1
+            except Exception as exc:
+                print(f"Failed to ingest coastline: {exc}")
 
     return IngestionSummary(
         total_features=len(features),
