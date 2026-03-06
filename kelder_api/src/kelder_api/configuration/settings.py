@@ -179,7 +179,7 @@ class Neo4j(BaseSettings):
     neo4j_uri: str = Field(
         description="Neo4j bolt URI",
         validation_alias=AliasChoices("NEO4J_URI"),
-        default="bolt://graph_db:7687",
+        default="bolt://neo4j:7687",
     )
     neo4j_username: str = Field(
         description="Neo4j username",

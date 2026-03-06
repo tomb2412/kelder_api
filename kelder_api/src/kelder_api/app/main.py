@@ -56,12 +56,19 @@ logger = logging.getLogger("api")
 async def lifespan(app: FastAPI):
     logger.info("Initialising API stateful dependencies")
     settings = get_settings()
-    neo4j_client = Neo4jClient(
-        uri=settings.neo4j.neo4j_uri,
-        username=settings.neo4j.neo4j_username,
-        password=settings.neo4j.neo4j_password,
-        auth_disabled=settings.neo4j.neo4j_auth_disabled,
-    )
+    try:
+        neo4j_client = Neo4jClient(
+            uri=settings.neo4j.neo4j_uri,
+            username=settings.neo4j.neo4j_username,
+            password=settings.neo4j.neo4j_password,
+            auth_disabled=settings.neo4j.neo4j_auth_disabled,
+        )
+        logger.info("Neo4j client initialised (%s)", settings.neo4j.neo4j_uri)
+    except Exception as exc:
+        neo4j_client = None
+        logger.warning(
+            "Neo4j unavailable on startup — routing endpoints disabled: %s", exc
+        )
     redis_client = RedisClient()
     gps_interface = GPSInterface(redis_client)
     compass_interface = CompassInterface(redis_client)
@@ -97,7 +104,8 @@ async def lifespan(app: FastAPI):
     yield
 
     # Shutdown
-    app.state.neo4j_client.close()
+    if app.state.neo4j_client is not None:
+        app.state.neo4j_client.close()
     del app.state.neo4j_client
     del app.state.redis_client
     del app.state.gps_interface

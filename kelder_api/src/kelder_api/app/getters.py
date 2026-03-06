@@ -45,5 +45,5 @@ def get_orchestrator(app: FastAPI) -> BackgroundTaskManager:
     return app.state.background_orchestrator
 
 
-def get_neo4j_client(app: FastAPI) -> Neo4jClient:
+def get_neo4j_client(app: FastAPI) -> Neo4jClient | None:
     return app.state.neo4j_client
