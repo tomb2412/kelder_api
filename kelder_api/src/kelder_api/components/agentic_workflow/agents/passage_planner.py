@@ -1,5 +1,6 @@
 import logging
 import textwrap
+from datetime import datetime, timezone
 from typing import Any
 
 from pydantic import Field
@@ -52,6 +53,11 @@ passage_plan_agent = Agent(
     system_prompt=system_prompt,
     output_type=PassagePlan,
 )
+
+
+@passage_plan_agent.system_prompt
+def passage_planner_datetime_prompt() -> str:
+    return f"Current UTC datetime: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')} UTC."
 
 
 @passage_plan_agent.tool

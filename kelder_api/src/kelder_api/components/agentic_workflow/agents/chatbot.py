@@ -1,5 +1,6 @@
 import textwrap
 from dataclasses import dataclass
+from datetime import datetime, timezone
 
 from pydantic_ai import Agent
 
@@ -55,3 +56,8 @@ chatbot_agent = Agent(
     output_type=ChatResponse | ReasoningInput,  # | TidalSearch | BuildPassageRoute,
     system_prompt=prompt,
 )
+
+
+@chatbot_agent.system_prompt
+def chatbot_datetime_prompt() -> str:
+    return f"Current UTC datetime: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')} UTC."
