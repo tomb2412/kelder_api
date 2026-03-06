@@ -99,7 +99,6 @@ async def StreamChatResponse(
     request: Request,
     user_id: str = Depends(get_optional_user_id),
 ):
-    print("Chat stream hit")
     body = await request.json()
     user_prompt = extract_user_prompt(body)
     agent_workflow = request.app.state.agent_workflow

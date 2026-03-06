@@ -5,7 +5,7 @@ from contextlib import contextmanager
 from typing import Any, Generator
 
 from neo4j import GraphDatabase
-from neo4j.exceptions import ClientError
+from neo4j.exceptions import ClientError, GqlError
 
 from src.kelder_api.components.neo4j_client.feature_processing import (
     build_danger_zone_coords,
@@ -55,7 +55,6 @@ class Neo4jClient:
             "danger_zones": ADD_DANGER_LAYER,
             "coastlines": ADD_COASTLINE_LAYER,
         }
-        self._ensure_graph_projection()
 
     @contextmanager
     def _session(self) -> Generator[Any, None, None]:
@@ -90,26 +89,35 @@ class Neo4jClient:
         """Check whether the GDS projection exists and create it if not.
 
         Called automatically on construction so the API is routing-ready
-        without a manual setup step.
+        after a Neo4j restart (GDS projections are in-memory and not persisted).
+        Logs a warning if creation fails — this is expected when the graph has
+        not yet been ingested.
         """
         try:
             with self._session() as session:
                 result = session.run(CHECK_GRAPH_EXISTS, graph_name=GDS_GRAPH_NAME)
                 exists = result.single()["exists"]
-            if not exists:
-                logger.info(
-                    "GDS graph projection '%s' not found — creating.", GDS_GRAPH_NAME
-                )
-                with self._session() as session:
-                    session.run(CREATE_GRAPH, graph_name=GDS_GRAPH_NAME)
-                logger.info("GDS graph projection '%s' created.", GDS_GRAPH_NAME)
-            else:
+
+            if exists:
                 logger.info(
                     "GDS graph projection '%s' already exists.", GDS_GRAPH_NAME
                 )
-        except Exception as e:
+                return
+
+            logger.info(
+                "GDS graph projection '%s' not found — attempting to create.",
+                GDS_GRAPH_NAME,
+            )
+            with self._session() as session:
+                session.run(CREATE_GRAPH, graph_name=GDS_GRAPH_NAME)
+            logger.info("GDS graph projection '%s' created.", GDS_GRAPH_NAME)
+
+        except Exception as exc:
             logger.warning(
-                "Could not ensure GDS projection (graph may be empty): %s", e
+                "GDS graph projection '%s' could not be created on startup "
+                "(graph data may not yet be ingested): %s",
+                GDS_GRAPH_NAME,
+                exc,
             )
 
     def project_spatial_to_graph(self, graph_name: str = GDS_GRAPH_NAME) -> None:
@@ -246,7 +254,23 @@ class Neo4jClient:
 
         Returns result rows each containing sourceNodeName, targetNodeName,
         totalCost, nodeNames, and path (list of node property dicts).
+
+        If the GDS projection was lost (e.g. after a Neo4j restart) it is
+        recreated automatically before retrying once.
         """
+        try:
+            return self._run_a_star(name_from, name_to)
+        except (ClientError, GqlError) as exc:
+            if "GraphNotFoundException" in str(exc) or "does not exist" in str(exc):
+                logger.warning(
+                    "GDS projection '%s' missing — recreating and retrying.",
+                    GDS_GRAPH_NAME,
+                )
+                self._ensure_graph_projection()
+                return self._run_a_star(name_from, name_to)
+            raise
+
+    def _run_a_star(self, name_from: str, name_to: str) -> list[dict]:
         with self._session() as session:
             result = session.run(
                 A_STAR_ROUTE_OPTIMISATION_WITH_NAMES,

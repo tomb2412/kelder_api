@@ -88,17 +88,60 @@ w- Docs are available at: http://localhost:8000/docs#/ or http://raspberrypi.loc
     - `ATI` -> 
     - `AT+CPIN?` -> SIM inserted and ready
 
+# Starting and stopping the application
+
+Neo4j runs as a **standalone container** outside Docker Compose so its data survives app restarts and rebuilds. Use the helper scripts in `scripts/` rather than `docker compose` directly.
+
+```bash
+# Start everything (Neo4j + host API + compose services)
+./scripts/start_app.sh
+
+# Start and rebuild the app image
+./scripts/start_app.sh --build
+
+# Stop everything — Neo4j container is stopped but its data volumes are preserved
+./scripts/stop_app.sh
+
+# Restart compose services only (Neo4j is never touched)
+./scripts/restart_compose.sh
+```
+
+On first run `start_app.sh` creates the `kelder_net` Docker network and the Neo4j container. On subsequent runs it simply starts the existing container so all ingested graph data is retained.
+
+
 # Graph Database (Neo4j)
 
 The API uses Neo4j Spatial + Graph Data Science (GDS) to store sea marks, danger zones, and coastlines, and to run A* route optimisation between named marks.
 
 ### Services
 
-The `graph_db` service is defined in `docker-compose.yml` and runs Neo4j with the Spatial and GDS plugins mounted at `~/neo4j/plugins`. Start it alongside the API with:
+Neo4j runs as a **standalone container** managed by `scripts/start_app.sh` — it is **not** part of Docker Compose. This means `docker compose down` never touches the database. The container is connected to the shared `kelder_net` Docker network so the API containers can reach it by hostname `neo4j`.
+
+Plugins (GDS + Spatial) must be placed in `~/neo4j/plugins` before first start.
+
+### Rebuilding the Neo4j container
+
+Only do this if you need to upgrade Neo4j or reset all graph data entirely.
 
 ```bash
-docker compose up --build
+# 1. Stop the container
+docker stop neo4j
+
+# 2. Remove the container (data volumes at ~/neo4j/data are kept unless you also remove them)
+docker rm neo4j
+
+# 3. Optionally wipe the data volume to start completely fresh
+rm -rf ~/neo4j/data
+
+# 4. Start the app — start_app.sh will recreate the container
+./scripts/start_app.sh
+
+# 5. Re-ingest the sea marks
+uv run python -m src.kelder_api.components.graph_ingestion.ingest \
+    --map-path raw_maps/seamarks_and_coastlines_solent.geojson
 ```
+
+> **Note:** After any Neo4j restart the GDS graph projection (`solent_graph`) is lost because it is in-memory. The API will recreate it automatically on the first routing request, provided the graph data has been ingested.
 
 ### Environment variables
 
@@ -141,8 +184,7 @@ The pipeline runs in order: **reset → create layers → ingest marks & coastli
 A Metaflow version of the same pipeline is available at `src/kelder_api/components/graph_ingestion/flow.py` and can be run with:
 
 ```bash
-uv run python src/kelder_api/components/graph_ingestion/flow.py run \
-    --map_path raw_maps/seamarks_and_coastlines_solent.geojson
+python -m src.kelder_api.components.graph_ingestion.ingest --map-path ./raw_maps/seamarks_and_coastlines_solent.geojson
 ```
 
 ### Routing endpoints

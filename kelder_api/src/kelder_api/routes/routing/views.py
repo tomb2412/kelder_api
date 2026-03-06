@@ -45,12 +45,12 @@ def get_a_star_route(
 
     waypoints = [
         {
-            "name": node["name"],
-            "latitude": node["latitude"],
-            "longitude": node["longitude"],
+            "name": node.get("name"),
+            "latitude": node.get("latitude"),
+            "longitude": node.get("longitude"),
         }
         for node in path_nodes
-        if "latitude" in node and "longitude" in node
+        if node.get("latitude") is not None and node.get("longitude") is not None
     ]
 
     return {

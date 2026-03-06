@@ -36,13 +36,16 @@ from src.kelder_api.routes.ships_status.views import router as ships_status_rout
 from src.kelder_api.routes.tidal_measurements.views import router as tidal_routes
 from src.kelder_api.routes.velocity.views import router as velocity_route
 
-# Allow requests from frontend's origin
-origins = [
-    "http://localhost:5173",  # Vite dev server
-    "http://192.168.1.167:5173",
-    "http://192.168.1.131:5173",
-    "https://www.sailkelder.uk"
-]
+# Explicit production origin
+PRODUCTION_ORIGIN = "https://www.sailkelder.uk"
+
+# Regex covers: localhost, any 192.168.x.x, any 172.x.x.x (Docker subnets),
+# and any 10.x.x.x — with any port — over http or https.
+LOCAL_ORIGIN_REGEX = (
+    r"https?://(localhost|192\.168\.\d{1,3}\.\d{1,3}"
+    r"|172\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+    r"|10\.\d{1,3}\.\d{1,3}\.\d{1,3})(:\d+)?"
+)
 
 setup_logging(component="api")
 
@@ -112,7 +115,8 @@ app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=[PRODUCTION_ORIGIN],
+    allow_origin_regex=LOCAL_ORIGIN_REGEX,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
