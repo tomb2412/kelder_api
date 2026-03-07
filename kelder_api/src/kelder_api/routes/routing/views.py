@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 
 from src.kelder_api.app.getters import get_neo4j_client
+from src.kelder_api.components.coordinate import Coordinate
 from src.kelder_api.components.neo4j_client import Neo4jClient
 
 logger = logging.getLogger("api.routes.routing")
@@ -20,7 +21,20 @@ class RouteRequest(BaseModel):
     to_mark: str
 
 
-@router.post("/a_star")
+class WaypointOut(BaseModel):
+    name: str | None
+    coordinate: Coordinate
+
+
+class RouteResponse(BaseModel):
+    from_mark: str | None
+    to_mark: str | None
+    total_cost_km: float | None
+    waypoint_count: int
+    waypoints: list[WaypointOut]
+
+
+@router.post("/a_star", response_model=RouteResponse)
 def get_a_star_route(
     body: RouteRequest,
     neo4j_client: Neo4jClient = Depends(get_neo4j_dep),
@@ -44,19 +58,21 @@ def get_a_star_route(
     path_nodes = route_row.get("path", [])
 
     waypoints = [
-        {
-            "name": node.get("name"),
-            "latitude": node.get("latitude"),
-            "longitude": node.get("longitude"),
-        }
+        WaypointOut(
+            name=node.get("name"),
+            coordinate=Coordinate(
+                latitude=node["latitude"],
+                longitude=node["longitude"],
+            ),
+        )
         for node in path_nodes
         if node.get("latitude") is not None and node.get("longitude") is not None
     ]
 
-    return {
-        "from_mark": route_row.get("sourceNodeName"),
-        "to_mark": route_row.get("targetNodeName"),
-        "total_cost_km": route_row.get("totalCost"),
-        "waypoint_count": len(waypoints),
-        "waypoints": waypoints,
-    }
+    return RouteResponse(
+        from_mark=route_row.get("sourceNodeName"),
+        to_mark=route_row.get("targetNodeName"),
+        total_cost_km=route_row.get("totalCost"),
+        waypoint_count=len(waypoints),
+        waypoints=waypoints,
+    )

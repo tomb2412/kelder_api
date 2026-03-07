@@ -3,34 +3,12 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field, computed_field
 
-from src.kelder_api.components.velocity.utils import (
-    bearing_degrees,
-    haversine,
-)
+from src.kelder_api.components.coordinate import Coordinate, bearing_degrees
 
 
 class Waypoint(BaseModel):
     name: Optional[str] = Field(None, description="Name of the waypoint")
-    latitude: float = Field(description=("Latitude of waypoint in decimal degrees"))
-    latitude_hemisphere: str = Field(
-        description="North or south hemisphere e.g 'N' or 'S'", default="N"
-    )
-    longitude: float = Field(
-        description=("Longitude of waypoinfloatt in decimal degrees")
-    )
-    longitude_hemisphere: str = Field(
-        description="East or west hemisphere of longitude", default="W"
-    )
-
-    # @computed_field
-    # @property
-    # def latitude(self) -> float:
-    #     return convert_to_decimal_degrees(self.latitude)
-
-    # @computed_field
-    # @property
-    # def longitude(self) -> float:
-    #     return convert_to_decimal_degrees(self.longitude)
+    coordinate: Coordinate = Field(description="Position of the waypoint in decimal degrees")
 
 
 class PilotageInfo(BaseModel):
@@ -40,7 +18,7 @@ class PilotageInfo(BaseModel):
 
 class PortOfRefuge(BaseModel):
     name: str = Field(..., description="Port name")
-    coordinates: str = Field(..., description="Lat/Long coordinates")
+    coordinate: Coordinate = Field(..., description="Lat/Long coordinates of the port")
 
 
 class PassagePlan(BaseModel):
@@ -61,37 +39,28 @@ class PassagePlan(BaseModel):
     @computed_field
     @property
     def distance_between_waypoints(self) -> List[float]:
-        """Compute haversine distances between consecutive waypoints."""
+        """Haversine distances between consecutive waypoints in nautical miles."""
         distances = []
         for index in range(len(self.course_to_steer) - 1):
-            waypoint_start = self.course_to_steer[index]
-            waypoint_end = self.course_to_steer[index + 1]
-            distances.append(
-                haversine(
-                    latitude_start=waypoint_start.latitude,
-                    latitude_end=waypoint_end.latitude,
-                    longitude_start=waypoint_start.longitude,
-                    longitude_end=waypoint_end.longitude,
-                )
-            )
-
+            wp_start = self.course_to_steer[index]
+            wp_end = self.course_to_steer[index + 1]
+            distances.append(wp_start.coordinate - wp_end.coordinate)
         return distances
 
     @computed_field
     @property
     def bearing_between_waypoints(self) -> List[float]:
-        """Calculate bearings between consecutive waypoints."""
+        """Forward azimuth bearings between consecutive waypoints in degrees."""
         bearings = []
         for index in range(len(self.course_to_steer) - 1):
-            waypoint_start = self.course_to_steer[index]
-            waypoint_end = self.course_to_steer[index + 1]
+            wp_start = self.course_to_steer[index]
+            wp_end = self.course_to_steer[index + 1]
             bearings.append(
                 bearing_degrees(
-                    latitude_start=waypoint_start.latitude,
-                    longitude_start=waypoint_start.longitude,
-                    latitude_end=waypoint_end.latitude,
-                    longitude_end=waypoint_end.longitude,
+                    latitude_start=wp_start.coordinate.latitude,
+                    longitude_start=wp_start.coordinate.longitude,
+                    latitude_end=wp_end.coordinate.latitude,
+                    longitude_end=wp_end.coordinate.longitude,
                 )
             )
-
         return bearings

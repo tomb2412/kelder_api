@@ -50,6 +50,15 @@ else
     echo "Neo4j container created."
 fi
 
+# Ensure Neo4j is connected to the shared network (handles containers created
+# before the network existed or by older versions of this script).
+if ! docker network inspect "$DOCKER_NETWORK" \
+        --format '{{range .Containers}}{{.Name}} {{end}}' \
+        2>/dev/null | grep -qw "$NEO4J_CONTAINER"; then
+    echo "Connecting Neo4j to '$DOCKER_NETWORK'..."
+    docker network connect "$DOCKER_NETWORK" "$NEO4J_CONTAINER"
+fi
+
 # ── Host restart API ─────────────────────────────────────────────────────────
 if [[ "$BUILD" == "true" ]]; then
     echo "Building host restart API image..."

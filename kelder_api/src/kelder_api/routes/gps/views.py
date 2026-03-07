@@ -18,8 +18,8 @@ from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.log.service import LogTracker
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.configuration.settings import get_settings
+from src.kelder_api.components.coordinate import Coordinate
 from src.kelder_api.routes.gps.models import GPSCard, GPSMap
-from src.kelder_api.components.velocity.utils import convert_to_decimal_degrees
 
 logger = logging.getLogger("api.routes.gps")
 
@@ -125,8 +125,10 @@ async def get_gps_card(
         return GPSCard(
             # TODO implement an error handling + add drift and DTW
             timestamp=gps_data.timestamp.time(),
-            latitude=gps_data.latitude_nmea,
-            longitude=gps_data.longitude_nmea,
+            coordinate=Coordinate(
+                latitude=gps_data.latitude_nmea,
+                longitude=gps_data.longitude_nmea,
+            ),
             speed_over_ground=velocity_data.speed_over_ground
             if velocity_data.speed_over_ground
             else "error",
@@ -161,8 +163,10 @@ async def get_gps_card(
 
     if gps_data:
         return GPSMap(
-            longitude=str(convert_to_decimal_degrees(gps_data.longitude_nmea)),
-            latitude=str(convert_to_decimal_degrees(gps_data.latitude_nmea)),
+            coordinate=Coordinate(
+                latitude=gps_data.latitude_nmea,
+                longitude=gps_data.longitude_nmea,
+            ),
             cog=str(velocity_data.course_over_ground)
             if velocity_data.course_over_ground
             else "0",
