@@ -8,7 +8,9 @@ from pydantic_ai import Agent, RunContext
 
 from src.kelder_api.components.agentic_workflow.agents.models import PassagePlan
 from src.kelder_api.components.agentic_workflow.agents.tools import save_passage_plan
-from src.kelder_api.components.coordinate import haversine
+from src.kelder_api.components.velocity.utils import (
+    haversine,
+)
 
 logger = logging.getLogger(__name__)
 

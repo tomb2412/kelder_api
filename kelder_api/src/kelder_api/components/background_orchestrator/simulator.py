@@ -14,7 +14,10 @@ from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.gps_new.types import GPSStatus
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
-from src.kelder_api.components.coordinate import convert_to_decimal_degrees, decimal_to_dms_format
+from src.kelder_api.components.velocity.utils import (
+    convert_to_decimal_degrees,
+    decimal_to_dms_format,
+)
 from src.kelder_api.configuration.logging_config import setup_logging
 from src.kelder_api.configuration.settings import get_settings
 

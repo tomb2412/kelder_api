@@ -6,9 +6,14 @@ from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
-from src.kelder_api.components.coordinate import Coordinate, bearing_degrees
 from src.kelder_api.components.velocity.models import CalculationType, GPSVelocity
-from src.kelder_api.components.velocity.utils import average_bearing, time_difference_seconds
+from src.kelder_api.components.velocity.utils import (
+    average_bearing,
+    bearing_degrees,
+    convert_to_decimal_degrees,
+    haversine,
+    time_difference_seconds,
+)
 from src.kelder_api.configuration.logging_config import setup_logging
 from src.kelder_api.configuration.settings import get_settings
 
@@ -67,24 +72,33 @@ class VelocityCalculator:
             course_over_ground_list = []
             speed_over_ground_list = []
             for i in range(0, gps_points - 1):
-                coord_end = Coordinate(
-                    latitude=gps_history[i].latitude_nmea,
-                    longitude=gps_history[i].longitude_nmea,
+                latitude_end = convert_to_decimal_degrees(
+                    gps_history[i].latitude_nmea, lon=False
                 )
-                coord_start = Coordinate(
-                    latitude=gps_history[i + 1].latitude_nmea,
-                    longitude=gps_history[i + 1].longitude_nmea,
+                latitude_start = convert_to_decimal_degrees(
+                    gps_history[i + 1].latitude_nmea, lon=False
                 )
-                distance_travelled_nm = coord_start - coord_end
+                longitude_end = convert_to_decimal_degrees(
+                    gps_history[i].longitude_nmea
+                )
+                longitude_start = convert_to_decimal_degrees(
+                    gps_history[i + 1].longitude_nmea
+                )
+                distance_travelled_nm = haversine(
+                    latitude_start=latitude_start,
+                    latitude_end=latitude_end,
+                    longitude_start=longitude_start,
+                    longitude_end=longitude_end,
+                )
                 time_difference = time_difference_seconds(
                     time_end=gps_history[i].timestamp,
                     time_start=gps_history[i + 1].timestamp,
                 )
                 cog_degrees = bearing_degrees(
-                    latitude_start=coord_start.latitude,
-                    longitude_start=coord_start.longitude,
-                    latitude_end=coord_end.latitude,
-                    longitude_end=coord_end.longitude,
+                    latitude_start=latitude_start,
+                    latitude_end=latitude_end,
+                    longitude_start=longitude_start,
+                    longitude_end=longitude_end,
                 )
 
                 if time_difference <= 0:

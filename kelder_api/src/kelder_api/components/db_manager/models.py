@@ -5,33 +5,27 @@ from typing import TYPE_CHECKING, Optional, Tuple
 
 from pydantic import BaseModel, Field, computed_field
 
-from src.kelder_api.components.coordinate import Coordinate
-
 if TYPE_CHECKING:
     from src.kelder_api.components.log.models import JourneyData
 
 
 class JourneyLocation(BaseModel):
-    """Typed wrapper for storing a coordinate pair in the database.
+    """Typed wrapper for storing latitude/longitude pairs in the database."""
 
-    Stored in SQLite as ``"<lat_decimal>,<lon_decimal>"`` (decimal degrees).
-    The ``Coordinate`` validator transparently accepts legacy NMEA strings
-    stored by older versions of the application.
-    """
-
-    coordinate: Coordinate = Field(description="Geographic position")
+    latitude: str = Field(description="Latitude (usually NMEA) for the waypoint")
+    longitude: str = Field(description="Longitude (usually NMEA) for the waypoint")
 
     def to_db_value(self) -> str:
-        """Decimal-degree comma-separated string for SQLite persistence."""
-        return f"{self.coordinate.latitude},{self.coordinate.longitude}"
+        """Compact comma separated representation used when persisting."""
+        return f"{self.latitude},{self.longitude}"
 
     @classmethod
     def from_db_value(cls, value: str) -> "JourneyLocation":
         parts = value.split(",", 1)
         if len(parts) != 2:
             raise ValueError("Location values must contain a comma separator.")
-        lat_str, lon_str = (segment.strip() for segment in parts)
-        return cls(coordinate=Coordinate(latitude=lat_str, longitude=lon_str))
+        latitude, longitude = (segment.strip() for segment in parts)
+        return cls(latitude=latitude, longitude=longitude)
 
 
 class JourneyHistoryRecord(BaseModel):
@@ -104,8 +98,14 @@ class JourneyHistoryRecord(BaseModel):
         return cls(
             departure_time=journey.timestamp,
             arrival_time=journey.end_datetime,
-            departure_location=JourneyLocation(coordinate=journey.start_coordinate),
-            arrival_location=JourneyLocation(coordinate=journey.end_coordinate),
+            departure_location=JourneyLocation(
+                latitude=journey.start_latitude,
+                longitude=journey.start_longitude,
+            ),
+            arrival_location=JourneyLocation(
+                latitude=journey.end_latitude,
+                longitude=journey.end_longitude,
+            ),
             distance_travelled=journey.distance_travelled,
             gps_data=journey.gps_data,
         )

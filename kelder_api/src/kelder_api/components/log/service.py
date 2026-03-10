@@ -14,7 +14,7 @@ from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.velocity.models import GPSVelocity
 from src.kelder_api.components.velocity.service import VelocityCalculator
-from src.kelder_api.components.coordinate import Coordinate, convert_to_decimal_degrees
+from src.kelder_api.components.velocity.utils import convert_to_decimal_degrees
 from src.kelder_api.configuration.logging_config import setup_logging
 from src.kelder_api.configuration.settings import get_settings
 
@@ -119,22 +119,20 @@ class LogTracker:
         """
         gps_data, velocity_data = await self._get_sensor_data(now)
 
-        current_coord = Coordinate(
-            latitude=gps_data.latitude_nmea,
-            longitude=gps_data.longitude_nmea,
-        )
-
         # If there is no log history at the start of the journey
         if self.start_journey:
             self.journey_data = JourneyData(
                 timestamp=gps_data.timestamp,
-                start_coordinate=current_coord,
+                start_latitude=gps_data.latitude_nmea,
+                start_longitude=gps_data.longitude_nmea,
                 end_datetime=gps_data.timestamp,
-                end_coordinate=current_coord,
+                end_latitude=gps_data.latitude_nmea,
+                end_longitude=gps_data.longitude_nmea,
             )
             self.leg_data = LegData(
                 start_datetime=gps_data.timestamp,
-                start_coordinate=current_coord,
+                start_latitude=gps_data.latitude_nmea,
+                start_longitude=gps_data.longitude_nmea,
                 course_over_ground=velocity_data.course_over_ground,
             )
             self.start_journey = False
@@ -142,7 +140,8 @@ class LogTracker:
         else:
             # Increment the journey data endpoints
             self.journey_data.end_datetime = gps_data.timestamp
-            self.journey_data.end_coordinate = current_coord
+            self.journey_data.end_latitude = gps_data.latitude_nmea
+            self.journey_data.end_longitude = gps_data.longitude_nmea
 
             # If the bearing has changes beyond the tolerance reset the leg
             if (
@@ -152,7 +151,8 @@ class LogTracker:
                 logger.info("Identified a new leg.")
                 self.leg_data = LegData(
                     start_datetime=gps_data.timestamp,
-                    start_coordinate=current_coord,
+                    start_latitude=gps_data.latitude_nmea,
+                    start_longitude=gps_data.longitude_nmea,
                     course_over_ground=velocity_data.course_over_ground,
                 )
             # If the course has continues. Increment the latest cog
