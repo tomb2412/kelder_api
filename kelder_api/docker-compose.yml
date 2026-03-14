@@ -24,8 +24,8 @@ services:
     tty: true
     volumes:
       - /dev:/dev
-      - ./logs:/app/logs
-      - ./journey_history:/app/src/kelder_api/assets/
+      - ${HOST_PROJECT_ROOT:-.}/logs:/app/logs
+      - ${HOST_PROJECT_ROOT:-.}/journey_history:/app/src/kelder_api/assets/
     devices:
       - /dev/gpiomem
       - /dev/mem
@@ -43,14 +43,14 @@ services:
       - "host.docker.internal:host-gateway"
     networks:
       - kelder_net
-    restart: "on-failure"
+    # restart: "on-failure"
 
   worker:
     build: .
     privileged: true
     volumes:
-      - ./logs:/app/logs
-      - ./journey_history:/app/src/kelder_api/assets/
+      - ${HOST_PROJECT_ROOT:-.}/logs:/app/logs
+      - ${HOST_PROJECT_ROOT:-.}/journey_history:/app/src/kelder_api/assets/
     environment:
       REDIS_HOST: redis
     devices:

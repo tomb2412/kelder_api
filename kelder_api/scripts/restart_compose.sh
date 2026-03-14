@@ -5,51 +5,15 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT"
 
-echo "Restarting Docker Compose services (Neo4j is unaffected — it runs standalone)..."
-docker compose down || true
-docker compose up --build -d || true
+COMPOSE_PROJECT="kelder"
 
-echo ""
-echo "Checking container states..."
-SERVICES=$(docker compose config --services)
+echo "Flushing Redis..."
+docker exec redis redis-cli FLUSHALL || true
 
-FAILED=0
+echo "Stopping compose services..."
+docker compose -p "$COMPOSE_PROJECT" down
 
-for SERVICE in $SERVICES; do
-    CONTAINER_ID=$(docker compose ps -q "$SERVICE" || true)
+echo "Restarting services..."
+docker compose -p "$COMPOSE_PROJECT" up -d --no-build
 
-    if [ -z "$CONTAINER_ID" ]; then
-        echo "✖ $SERVICE → container missing, recreating..."
-        docker compose up -d "$SERVICE" || true
-
-        # Re-check after recreate
-        CONTAINER_ID=$(docker compose ps -q "$SERVICE" || true)
-        if [ -z "$CONTAINER_ID" ]; then
-            echo "❌ $SERVICE still has no container after recreate."
-            FAILED=1
-        else
-            echo "✔ $SERVICE container created."
-        fi
-
-        continue
-    fi
-
-    STATUS=$(docker inspect -f '{{.State.Status}}' "$CONTAINER_ID" 2>/dev/null || echo "unknown")
-
-    if [ "$STATUS" = "running" ]; then
-        echo "✔ $SERVICE is running"
-    else
-        echo "✖ $SERVICE → status: $STATUS"
-        FAILED=1
-    fi
-done
-
-echo ""
-
-if [ $FAILED -eq 0 ]; then
-    echo "✅ All services restarted or recreated successfully."
-    exit 0
-else
-    echo "❌ One or more services failed to restart or recreate."
-    exit 1
-fi
+echo "✅ Done."
