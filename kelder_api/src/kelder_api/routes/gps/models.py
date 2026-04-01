@@ -19,8 +19,9 @@ class GPSCard(BaseModel):
             "or None if stationary"
         )
     )
-    dtw: float = Field(
-        description="The distance to the next waypoint / nautical miles", default=4.7
+    dtw: float | None = Field(
+        default=None,
+        description="The distance to the next waypoint / nautical miles",
     )
 
 class GPSMap(BaseModel):

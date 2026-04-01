@@ -18,6 +18,7 @@ from src.kelder_api.components.db_manager.service import DBManager
 from src.kelder_api.components.drift_calculator.serivce import DriftCalculator
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.log.service import LogTracker
+from src.kelder_api.components.passage_plan_tracker.service import PassagePlanTracker
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.ultrasound.service import BilgeDepthSensor
@@ -88,6 +89,11 @@ class BackgroundTaskManager:
             compass_interface=compass_interface,
         )
 
+        passage_plan_tracker = PassagePlanTracker(
+            redis_client=self.redis_client,
+            gps_interface=gps_interface,
+        )
+
         components = {
             "GPS": {"instance": gps_interface, "method": gps_method},
             "COMPASS": {
@@ -109,6 +115,10 @@ class BackgroundTaskManager:
             "DRIFT": {
                 "instance": drift_calculator,
                 "method": "instantaneous_drift_calculator",
+            },
+            "PASSAGE_PLAN_TRACKER": {
+                "instance": passage_plan_tracker,
+                "method": "calculate_progress",
             },
         }
 
