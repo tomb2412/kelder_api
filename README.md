@@ -2,9 +2,9 @@
 
 This repository contains the Kelder API and supporting worker process used for vessel sensing, calculations, and data serving. The API is built with FastAPI and relies on Redis for time-series sensor storage. A background orchestrator runs sensor reads and calculations on a schedule based on vessel state.
 
-## Running
-
-For run scripts and developer setup notes, see the API run guide: [kelder_api/README.md](kelder_api/README.md).
+# Demo
+Please visit the front end repo
+https://github.com/tomb2412/kelda_web_app
 
 ## Code Structure
 
