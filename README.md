@@ -13,6 +13,9 @@ For run scripts and developer setup notes, see the API run guide: [kelder_api/RE
 - `kelder_api/src/kelder_api/app`: application entrypoints and dependency wiring.
 - `kelder_api/tests/notebooks`: sensor and integration notebooks.
 
+The components are shared across the background deamon and service API. The core sensing data flow is as follows:
+![api_schema](readme_assets/api_schema.png)
+
 ## Main App Entry Point
 
 The main app entry point is managed via the scripts in `kelder_api/scripts/start_app.sh` and `kelder_api/scripts/stop_app.sh`:
