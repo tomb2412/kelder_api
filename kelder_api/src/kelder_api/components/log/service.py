@@ -169,27 +169,8 @@ class LogTracker:
         "Writes and clears the cached journey data."
         if self.journey_data is not None:
             try:
-                gps_data = await self.gps_interface.read_gps_history_time_series(
-                    start_datetime=self.journey_data.timestamp,
-                    end_datetime=self.journey_data.end_datetime,
-                    active=True,
-                )
-
-                self.journey_data.gps_data = json.dumps(
-                    [
-                        {
-                            "timestamp": measurement.timestamp.isoformat(),
-                            "latitude": convert_to_decimal_degrees(
-                                measurement.latitude_nmea, lon=False
-                            ),
-                            "longitude": convert_to_decimal_degrees(
-                                measurement.longitude_nmea, lon=True
-                            ),
-                        }
-                        for measurement in gps_data
-                    ],
-                )
-
+                # The bounded GPS sorted set may no longer contain the full voyage.
+                # The journey record already carries the track as it is collected.
                 self.db_manager.save_from_journey_data(self.journey_data)
                 logger.info("Persisted journey data to sqlite history")
             except Exception:

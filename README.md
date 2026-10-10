@@ -56,6 +56,8 @@ When simulator mode is enabled, the orchestrator swaps real sensors for the simu
 
 `components/redis_client/redis_client.py` wraps `redis.asyncio` with helpers for time-series storage. Sensor and calculator writes use sorted sets with keys like `sensor:ts:<set_name>`, storing JSON payloads as members and Unix timestamps as scores. In practice, the background orchestrator triggers sensor and calculator writes, while the FastAPI routes trigger reads for UI and API consumers.
 
+Each sensor sorted set is capped at `REDIS_MAX_HISTORY_POINTS` readings (default 10,000), and reads return at most that many. Scalar Redis values expire after `REDIS_VALUE_TTL_SECONDS` (default 30 days). The Compose Redis service has a 96 MB Redis memory ceiling with `noeviction`; monitor Redis memory and adjust these limits for the deployment's voyage and chat-history needs. Application logs go to container stdout/stderr, with Docker retaining up to three 10 MB log files per service.
+
 ## Sensors and Calculators
 
 ### GPS Interface (`components/gps_new/interface.py`)

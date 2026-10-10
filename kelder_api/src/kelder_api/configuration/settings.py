@@ -37,6 +37,16 @@ class Redis(BaseSettings):
         description="The host name of the redis client", default="localhost"
     )
     redis_port: int = Field(description="Redis port name", default=6379)
+    redis_max_history_points: int = Field(
+        description="Maximum readings retained in each sensor sorted set",
+        default=10_000,
+        gt=0,
+    )
+    redis_value_ttl_seconds: int = Field(
+        description="Default lifetime for scalar Redis values",
+        default=30 * 24 * 60 * 60,
+        gt=0,
+    )
 
     model_config = model_config
 

@@ -54,7 +54,12 @@ class RedisClient:
     async def write_value(self, key: str, value: str, expiration: Optional[int] = None):
         async with self.get_connection() as redis:
             try:
-                await redis.set(key, value)
+                ttl = (
+                    expiration
+                    if expiration is not None
+                    else self.settings.redis_value_ttl_seconds
+                )
+                await redis.set(key, value, ex=ttl)
             except Exception as error:
                 logger.error(
                     "Redis exception raised setting key %s with value %s: %s",
@@ -80,7 +85,11 @@ class RedisClient:
         async with self.get_connection() as redis:
             key = f"sensor:ts:{sensor_id}"
             try:
-                await redis.zadd(key, {reading.json(): reading.timestamp.timestamp()})
+                max_points = self.settings.redis_max_history_points
+                async with redis.pipeline(transaction=True) as pipeline:
+                    pipeline.zadd(key, {reading.json(): reading.timestamp.timestamp()})
+                    pipeline.zremrangebyrank(key, 0, -max_points - 1)
+                    await pipeline.execute()
             except Exception as error:
                 logger.error(
                     f"Redis exception raised writing to sorted set, with {error}"
@@ -99,6 +108,8 @@ class RedisClient:
                 key,
                 max=datetime_range[1].timestamp() if datetime_range else "+inf",
                 min=datetime_range[0].timestamp() if datetime_range else "-inf",
+                start=0,
+                num=self.settings.redis_max_history_points,
                 withscores=True,
             )
 

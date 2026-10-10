@@ -19,10 +19,7 @@ ADMIN_USER = os.getenv("HOST_API_USERNAME")
 ADMIN_PASS = os.getenv("HOST_API_PASSWORD")
 
 RESTART_SCRIPT = Path(__file__).resolve().parents[3] / "scripts" / "restart_compose.sh"
-LOG_DIR = Path("/logs")
-
-
-setup_logging("host_api", LOG_DIR)
+setup_logging("host_api")
 logger = logging.getLogger("host_api")
 logger.info("Host restart API initialised")
 logger.info(f"\nuser_name: {ADMIN_USER}\npassword: {ADMIN_PASS}")

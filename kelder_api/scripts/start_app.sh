@@ -50,18 +50,20 @@ if $BUILD; then
     docker build -f Dockerfile.host_api -t "$HOST_API_IMAGE" .
 fi
 
-mkdir -p "$PROJECT_ROOT/logs" "$PROJECT_ROOT/journey_history"
+mkdir -p "$PROJECT_ROOT/journey_history"
 
 echo "Starting host API..."
 docker rm -f "$HOST_API_CONTAINER" 2>/dev/null || true
 docker run -d \
     --name "$HOST_API_CONTAINER" \
+    --restart unless-stopped \
     -p "${HOST_API_PORT}:9090" \
     --env-file "$PROJECT_ROOT/.env" \
     -e HOST_PROJECT_ROOT="$PROJECT_ROOT" \
     -v "$PROJECT_ROOT:/app" \
-    -v "$PROJECT_ROOT/logs:/logs" \
     -v /var/run/docker.sock:/var/run/docker.sock \
+    --log-opt max-size=10m \
+    --log-opt max-file=3 \
     "$HOST_API_IMAGE"
 
 # ── Compose services ──────────────────────────────────────────────────────────

@@ -39,6 +39,7 @@ class BackgroundTaskManager:
         self.UNDER_WAY_SLEEP = get_settings().sleep_times.UNDER_WAY_SLEEP
         self.STATIONARY_SLEEP = get_settings().sleep_times.STATIONARY_SLEEP
         self.sleep_time = self.STATIONARY_SLEEP
+        self.simulator = None
 
         self.redis_client = RedisClient()
 
@@ -144,7 +145,7 @@ class BackgroundTaskManager:
             return vessel_state
 
     async def run(self):
-        if self.simulator:
+        if self.simulator is not None:
             await self.simulator.clear_redis()
 
         self.vessel_state = VesselState.STATIONARY
