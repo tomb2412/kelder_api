@@ -1,4 +1,4 @@
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from http import HTTPStatus
 
 import requests
@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException
 
 from src.kelder_api.configuration.settings import get_settings
 
-logger = logging.getLogger("api.routes.health")
+logger = get_logger(__name__, "outes.health")
 
 router = APIRouter(tags=["Health"])
 

@@ -1,4 +1,4 @@
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 import textwrap
 from datetime import datetime, timezone
 from typing import Any
@@ -12,7 +12,7 @@ from src.kelder_api.components.velocity.utils import (
     haversine,
 )
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__, "passage_planner")
 
 # TODO - Move passage plan tool timeout to config
 

@@ -1,4 +1,4 @@
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 import os
 import secrets
 import subprocess
@@ -10,7 +10,7 @@ from fastapi.responses import PlainTextResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 # Configure logging to dedicated host_api log and aggregate logs
-from src.kelder_api.configuration.logging_config import setup_logging  # noqa: E402
+from src.kelder_api.configuration.logging_controller import get_logger, setup_logging  # noqa: E402
 
 security = HTTPBasic()
 load_dotenv()
@@ -20,7 +20,7 @@ ADMIN_PASS = os.getenv("HOST_API_PASSWORD")
 
 RESTART_SCRIPT = Path(__file__).resolve().parents[3] / "scripts" / "restart_compose.sh"
 setup_logging("host_api")
-logger = logging.getLogger("host_api")
+logger = get_logger(__name__, "host_api")
 logger.info("Host restart API initialised")
 logger.info(f"\nuser_name: {ADMIN_USER}\npassword: {ADMIN_PASS}")
 

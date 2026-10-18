@@ -1,4 +1,4 @@
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 import math
 from datetime import datetime, timezone
 from typing import List
@@ -8,10 +8,9 @@ import numpy as np
 from src.kelder_api.components.compass_new.models import CompassRedisData
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
-from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.logging_controller import get_logger
 
-setup_logging(component="compass")
-logger = logging.getLogger("compass")
+logger = get_logger(__name__, "compass")
 
 
 class CompassInterface:

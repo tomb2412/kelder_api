@@ -1,7 +1,7 @@
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from typing import Dict, List
 
-logger = logging.getLogger("background_orchestrator.underway")
+logger = get_logger(__name__, "background_orchestrator.underway")
 
 
 class UnderwayStrategy:

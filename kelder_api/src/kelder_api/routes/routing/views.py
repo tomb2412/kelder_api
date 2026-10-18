@@ -1,4 +1,4 @@
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from src.kelder_api.app.getters import get_neo4j_client
 from src.kelder_api.components.neo4j_client import Neo4jClient
 
-logger = logging.getLogger("api.routes.routing")
+logger = get_logger(__name__, "routes.routing")
 
 router = APIRouter(prefix="/routing", tags=["Routing"])
 

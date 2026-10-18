@@ -1,4 +1,4 @@
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from datetime import datetime, timezone
 
 from src.kelder_api.components.agentic_workflow.agents.models import PassagePlan, Waypoint
@@ -12,7 +12,7 @@ from src.kelder_api.components.velocity.utils import (
     haversine,
 )
 
-logger = logging.getLogger("passage_plan_tracker")
+logger = get_logger(__name__, "passage_plan_tracker")
 
 REDIS_KEY = "progress:passage_plan"
 

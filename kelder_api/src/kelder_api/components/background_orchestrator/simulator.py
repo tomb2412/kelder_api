@@ -1,4 +1,4 @@
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 import math
 import random
 from datetime import datetime, timedelta, timezone
@@ -18,11 +18,10 @@ from src.kelder_api.components.velocity.utils import (
     convert_to_decimal_degrees,
     decimal_to_dms_format,
 )
-from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
 
-setup_logging(component="simulator")
-logger = logging.getLogger("simulator")
+logger = get_logger(__name__, "simulator")
 
 
 class Simulator(CompassInterface, GPSInterface):

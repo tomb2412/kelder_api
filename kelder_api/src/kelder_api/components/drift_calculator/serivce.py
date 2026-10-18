@@ -1,4 +1,4 @@
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 import math
 from datetime import datetime, timedelta, timezone
 from statistics import StatisticsError, fmean
@@ -10,7 +10,7 @@ from src.kelder_api.components.drift_calculator.utils import bearing_angle_diffe
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.velocity.service import VelocityCalculator
-from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
 
 """
@@ -25,8 +25,7 @@ Few approaches here perhaps worth building in and configuring
 
 # Ensure all measurements are UTC so timedeltas capture the correct values
 
-setup_logging(component="drift_calculator")
-logger = logging.getLogger("drift_calculator")
+logger = get_logger(__name__, "drift_calculator")
 
 # TODO: make the active = True consistant across the read set methods
 

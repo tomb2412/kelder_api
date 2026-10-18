@@ -1,4 +1,4 @@
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 
 from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel
@@ -11,7 +11,7 @@ from src.kelder_api.components.neo4j_client import Neo4jClient
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
 
-logger = logging.getLogger("api.routes.passage_plan")
+logger = get_logger(__name__, "routes.passage_plan")
 
 router = APIRouter(tags=["Agentic"])
 

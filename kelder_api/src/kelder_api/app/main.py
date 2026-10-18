@@ -1,4 +1,4 @@
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -17,7 +17,7 @@ from src.kelder_api.components.log.service import LogTracker
 from src.kelder_api.components.neo4j_client import Neo4jClient
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.velocity.service import VelocityCalculator
-from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.logging_controller import get_logger, setup_logging
 from src.kelder_api.configuration.settings import get_settings
 
 # Routes
@@ -47,9 +47,8 @@ LOCAL_ORIGIN_REGEX = (
     r"|10\.\d{1,3}\.\d{1,3}\.\d{1,3})(:\d+)?"
 )
 
-setup_logging(component="api")
-
-logger = logging.getLogger("api")
+setup_logging(service="API")
+logger = get_logger(__name__, "root")
 
 
 @asynccontextmanager

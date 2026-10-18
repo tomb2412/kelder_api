@@ -1,5 +1,5 @@
 import json
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
 from typing import List, Tuple
@@ -24,7 +24,7 @@ from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.routes.gps.models import GPSCard, GPSMap
 from src.kelder_api.components.velocity.utils import convert_to_decimal_degrees
 
-logger = logging.getLogger("api.routes.gps")
+logger = get_logger(__name__, "routes.gps")
 
 router = APIRouter(tags=["GPS"])
 router_card = APIRouter(tags=["Card routes"])

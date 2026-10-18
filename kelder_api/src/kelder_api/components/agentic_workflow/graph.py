@@ -1,4 +1,4 @@
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from typing import Awaitable, Callable
 
 from pydantic_graph import Graph
@@ -18,10 +18,9 @@ from src.kelder_api.components.agentic_workflow.nodes import (
 )
 from src.kelder_api.components.neo4j_client import Neo4jClient
 from src.kelder_api.components.redis_client.redis_client import RedisClient
-from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.logging_controller import get_logger
 
-setup_logging(component="agent_workflow")
-logger = logging.getLogger("agent_workflow")
+logger = get_logger(__name__, "agent_workflow")
 
 
 class AgentWorkflow:

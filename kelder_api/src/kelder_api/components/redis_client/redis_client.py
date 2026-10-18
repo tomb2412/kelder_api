@@ -1,5 +1,5 @@
 import json
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from typing import AsyncGenerator, List, Optional
@@ -8,11 +8,11 @@ from pydantic import BaseModel
 from redis.asyncio import ConnectionPool, Redis
 
 from src.kelder_api.components.redis_client.types import RedisSetNames
-from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
 
-setup_logging(component="redis_client")
-logger = logging.getLogger("redis_client")
+
+logger = get_logger(__name__, "redis_client")
 
 
 class RedisClient:

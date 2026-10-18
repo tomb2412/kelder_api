@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from contextlib import contextmanager
 from typing import Any, Generator
 
@@ -33,7 +33,7 @@ from src.kelder_api.components.neo4j_client.queries import (
     DROP_GRAPH_IF_EXISTS,
 )
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__, "graph_client")
 
 GDS_GRAPH_NAME = "solent_graph"
 

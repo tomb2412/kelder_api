@@ -1,5 +1,5 @@
 # hc_sr04_pi5.py
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from datetime import datetime, timezone
 
 from gpiozero import DistanceSensor
@@ -7,14 +7,13 @@ from gpiozero import DistanceSensor
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.ultrasound.models import BilgeDepth
-from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.logging_controller import get_logger
 
 # GPIO pins
 TRIG = 23
 ECHO = 24
 
-setup_logging("bilge_depth")
-logger = logging.getLogger("bilge_depth")
+logger = get_logger(__name__, "bilge_depth")
 
 
 class BilgeDepthSensor:

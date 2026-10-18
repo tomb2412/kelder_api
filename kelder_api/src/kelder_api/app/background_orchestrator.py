@@ -1,13 +1,13 @@
 import asyncio
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 
 from src.kelder_api.components.background_orchestrator.orchestrator import (
     BackgroundTaskManager,
 )
-from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.logging_controller import get_logger, setup_logging
 
-setup_logging(component="background_orchestrator")
-logger = logging.getLogger("background_orchestrator")
+setup_logging(service="background_orchestrator")
+logger = get_logger(__name__, "background_orchestrator")
 
 if __name__ == "__main__":
     logger.info("Starting background orchestrator worker")

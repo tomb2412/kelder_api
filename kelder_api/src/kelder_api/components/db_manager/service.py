@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
@@ -16,13 +16,12 @@ from src.kelder_api.components.db_manager.queries import (
     SELECT_JOURNEY_BY_ID,
     SELECT_RECENT_JOURNEYS,
 )
-from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.logging_controller import get_logger
 
 if TYPE_CHECKING:
     from src.kelder_api.components.log.models import JourneyData
 
-setup_logging(component="db_manager")
-logger = logging.getLogger("db_manager")
+get_logger(__name__, "db_manager")
 
 DEFAULT_DB_PATH = Path(__file__).resolve().parents[2] / "assets" / "journey_history.db"
 

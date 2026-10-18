@@ -1,4 +1,4 @@
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 
@@ -7,7 +7,7 @@ from src.kelder_api.components.background_orchestrator.orchestrator import (
     BackgroundTaskManager,
 )
 
-logger = logging.getLogger("api.routes.ships_status")
+logger = get_logger(__name__, "routes.ships_status")
 
 router = APIRouter(tags=["Ships status"])
 

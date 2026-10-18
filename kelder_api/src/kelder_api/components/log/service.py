@@ -1,5 +1,5 @@
 import json
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from datetime import datetime, timedelta, timezone
 from typing import Tuple
 
@@ -15,11 +15,10 @@ from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.velocity.models import GPSVelocity
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.components.velocity.utils import convert_to_decimal_degrees
-from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
 
-setup_logging(component="log")
-logger = logging.getLogger("log")
+logger = get_logger(__name__, "log")
 
 
 class LogTracker:

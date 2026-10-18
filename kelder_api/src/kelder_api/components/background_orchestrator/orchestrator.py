@@ -1,5 +1,5 @@
 import asyncio
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from datetime import datetime, timedelta, timezone
 
 from src.kelder_api.components.background_orchestrator.enums import (
@@ -24,8 +24,9 @@ from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.ultrasound.service import BilgeDepthSensor
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.configuration.settings import get_settings
+from src.kelder_api.configuration.logging_controller import get_logger
 
-logger = logging.getLogger("background_orchestrator")
+logger = get_logger(__name__, "background_task_manager")
 
 
 class BackgroundTaskManager:

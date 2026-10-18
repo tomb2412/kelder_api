@@ -1,4 +1,4 @@
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from typing import Tuple
 
 from fastapi import APIRouter, Depends, Request
@@ -8,7 +8,7 @@ from src.kelder_api.components.compass_new.interface import CompassInterface
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.routes.compass.models import CompassCard
 
-logger = logging.getLogger("api.routes.compass")
+logger = get_logger(__name__, "routes.compass")
 
 router = APIRouter(tags=["Core Sensing"])
 

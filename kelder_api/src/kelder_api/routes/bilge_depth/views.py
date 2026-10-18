@@ -1,4 +1,4 @@
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -10,7 +10,7 @@ from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.ultrasound.models import BilgeDepth
 from src.kelder_api.configuration.settings import get_settings
 
-logger = logging.getLogger("api.routes.bilge_depth")
+logger = get_logger(__name__, "routes.bilge_depth")
 
 router = APIRouter(tags=["Core Sensing"])
 

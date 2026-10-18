@@ -1,4 +1,4 @@
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from datetime import datetime, timezone
 from http import HTTPStatus
 
@@ -8,7 +8,7 @@ from src.kelder_api.app.getters import get_log_tracker
 from src.kelder_api.components.log.models import JourneyData
 from src.kelder_api.components.log.service import LogTracker
 
-logger = logging.getLogger("api.routes.log")
+logger = get_logger(__name__, "routes.log")
 
 router = APIRouter(tags=["LOG"])
 

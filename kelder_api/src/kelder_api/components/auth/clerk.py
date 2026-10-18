@@ -1,4 +1,4 @@
-import logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from functools import lru_cache
 
 import jwt
@@ -7,7 +7,7 @@ from fastapi import Request
 
 from src.kelder_api.configuration.settings import get_settings
 
-logger = logging.getLogger("api.auth")
+logger = get_logger(__name__, "api.auth")
 
 
 @lru_cache(maxsize=1)
