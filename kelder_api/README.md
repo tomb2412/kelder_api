@@ -28,7 +28,7 @@ API to serve Kelder sensing features and ship controlfas
 # Run Docker
 - build docker container `sudo docker build -t kelder_api .`
 - run the docker container `sudo docker run --rm --privileged --tty --volume /dev:/dev -p 8000:80 kelder_api`
-- usefull docker commands `sudo docker ps`, `sudo docker kill container name`, `sudo docker exec -it <container name> bash`, logs: `cd /app/logs`
+- useful Docker commands: `sudo docker ps`, `sudo docker kill <container>`, `sudo docker exec -it <container> bash`; view bounded service logs with `docker compose logs -f kelder_api` or `docker compose logs -f worker`
 
 - docker compose `docker compose up --build`
 - To see the keys `docker compose exec redis redis-cli`  and then `KEYS *`. GPS history: `docker compose exec redis redis-cli LRANGE gps:History 0 10`

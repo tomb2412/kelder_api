@@ -1,5 +1,4 @@
 import json
-import logging
 from datetime import datetime, timedelta, timezone
 from typing import Tuple
 
@@ -15,11 +14,10 @@ from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.velocity.models import GPSVelocity
 from src.kelder_api.components.velocity.service import VelocityCalculator
 from src.kelder_api.components.velocity.utils import convert_to_decimal_degrees
-from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
 
-setup_logging(component="log")
-logger = logging.getLogger("log")
+logger = get_logger(__name__, "log")
 
 
 class LogTracker:
@@ -169,27 +167,8 @@ class LogTracker:
         "Writes and clears the cached journey data."
         if self.journey_data is not None:
             try:
-                gps_data = await self.gps_interface.read_gps_history_time_series(
-                    start_datetime=self.journey_data.timestamp,
-                    end_datetime=self.journey_data.end_datetime,
-                    active=True,
-                )
-
-                self.journey_data.gps_data = json.dumps(
-                    [
-                        {
-                            "timestamp": measurement.timestamp.isoformat(),
-                            "latitude": convert_to_decimal_degrees(
-                                measurement.latitude_nmea, lon=False
-                            ),
-                            "longitude": convert_to_decimal_degrees(
-                                measurement.longitude_nmea, lon=True
-                            ),
-                        }
-                        for measurement in gps_data
-                    ],
-                )
-
+                # The bounded GPS sorted set may no longer contain the full voyage.
+                # The journey record already carries the track as it is collected.
                 self.db_manager.save_from_journey_data(self.journey_data)
                 logger.info("Persisted journey data to sqlite history")
             except Exception:
@@ -213,9 +192,6 @@ class LogTracker:
     async def get_journey_set(
         self, datetime: datetime = datetime.now(timezone.utc)
     ) -> JourneyData:
-        data = await self.redis_client.read_hashed_set(
-            RedisSetNames.JOURNEY, datetime
-        )
         try:
             return JourneyData(
                 **(

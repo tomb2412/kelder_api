@@ -1,8 +1,8 @@
-import logging
 from datetime import datetime, timezone
 
 from fastapi import APIRouter
 
+from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.routes.tidal_measurements.tidal_clients import (
     get_height_of_tide_now,
     get_tide_predictions,
@@ -10,7 +10,7 @@ from src.kelder_api.routes.tidal_measurements.tidal_clients import (
 
 THREE_HOURS_IN_SECONDS = 10800
 
-logger = logging.getLogger("api.routes.tidal_measurements")
+logger = get_logger(__name__, "routes.tidal_measurements")
 router = APIRouter(tags=["Tidal Information"])
 
 

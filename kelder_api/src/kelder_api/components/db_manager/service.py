@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import logging
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
@@ -16,13 +15,12 @@ from src.kelder_api.components.db_manager.queries import (
     SELECT_JOURNEY_BY_ID,
     SELECT_RECENT_JOURNEYS,
 )
-from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.logging_controller import get_logger
 
 if TYPE_CHECKING:
     from src.kelder_api.components.log.models import JourneyData
 
-setup_logging(component="db_manager")
-logger = logging.getLogger("db_manager")
+logger = get_logger(__name__, "db_manager")
 
 DEFAULT_DB_PATH = Path(__file__).resolve().parents[2] / "assets" / "journey_history.db"
 
@@ -56,6 +54,10 @@ class DBManager:
 
         with self._cursor() as cursor:
             cursor.execute(CREATE_JOURNEY_HISTORY_TABLE)
+            cursor.execute("PRAGMA table_info(journey_history)")
+            columns = {row[1] for row in cursor.fetchall()}
+            if "gps_data" not in columns:
+                cursor.execute("ALTER TABLE journey_history ADD COLUMN gps_data TEXT")
         self._initialised = True
         logger.info("Journey history database ready at %s", self.database_path)
 
@@ -103,6 +105,7 @@ class DBManager:
         self._ensure_initialised()
         with self._cursor() as cursor:
             cursor.execute(DELETE_ALL_JOURNEYS)
+        logger.info("Successfully cleared the db.")
 
     def _fetch_records(
         self, query: str, params: Sequence | None = None

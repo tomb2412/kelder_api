@@ -1,4 +1,3 @@
-import logging
 import math
 from datetime import datetime, timedelta, timezone
 from statistics import StatisticsError, fmean
@@ -10,7 +9,7 @@ from src.kelder_api.components.drift_calculator.utils import bearing_angle_diffe
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.velocity.service import VelocityCalculator
-from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
 
 """
@@ -25,8 +24,7 @@ Few approaches here perhaps worth building in and configuring
 
 # Ensure all measurements are UTC so timedeltas capture the correct values
 
-setup_logging(component="drift_calculator")
-logger = logging.getLogger("drift_calculator")
+logger = get_logger(__name__, "drift_calculator")
 
 # TODO: make the active = True consistant across the read set methods
 
@@ -61,21 +59,21 @@ class DriftCalculator:
         else:
             drift_speed = None
             drift_angle = None
-        logger.debug(
-            f"The final drift is: {DriftData(timestamp=end_datetime, drift_speed=drift_speed, drift_angle=drift_angle)}"
+
+        drift_data = DriftData(
+            timestamp=end_datetime, drift_speed=drift_speed, drift_angle=drift_angle
         )
-        await self.write_drift(
-            DriftData(
-                timestamp=end_datetime, drift_speed=drift_speed, drift_angle=drift_angle
-            )
-        )
+        logger.debug(f"The final drift is: {drift_data}")
+
+        await self.write_drift(drift_data)
 
     async def _calculate_avg_velocity(
         self, end_datetime: datetime | None = None
     ) -> Tuple[float | None]:
         """General method to retrieve the gps.
 
-        NOT USED because isn't instantanous though as it will always be behind the velocity.
+        NOT USED
+        because isn't instantanous though as it will always be behind the velocity.
         """
         if end_datetime is None:
             end_datetime = datetime.now(timezone.utc).replace(microsecond=0)
@@ -86,7 +84,8 @@ class DriftCalculator:
             end_datetime=end_datetime, start_datetime=start_datetime, active=True
         )
         logger.debug(
-            f"Requesting the velocity timeseries. From: {start_datetime}-{end_datetime}. Got length: {len(velocity_history)}"
+            f"Requesting the velocity timeseries."
+            f"From: {start_datetime}-{end_datetime}. Length: {len(velocity_history)}"
         )
         # TODO: catch no data
         try:
@@ -112,7 +111,8 @@ class DriftCalculator:
         self, end_datetime: datetime | None = None
     ) -> Tuple[float | None]:
         """
-        A method to simply request the latest velocity within the time period avgd for the compass
+        A method to simply request the latest velocity within the time period
+        avgd for the compass.
         """
         if end_datetime is None:
             end_datetime = datetime.now(timezone.utc).replace(microsecond=0)
@@ -124,7 +124,8 @@ class DriftCalculator:
             end_datetime=end_datetime, start_datetime=start_datetime, active=True
         )
         logger.debug(
-            f"Requesting the velocity timeseries. From: {start_datetime}-{end_datetime}. Got length: {len(velocity_history)}"
+            f"Requesting the velocity timeseries."
+            f"From: {start_datetime}-{end_datetime}. Length: {len(velocity_history)}"
         )
         try:
             return velocity_history[0].speed_over_ground, velocity_history[
@@ -148,7 +149,8 @@ class DriftCalculator:
             end_datetime=end_datetime, start_datetime=start_datetime, active=True
         )
         logger.debug(
-            f"Requesting the compass timeseries. From: {start_datetime}-{end_datetime}. Got length: {len(compass_history)}"
+            f"Requesting the compass timeseries."
+            f"From: {start_datetime}-{end_datetime}. Length: {len(compass_history)}"
         )
 
         try:

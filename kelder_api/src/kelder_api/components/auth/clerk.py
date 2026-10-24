@@ -1,13 +1,13 @@
-import logging
 from functools import lru_cache
 
 import jwt
-from jwt import PyJWKClient
 from fastapi import Request
+from jwt import PyJWKClient
 
+from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
 
-logger = logging.getLogger("api.auth")
+logger = get_logger(__name__, "api.auth")
 
 
 @lru_cache(maxsize=1)
@@ -17,7 +17,11 @@ def _get_jwks_client():
 
 
 def get_optional_user_id(request: Request) -> str:
-    """Extract Clerk user_id from Bearer JWT. Returns 'anonymous' on missing/invalid token."""
+    """
+    Extract Clerk user_id from Bearer JWT.
+
+    Returns 'anonymous' on missing/invalid token.
+    """
     auth = request.headers.get("Authorization", "")
     if not auth.startswith("Bearer "):
         return "anonymous"

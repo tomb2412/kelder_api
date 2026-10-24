@@ -1,5 +1,4 @@
 import asyncio
-import logging
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from time import time
@@ -18,11 +17,10 @@ from src.kelder_api.components.gps_new.models import (
 )
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
-from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
 
-setup_logging(component="gps")
-logger = logging.getLogger("gps")
+logger = get_logger(__name__, "gps")
 
 
 class GPSInterface:

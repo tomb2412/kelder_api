@@ -130,7 +130,7 @@ class AppRoute(Enum):
             "speed_over_ground": 7.2,
             "log": 12.5,
             "drift": None,
-            "dtw": 4.7,
+            "dtw": None,
         },
     )
     COMPASS_HEADING = RouteExpectation(
@@ -167,7 +167,7 @@ class AppRoute(Enum):
         "GET",
         "/get_redis_set_size",
         200,
-        {"GPS": 1, "list_length": 0},
+        {"GPS": 1, "list_length": 1},
         request_params={"sensor": "GPS"},
         setup=_reset_redis_sets,
     )
@@ -204,16 +204,20 @@ class AppRoute(Enum):
         request_json={"message": "Hi"},
         is_stream=True,
     )
-    CHAT_CLEAR = RouteExpectation("GET", "/chat_clear", 200, expected_json={"status": "ok"})
+    CHAT_CLEAR = RouteExpectation(
+        "GET", "/chat_clear", 200, expected_json={"status": "ok"}
+    )
 
 
 def test_app_initialisation_sets_state(app_client):
     _, app = app_client
+    from src.kelder_api.components.background_orchestrator.orchestrator import (
+        BackgroundTaskManager,
+    )
     from tests.conftest import (
         DummyCompassInterface,
         DummyGPSInterface,
         DummyLogTracker,
-        DummyOrchestrator,
         DummyRedisClient,
         DummyVelocityCalculator,
     )
@@ -223,7 +227,7 @@ def test_app_initialisation_sets_state(app_client):
     assert isinstance(app.state.compass_interface, DummyCompassInterface)
     assert isinstance(app.state.velocity_calculator, DummyVelocityCalculator)
     assert isinstance(app.state.log_tracker, DummyLogTracker)
-    assert isinstance(app.state.background_orchestrator, DummyOrchestrator)
+    assert isinstance(app.state.background_orchestrator, BackgroundTaskManager)
 
 
 @pytest.mark.parametrize("route", list(AppRoute))

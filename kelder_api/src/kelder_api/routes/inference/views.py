@@ -1,6 +1,5 @@
 import asyncio
 import json
-import logging
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, Request
@@ -8,10 +7,11 @@ from starlette.responses import StreamingResponse
 
 from src.kelder_api.components.agentic_workflow.graph import AgentWorkflow
 from src.kelder_api.components.auth.clerk import get_optional_user_id
+from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.routes.inference.utils import error_stream, extract_user_prompt
 
-logger = logging.getLogger("api.routes.inference")
+logger = get_logger(__name__, "routes.inference")
 
 router = APIRouter(tags=["Agentic"])
 

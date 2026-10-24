@@ -1,11 +1,10 @@
-import logging
-
 from fastapi import APIRouter, Depends, Request
 
 from src.kelder_api.app.getters import get_redis_client
 from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.configuration.logging_controller import get_logger
 
-logger = logging.getLogger("api.routes.redis")
+logger = get_logger(__name__, "routes.redis")
 
 router = APIRouter(tags=["Redis management"])
 
@@ -31,12 +30,14 @@ async def getRedisSetSize(
 ):
     logger.info("Sizing the redis data")
     async with redis_client.get_connection() as redis:
-        # TODO: what is the difference between size and len(list_gps)
-        size = await redis.zcard(f"sensor:ts:{sensor}")
+        key = f"sensor:ts:{sensor}"
+        size = await redis.zcard(key)
         list_gps = await redis.zrevrangebyscore(
-            "sensor:ts:{sensor}",
+            key,
             max="+inf",
             min="-inf",
+            start=0,
+            num=redis_client.settings.redis_max_history_points,
             withscores=True,
         )
 

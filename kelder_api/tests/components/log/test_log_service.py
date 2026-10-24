@@ -32,6 +32,9 @@ class RecordingRedisClient:
     ) -> dict[str, Any]:
         return self.storage.get(key, {})
 
+    async def clear_set(self, *args, **kwargs) -> None:
+        return None
+
 
 class RecordingDBManager:
     def __init__(self) -> None:
@@ -257,7 +260,7 @@ async def test_finish_journey_persists_and_resets_state(
 
     await tracker.increment_log(now=timestamp)
     journey_snapshot = tracker.journey_data
-    await tracker.finish_jouney()
+    await tracker.finish_journey()
 
     assert tracker.start_journey is True
     assert tracker.journey_data is None

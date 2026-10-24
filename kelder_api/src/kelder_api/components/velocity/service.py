@@ -1,4 +1,3 @@
-import logging
 from datetime import datetime, timedelta, timezone
 from typing import List, Tuple
 
@@ -14,11 +13,10 @@ from src.kelder_api.components.velocity.utils import (
     haversine,
     time_difference_seconds,
 )
-from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
 
-setup_logging(component="velocity")
-logger = logging.getLogger("velocity")
+logger = get_logger(__name__, "velocity")
 
 
 class VelocityCalculator:

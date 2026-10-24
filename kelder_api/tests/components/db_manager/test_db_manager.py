@@ -24,7 +24,7 @@ def journey_record_factory() -> Callable[..., JourneyHistoryRecord]:
         days_offset: int = 0,
         hours_offset: int = 0,
         distance: float = 12.5,
-        gps_data: str | None = None,
+        gps_data: str | None = "",
     ) -> JourneyHistoryRecord:
         departure = base_time + timedelta(days=days_offset, hours=hours_offset)
         arrival = departure + timedelta(hours=6, minutes=30)
@@ -54,7 +54,7 @@ def test_save_trip_persists_record(db_manager: DBManager, journey_record_factory
     assert persisted is not None
     assert persisted.departure_location.latitude == "52.13.77"
     assert persisted.distance_travelled == pytest.approx(record.distance_travelled)
-    assert persisted.gps_data is None
+    assert persisted.gps_data == ""
 
 
 def test_list_trips_returns_newest_first(
