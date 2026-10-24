@@ -21,7 +21,7 @@ from src.kelder_api.configuration.logging_controller import get_logger
 if TYPE_CHECKING:
     from src.kelder_api.components.log.models import JourneyData
 
-get_logger(__name__, "db_manager")
+logger = get_logger(__name__, "db_manager")
 
 DEFAULT_DB_PATH = Path(__file__).resolve().parents[2] / "assets" / "journey_history.db"
 
@@ -102,6 +102,7 @@ class DBManager:
         self._ensure_initialised()
         with self._cursor() as cursor:
             cursor.execute(DELETE_ALL_JOURNEYS)
+        logger.info("Successfully cleared the db.")
 
     def _fetch_records(
         self, query: str, params: Sequence | None = None

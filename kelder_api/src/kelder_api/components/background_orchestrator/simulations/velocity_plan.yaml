@@ -6,6 +6,7 @@ boat:
 
 simulation:
   # Runs in a straight line
+  - max_iterations: 2 # How many iterations before restart
   - start_latitude: "5043.8222" # NMEA streamed
   - start_longitude: "-00108.9046"
   - heading: 0 # compass degs T

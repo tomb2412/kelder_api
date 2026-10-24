@@ -2,10 +2,19 @@ import json
 from src.kelder_api.configuration.logging_controller import get_logger
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
+import logging
 from typing import AsyncGenerator, List, Optional
 
 from pydantic import BaseModel
 from redis.asyncio import ConnectionPool, Redis
+from redis.exceptions import ConnectionError, TimeoutError
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_random_exponential,
+    before_sleep_log,
+)
 
 from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.configuration.logging_controller import get_logger
@@ -176,3 +185,15 @@ class RedisClient:
                     )
 
             logger.info("Cleared all redis sets before: %s", end_datetime)
+
+    @retry(
+        retry=retry_if_exception_type((ConnectionError, TimeoutError)),
+        wait=wait_random_exponential(multiplier=1, max=60),
+        stop=stop_after_attempt(3),
+        before_sleep=before_sleep_log(logger, logging.WARNING),
+        reraise=True,
+    )
+    async def flush_all(self):
+        async with self.get_connection() as redis:
+            await redis.flushall(asynchronous=True)
+            logger.info("Flushed all redis data.")

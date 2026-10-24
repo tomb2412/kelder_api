@@ -6,6 +6,7 @@ from pathlib import Path
 
 import yaml
 
+from src.kelder_api.components.db_manager.service import DBManager
 from src.kelder_api.components.background_orchestrator.enums import VesselState
 from src.kelder_api.components.compass_new.interface import CompassInterface
 from src.kelder_api.components.compass_new.models import CompassRedisData
@@ -23,22 +24,36 @@ from src.kelder_api.configuration.settings import get_settings
 
 logger = get_logger(__name__, "simulator")
 
+MAX_SIMULATION_LENGTH_SECONDS = 600
 
 class Simulator(CompassInterface, GPSInterface):
     """Injects simulation data for the hardware, using yaml behaviours"""
 
     def __init__(
         self,
+        db_manager: DBManager,
         redis_client: RedisClient,
         simulation_file_name: str,
     ):
-        self.current_time = datetime.now(tz=timezone.utc)
+        self.start_time = datetime.now(tz=timezone.utc)
+        self.current_time = self.start_time
+
+        self.db_manager = db_manager
         self.redis_client = redis_client
 
+        self.simulation_file_name = simulation_file_name
+        self._initialise_simulation_parameters()
+
+        self.STATIONARY_SLEEP = get_settings().sleep_times.STATIONARY_SLEEP
+        self.UNDERWAY_SLEEP = get_settings().sleep_times.UNDER_WAY_SLEEP
+
+        self.gps_history = []
+
+    def _initialise_simulation_parameters(self) -> None:
         parent_path = (
             Path(__file__).resolve().parents[0]
             / "simulations"
-            / f"{simulation_file_name}.yaml"
+            / f"{self.simulation_file_name}.yaml"
         )
         config = yaml.safe_load(open(parent_path))
 
@@ -47,14 +62,16 @@ class Simulator(CompassInterface, GPSInterface):
         self.turn_rate = config["boat"][2]["turn_rate"]
         self.heading_variation = config["boat"][3]["heading_variation"]
 
+        self.max_iterations = config["simulation"][0]["max_iterations"]
+        self.interation = 0
         # Not sure how to do manage the different simulations in one file,
         #  w dicts or many files with one dict
-        self.latitude = config["simulation"][0]["start_latitude"]
-        self.longitude = config["simulation"][1]["start_longitude"]
-        self.heading = config["simulation"][2]["heading"]
+        self.latitude = config["simulation"][1]["start_latitude"]
+        self.longitude = config["simulation"][2]["start_longitude"]
+        self.heading = config["simulation"][3]["heading"]
 
         try:
-            velocity_plan = config["simulation"][3]
+            velocity_plan = config["simulation"][4]
 
             self.loop_count = 0
             self.velocity_plan = []
@@ -71,10 +88,20 @@ class Simulator(CompassInterface, GPSInterface):
         except IndexError:
             self.velocity_plan = None
 
-        self.STATIONARY_SLEEP = get_settings().sleep_times.STATIONARY_SLEEP
-        self.UNDERWAY_SLEEP = get_settings().sleep_times.UNDER_WAY_SLEEP
+        logger.info('Initialised simulation data')
+        
+    async def repeat_handler(self) -> None:
+        self.interation += 1
+        logger.debug('Simulation currently on iteration %s of %s', self.interation, self.max_iterations)
+        
+        if self.interation == self.max_iterations:
+            await self.clear_redis()
+            self._initialise_simulation_parameters()
 
-        self.gps_history = []
+        simulation_duration = datetime.now(tz = timezone.utc) - self.start_time 
+        if simulation_duration.total_seconds() >= MAX_SIMULATION_LENGTH_SECONDS:
+            await self.redis_client.flush_all()
+            self.db_manager.clear_history()
 
     async def clear_redis(self) -> None:
         for sensor in [
