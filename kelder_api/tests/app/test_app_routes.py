@@ -215,9 +215,11 @@ def test_app_initialisation_sets_state(app_client):
         DummyCompassInterface,
         DummyGPSInterface,
         DummyLogTracker,
-        DummyOrchestrator,
         DummyRedisClient,
         DummyVelocityCalculator,
+    )
+    from src.kelder_api.components.background_orchestrator.orchestrator import (
+        BackgroundTaskManager,
     )
 
     assert isinstance(app.state.redis_client, DummyRedisClient)
@@ -225,7 +227,7 @@ def test_app_initialisation_sets_state(app_client):
     assert isinstance(app.state.compass_interface, DummyCompassInterface)
     assert isinstance(app.state.velocity_calculator, DummyVelocityCalculator)
     assert isinstance(app.state.log_tracker, DummyLogTracker)
-    assert isinstance(app.state.background_orchestrator, DummyOrchestrator)
+    assert isinstance(app.state.background_orchestrator, BackgroundTaskManager)
 
 
 @pytest.mark.parametrize("route", list(AppRoute))
