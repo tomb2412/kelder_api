@@ -133,6 +133,10 @@ class BackgroundTaskManager:
         velocity = await self.components["VELOCITY"]["instance"].read_velocity_latest(
             active=True
         )
+        if velocity.speed_over_ground is None:
+            logger.warning("No valid velocity available, preserving %s", vessel_state)
+            return vessel_state
+
         try:
             if velocity.speed_over_ground >= self.settings.sog_threshold:
                 self.sleep_time = self.UNDER_WAY_SLEEP
@@ -162,7 +166,6 @@ class BackgroundTaskManager:
             )
 
             self.vessel_state = await self.calculate_new_state(self.vessel_state)
-            await self.write_vessel_state()
             if self.vessel_state != previous_vessel_state:
                 logger.info(
                     "Vessel state change detected: %s -> %s",
@@ -176,6 +179,8 @@ class BackgroundTaskManager:
 
                     if self.simulator is not None:
                         await self.simulator.repeat_handler()
+
+            await self.write_vessel_state()
 
             # Clear all the data in the last 10 mins
             if self.vessel_state == VesselState.STATIONARY:
