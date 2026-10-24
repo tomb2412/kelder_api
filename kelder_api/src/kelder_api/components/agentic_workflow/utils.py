@@ -1,5 +1,4 @@
 import json
-from src.kelder_api.configuration.logging_controller import get_logger
 from pathlib import Path
 from typing import Any, List
 
@@ -10,6 +9,7 @@ from src.kelder_api.components.agentic_workflow.models import (
     ReasoningEndNodes,
     State,
 )
+from src.kelder_api.configuration.logging_controller import get_logger
 
 logger = get_logger(__name__, "agent_workflow")
 

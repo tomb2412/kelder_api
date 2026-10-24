@@ -1,10 +1,9 @@
-from src.kelder_api.configuration.logging_controller import get_logger
-
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 
 from src.kelder_api.app.getters import get_neo4j_client
 from src.kelder_api.components.neo4j_client import Neo4jClient
+from src.kelder_api.configuration.logging_controller import get_logger
 
 logger = get_logger(__name__, "routes.routing")
 
@@ -29,7 +28,9 @@ def get_a_star_route(
     logger.info("A* route requested from '%s' to '%s'", body.from_mark, body.to_mark)
 
     try:
-        rows = neo4j_client.a_star_by_name(name_from=body.from_mark, name_to=body.to_mark)
+        rows = neo4j_client.a_star_by_name(
+            name_from=body.from_mark, name_to=body.to_mark
+        )
     except Exception as e:
         logger.error("A* query failed: %s", e)
         raise HTTPException(status_code=500, detail=str(e))

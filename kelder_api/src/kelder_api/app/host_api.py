@@ -1,4 +1,3 @@
-from src.kelder_api.configuration.logging_controller import get_logger
 import os
 import secrets
 import subprocess
@@ -10,7 +9,10 @@ from fastapi.responses import PlainTextResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 # Configure logging to dedicated host_api log and aggregate logs
-from src.kelder_api.configuration.logging_controller import get_logger, setup_logging  # noqa: E402
+from src.kelder_api.configuration.logging_controller import (
+    get_logger,
+    setup_logging,  # noqa: E402
+)
 
 security = HTTPBasic()
 load_dotenv()

@@ -1,5 +1,3 @@
-from src.kelder_api.configuration.logging_controller import get_logger
-
 from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel
 
@@ -10,6 +8,7 @@ from src.kelder_api.components.agentic_workflow.agents.passage_planner import (
 from src.kelder_api.components.neo4j_client import Neo4jClient
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
+from src.kelder_api.configuration.logging_controller import get_logger
 
 logger = get_logger(__name__, "routes.passage_plan")
 
@@ -47,7 +46,9 @@ async def PostPassagePlan(
     neo4j_client: Neo4jClient = Depends(get_neo4j_dep),
 ):
     """Generate a passage plan between two named marks using graph-based A* routing."""
-    logger.info("Generating passage plan from '%s' to '%s'", body.from_mark, body.to_mark)
+    logger.info(
+        "Generating passage plan from '%s' to '%s'", body.from_mark, body.to_mark
+    )
 
     prompt = (
         f"Plan a passage from '{body.from_mark}' to '{body.to_mark}'. "

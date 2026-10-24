@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from src.kelder_api.configuration.logging_controller import get_logger
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path

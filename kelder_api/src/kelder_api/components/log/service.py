@@ -1,5 +1,4 @@
 import json
-from src.kelder_api.configuration.logging_controller import get_logger
 from datetime import datetime, timedelta, timezone
 from typing import Tuple
 
@@ -193,9 +192,7 @@ class LogTracker:
     async def get_journey_set(
         self, datetime: datetime = datetime.now(timezone.utc)
     ) -> JourneyData:
-        data = await self.redis_client.read_hashed_set(
-            RedisSetNames.JOURNEY, datetime
-        )
+        data = await self.redis_client.read_hashed_set(RedisSetNames.JOURNEY, datetime)
         try:
             return JourneyData(
                 **(

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from src.kelder_api.configuration.logging_controller import get_logger
 from contextlib import contextmanager
 from typing import Any, Generator
 
@@ -18,10 +17,10 @@ from src.kelder_api.components.neo4j_client.feature_processing import (
     process_wreck,
 )
 from src.kelder_api.components.neo4j_client.queries import (
+    A_STAR_ROUTE_OPTIMISATION_WITH_NAMES,
     ADD_COASTLINE_LAYER,
     ADD_DANGER_LAYER,
     ADD_NATIVE_LAYER,
-    A_STAR_ROUTE_OPTIMISATION_WITH_NAMES,
     CHECK_GRAPH_EXISTS,
     CREATE_COASTLINE,
     CREATE_DANGER_MARK,
@@ -32,6 +31,7 @@ from src.kelder_api.components.neo4j_client.queries import (
     DELETE_ALL_NODES,
     DROP_GRAPH_IF_EXISTS,
 )
+from src.kelder_api.configuration.logging_controller import get_logger
 
 logger = get_logger(__name__, "graph_client")
 
@@ -99,9 +99,7 @@ class Neo4jClient:
                 exists = result.single()["exists"]
 
             if exists:
-                logger.info(
-                    "GDS graph projection '%s' already exists.", GDS_GRAPH_NAME
-                )
+                logger.info("GDS graph projection '%s' already exists.", GDS_GRAPH_NAME)
                 return
 
             logger.info(

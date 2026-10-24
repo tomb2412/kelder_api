@@ -1,5 +1,4 @@
 import asyncio
-from src.kelder_api.configuration.logging_controller import get_logger
 
 from src.kelder_api.components.background_orchestrator.orchestrator import (
     BackgroundTaskManager,

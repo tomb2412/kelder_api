@@ -1,10 +1,10 @@
-from src.kelder_api.configuration.logging_controller import get_logger
 from datetime import date, datetime, timezone
 from typing import List
 
 from async_lru import alru_cache
 from httpx import AsyncClient
 
+from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.routes.tidal_measurements.models import TideInfo
 

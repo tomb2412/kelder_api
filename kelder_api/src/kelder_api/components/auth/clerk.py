@@ -1,10 +1,10 @@
-from src.kelder_api.configuration.logging_controller import get_logger
 from functools import lru_cache
 
 import jwt
-from jwt import PyJWKClient
 from fastapi import Request
+from jwt import PyJWKClient
 
+from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
 
 logger = get_logger(__name__, "api.auth")

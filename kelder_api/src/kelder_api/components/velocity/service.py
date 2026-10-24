@@ -1,4 +1,3 @@
-from src.kelder_api.configuration.logging_controller import get_logger
 from datetime import datetime, timedelta, timezone
 from typing import List, Tuple
 

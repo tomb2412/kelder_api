@@ -1,11 +1,10 @@
-from src.kelder_api.configuration.logging_controller import get_logger
-
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from src.kelder_api.app.getters import get_orchestrator
 from src.kelder_api.components.background_orchestrator.orchestrator import (
     BackgroundTaskManager,
 )
+from src.kelder_api.configuration.logging_controller import get_logger
 
 logger = get_logger(__name__, "routes.ships_status")
 

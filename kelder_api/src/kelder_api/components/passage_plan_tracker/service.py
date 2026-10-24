@@ -1,7 +1,9 @@
-from src.kelder_api.configuration.logging_controller import get_logger
 from datetime import datetime, timezone
 
-from src.kelder_api.components.agentic_workflow.agents.models import PassagePlan, Waypoint
+from src.kelder_api.components.agentic_workflow.agents.models import (
+    PassagePlan,
+    Waypoint,
+)
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.passage_plan_tracker.models import PassagePlanProgress
 from src.kelder_api.components.redis_client.redis_client import RedisClient
@@ -11,6 +13,7 @@ from src.kelder_api.components.velocity.utils import (
     convert_to_decimal_degrees,
     haversine,
 )
+from src.kelder_api.configuration.logging_controller import get_logger
 
 logger = get_logger(__name__, "passage_plan_tracker")
 
@@ -26,9 +29,9 @@ class PassagePlanTracker:
         """Called by the orchestrator each tick to update passage plan progress."""
         # Read passage plan from Redis
         try:
-            plan_data = (
-                await self.redis_client.read_set(RedisSetNames.PASSAGE_PLAN)
-            )[0]
+            plan_data = (await self.redis_client.read_set(RedisSetNames.PASSAGE_PLAN))[
+                0
+            ]
         except IndexError:
             logger.debug("No passage plan set")
             await self._write_progress(
@@ -67,9 +70,7 @@ class PassagePlanTracker:
         boat_lon = convert_to_decimal_degrees(gps_data.longitude_nmea)
 
         # Find next waypoint
-        target_index, distance = self._find_next_waypoint(
-            boat_lat, boat_lon, waypoints
-        )
+        target_index, distance = self._find_next_waypoint(boat_lat, boat_lon, waypoints)
 
         await self._write_progress(
             PassagePlanProgress(

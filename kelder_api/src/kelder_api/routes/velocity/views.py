@@ -1,10 +1,10 @@
-from src.kelder_api.configuration.logging_controller import get_logger
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, Request
 
 from src.kelder_api.app.getters import get_velocity_calculator
 from src.kelder_api.components.velocity.service import VelocityCalculator
+from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
 
 logger = get_logger(__name__, "routes.velocity")

@@ -1,4 +1,3 @@
-from src.kelder_api.configuration.logging_controller import get_logger
 import math
 from datetime import datetime, timedelta, timezone
 from statistics import StatisticsError, fmean

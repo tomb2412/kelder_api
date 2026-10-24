@@ -1,5 +1,4 @@
 import asyncio
-from src.kelder_api.configuration.logging_controller import get_logger
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from time import time

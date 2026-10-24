@@ -1,5 +1,4 @@
 import asyncio
-from src.kelder_api.configuration.logging_controller import get_logger
 from datetime import datetime, timedelta, timezone
 
 from src.kelder_api.components.background_orchestrator.enums import (
@@ -23,8 +22,8 @@ from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.ultrasound.service import BilgeDepthSensor
 from src.kelder_api.components.velocity.service import VelocityCalculator
-from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.configuration.logging_controller import get_logger
+from src.kelder_api.configuration.settings import get_settings
 
 logger = get_logger(__name__, "background_task_manager")
 
@@ -66,7 +65,7 @@ class BackgroundTaskManager:
             self.simulator = Simulator(
                 db_manager=self.db_manager,
                 redis_client=self.redis_client,
-                simulation_file_name="velocity_plan"
+                simulation_file_name="velocity_plan",
             )
             gps_interface = self.simulator
             gps_method = "simulate_gps_sensor"

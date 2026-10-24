@@ -1,4 +1,3 @@
-from src.kelder_api.configuration.logging_controller import get_logger
 import textwrap
 from datetime import datetime, timezone
 from typing import Any
@@ -11,6 +10,7 @@ from src.kelder_api.components.agentic_workflow.agents.tools import save_passage
 from src.kelder_api.components.velocity.utils import (
     haversine,
 )
+from src.kelder_api.configuration.logging_controller import get_logger
 
 logger = get_logger(__name__, "passage_planner")
 

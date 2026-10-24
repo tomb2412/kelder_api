@@ -1,9 +1,8 @@
-from src.kelder_api.configuration.logging_controller import get_logger
-
 from fastapi import APIRouter, Depends, Request
 
 from src.kelder_api.app.getters import get_redis_client
 from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.configuration.logging_controller import get_logger
 
 logger = get_logger(__name__, "routes.redis")
 

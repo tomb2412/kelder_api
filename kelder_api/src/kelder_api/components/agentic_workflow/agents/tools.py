@@ -1,9 +1,9 @@
 import asyncio
-from src.kelder_api.configuration.logging_controller import get_logger
 
 from src.kelder_api.components.agentic_workflow.agents.models import PassagePlan
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
+from src.kelder_api.configuration.logging_controller import get_logger
 
 logger = get_logger(__name__, "passage_planner")
 

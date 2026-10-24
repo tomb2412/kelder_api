@@ -1,4 +1,3 @@
-from src.kelder_api.configuration.logging_controller import get_logger
 import math
 import random
 from datetime import datetime, timedelta, timezone
@@ -6,10 +5,10 @@ from pathlib import Path
 
 import yaml
 
-from src.kelder_api.components.db_manager.service import DBManager
 from src.kelder_api.components.background_orchestrator.enums import VesselState
 from src.kelder_api.components.compass_new.interface import CompassInterface
 from src.kelder_api.components.compass_new.models import CompassRedisData
+from src.kelder_api.components.db_manager.service import DBManager
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.gps_new.types import GPSStatus
@@ -25,6 +24,7 @@ from src.kelder_api.configuration.settings import get_settings
 logger = get_logger(__name__, "simulator")
 
 MAX_SIMULATION_LENGTH_SECONDS = 600
+
 
 class Simulator(CompassInterface, GPSInterface):
     """Injects simulation data for the hardware, using yaml behaviours"""
@@ -88,17 +88,21 @@ class Simulator(CompassInterface, GPSInterface):
         except IndexError:
             self.velocity_plan = None
 
-        logger.info('Initialised simulation data')
-        
+        logger.info("Initialised simulation data")
+
     async def repeat_handler(self) -> None:
         self.interation += 1
-        logger.debug('Simulation currently on iteration %s of %s', self.interation, self.max_iterations)
-        
+        logger.debug(
+            "Simulation currently on iteration %s of %s",
+            self.interation,
+            self.max_iterations,
+        )
+
         if self.interation == self.max_iterations:
             await self.clear_redis()
             self._initialise_simulation_parameters()
 
-        simulation_duration = datetime.now(tz = timezone.utc) - self.start_time 
+        simulation_duration = datetime.now(tz=timezone.utc) - self.start_time
         if simulation_duration.total_seconds() >= MAX_SIMULATION_LENGTH_SECONDS:
             await self.redis_client.flush_all()
             self.db_manager.clear_history()

@@ -1,13 +1,13 @@
-DEFAULT_FORMAT = '[{levelname}] {asctime} - {parent_module} : {message}'
-#NOTE - delete this as unused
-COMPONENT_FORMAT = '[{levelname}] {asctime} - {component} - {module} : {message}'
+DEFAULT_FORMAT = "[{levelname}] {asctime} - {parent_module} : {message}"
+# NOTE - delete this as unused
+COMPONENT_FORMAT = "[{levelname}] {asctime} - {component} - {module} : {message}"
 
-DEFAULT_DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
+DEFAULT_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 DEFAULT_FILENAME = "logs/text_log.log"
 DEFAULT_JSON_CONFIG = {
     "filename": "logs/json/json_log.json",
     "when": "midnight",
-    "backupCount": 5
+    "backupCount": 5,
 }
 
 log_conf = {
@@ -16,39 +16,32 @@ log_conf = {
     "filters": {
         "base_filter": {
             "()": "src.kelder_api.configuration.logging_controller.ComponentFilter",
-            "service": "root"
+            "service": "root",
         }
     },
-    "formatters":
-        {
-            "simple": {
-                "class": "src.kelder_api.configuration.logging_controller.TruncatingFilePathFormatter",
-                "format": DEFAULT_FORMAT,
-                "style": '{',
-                "datefmt": DEFAULT_DATE_FORMAT,
-            },
-            "json": {
-
-            }
+    "formatters": {
+        "simple": {
+            "class": "src.kelder_api.configuration.logging_controller.TruncatingFilePathFormatter",
+            "format": DEFAULT_FORMAT,
+            "style": "{",
+            "datefmt": DEFAULT_DATE_FORMAT,
         },
-    "handlers":
-        {
-            "console": {
-                "class": "logging.StreamHandler",
-                "level": "DEBUG",
-                "formatter": "simple",
-            },
-            "log_file": {
-                "class": "logging.handlers.TimedRotatingFileHandler",
-                "level": "DEBUG",
-                "formatter": "simple",
-                "filename": DEFAULT_FILENAME,
-                "when": "midnight",
-                "backupCount": 5
-            }
+        "json": {},
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "level": "DEBUG",
+            "formatter": "simple",
         },
-    "root": {
-        "level": "DEBUG",
-        "handlers": ["log_file", "console"]
-    }
+        "log_file": {
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "level": "DEBUG",
+            "formatter": "simple",
+            "filename": DEFAULT_FILENAME,
+            "when": "midnight",
+            "backupCount": 5,
+        },
+    },
+    "root": {"level": "DEBUG", "handlers": ["log_file", "console"]},
 }

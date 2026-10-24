@@ -1,5 +1,4 @@
 # hc_sr04_pi5.py
-from src.kelder_api.configuration.logging_controller import get_logger
 from datetime import datetime, timezone
 
 from gpiozero import DistanceSensor

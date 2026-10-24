@@ -1,10 +1,10 @@
-from src.kelder_api.configuration.logging_controller import get_logger
 from http import HTTPStatus
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from src.kelder_api.app.getters import get_db_manager
 from src.kelder_api.components.db_manager.service import DBManager
+from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.routes.db_manager.models import JourneyHistory
 
 logger = get_logger(__name__, "routes.db_manager")
