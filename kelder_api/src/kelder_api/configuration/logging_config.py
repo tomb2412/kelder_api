@@ -3,9 +3,11 @@ DEFAULT_FORMAT = "[{levelname}] {asctime} - {parent_module} : {message}"
 COMPONENT_FORMAT = "[{levelname}] {asctime} - {component} - {module} : {message}"
 
 DEFAULT_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
-DEFAULT_FILENAME = "logs/text_log.log"
+# Log filenames are relative to logs/<service>/ so each process writes its own files
+LOG_DIR = "logs"
+DEFAULT_FILENAME = "text_log.log"
 DEFAULT_JSON_CONFIG = {
-    "filename": "logs/json/json_log.json",
+    "filename": "json/json_log.json",
     "when": "midnight",
     "backupCount": 5,
 }

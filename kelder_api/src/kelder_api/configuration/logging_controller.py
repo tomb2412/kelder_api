@@ -5,7 +5,11 @@ from datetime import datetime, timezone
 from logging.config import dictConfig
 from pathlib import Path
 
-from src.kelder_api.configuration.logging_config import DEFAULT_JSON_CONFIG, log_conf
+from src.kelder_api.configuration.logging_config import (
+    DEFAULT_JSON_CONFIG,
+    LOG_DIR,
+    log_conf,
+)
 
 
 def extract_parent_module(file_path: str) -> str:
@@ -56,17 +60,23 @@ class ComponentFilter(logging.Filter):
 
 
 def setup_logging(service: str, config: dict = log_conf):
-    # File handlers fail during dictConfig if their parent directories do not
-    # exist (for example, on a fresh CI checkout).
-    for handler_config in config.get("handlers", {}).values():
-        filename = handler_config.get("filename")
-        if filename:
-            Path(filename).parent.mkdir(parents=True, exist_ok=True)
-    Path(DEFAULT_JSON_CONFIG["filename"]).parent.mkdir(parents=True, exist_ok=True)
+    config = copy.deepcopy(config)
+    json_config = copy.deepcopy(DEFAULT_JSON_CONFIG)
+    service_log_dir = Path(LOG_DIR) / service.lower()
 
-    dictConfig(copy.deepcopy(config))
+    file_configs = [
+        handler_config
+        for handler_config in config.get("handlers", {}).values()
+        if handler_config.get("filename")
+    ] + [json_config]
+    for file_config in file_configs:
+        file_path = service_log_dir / file_config["filename"]
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+        file_config["filename"] = str(file_path)
 
-    handler = logging.handlers.TimedRotatingFileHandler(**DEFAULT_JSON_CONFIG)
+    dictConfig(config)
+
+    handler = logging.handlers.TimedRotatingFileHandler(**json_config)
     handler.setFormatter(JsonFormatter())
     handler.addFilter(
         ComponentFilter(
