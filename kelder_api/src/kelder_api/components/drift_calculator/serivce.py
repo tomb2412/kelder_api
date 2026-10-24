@@ -59,7 +59,7 @@ class DriftCalculator:
         else:
             drift_speed = None
             drift_angle = None
-        
+
         drift_data = DriftData(
             timestamp=end_datetime,
             drift_speed=drift_speed,
@@ -68,7 +68,7 @@ class DriftCalculator:
         logger.debug(
             f"The final drift is: {drift_data}"
         )
-        
+
         await self.write_drift(drift_data)
 
     async def _calculate_avg_velocity(
@@ -76,7 +76,7 @@ class DriftCalculator:
     ) -> Tuple[float | None]:
         """General method to retrieve the gps.
 
-        NOT USED 
+        NOT USED
         because isn't instantanous though as it will always be behind the velocity.
         """
         if end_datetime is None:
@@ -89,7 +89,7 @@ class DriftCalculator:
         )
         logger.debug(
             f"Requesting the velocity timeseries."
-            f"From: {start_datetime}-{end_datetime}. Got length: {len(velocity_history)}"
+            f"From: {start_datetime}-{end_datetime}. Length: {len(velocity_history)}"
         )
         # TODO: catch no data
         try:
@@ -115,7 +115,7 @@ class DriftCalculator:
         self, end_datetime: datetime | None = None
     ) -> Tuple[float | None]:
         """
-        A method to simply request the latest velocity within the time period 
+        A method to simply request the latest velocity within the time period
         avgd for the compass.
         """
         if end_datetime is None:
@@ -129,7 +129,7 @@ class DriftCalculator:
         )
         logger.debug(
             f"Requesting the velocity timeseries."
-            f"From: {start_datetime}-{end_datetime}. Got length: {len(velocity_history)}"
+            f"From: {start_datetime}-{end_datetime}. Length: {len(velocity_history)}"
         )
         try:
             return velocity_history[0].speed_over_ground, velocity_history[
@@ -154,7 +154,7 @@ class DriftCalculator:
         )
         logger.debug(
             f"Requesting the compass timeseries."
-            f"From: {start_datetime}-{end_datetime}. Got length: {len(compass_history)}"
+            f"From: {start_datetime}-{end_datetime}. Length: {len(compass_history)}"
         )
 
         try:

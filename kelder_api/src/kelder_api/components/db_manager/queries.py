@@ -24,13 +24,13 @@ INSERT INTO {JOURNEY_HISTORY_TABLE} (
 """.strip()
 
 SELECT_ALL_JOURNEYS = f"""
-SELECT 
+SELECT
     unique_key,
-    departure_time, 
-    arrival_time, 
-    departure_location, 
-    arrival_location, 
-    distance_travelled, 
+    departure_time,
+    arrival_time,
+    departure_location,
+    arrival_location,
+    distance_travelled,
     gps_data
 FROM {JOURNEY_HISTORY_TABLE}
 ORDER BY departure_time DESC;
