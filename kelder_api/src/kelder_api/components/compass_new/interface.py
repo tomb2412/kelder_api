@@ -1,4 +1,3 @@
-import logging
 import math
 from datetime import datetime, timezone
 from typing import List
@@ -8,10 +7,9 @@ import numpy as np
 from src.kelder_api.components.compass_new.models import CompassRedisData
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
-from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.logging_controller import get_logger
 
-setup_logging(component="compass")
-logger = logging.getLogger("compass")
+logger = get_logger(__name__, "compass")
 
 
 class CompassInterface:
@@ -34,9 +32,10 @@ class CompassInterface:
 
     async def read_heading_from_compass(
         self,
-        now: datetime = datetime.now(timezone.utc),
+        now: datetime | None = None,
         fake_measurements: List[float] | None = None,
     ):
+        now = now or datetime.now(timezone.utc)
         try:
             if fake_measurements:
                 logger.debug("Using fake compass sensor")
@@ -52,7 +51,7 @@ class CompassInterface:
             message = (
                 "Connection to the I2C board has failed. Check status light and wiring."
             )
-            logging.error(message)
+            logger.error(message)
             heading = None
         else:
             magnetic_field_vector = np.array(magnetic_field_vector)
@@ -130,9 +129,10 @@ class CompassInterface:
     async def read_heading_history_timeseries(
         self,
         start_datetime: datetime,
-        end_datetime: datetime = datetime.now(timezone.utc),
+        end_datetime: datetime | None = None,
         active: bool = False,
     ) -> List[CompassRedisData]:
+        end_datetime = end_datetime or datetime.now(timezone.utc)
         logger.debug(f"Reading compass data between {start_datetime} to {end_datetime}")
         heading_history = await self.redis_client.read_set(
             RedisSetNames.COMPASS, [start_datetime, end_datetime]

@@ -15,7 +15,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 os.environ.setdefault("OPENAI_API_KEY", "test-key")
-os.environ.setdefault("HOST_API_RESTART_URL", "http://test:9090/restart")
+os.environ.setdefault("TIDAL_API_KEY", "test-key")
+os.environ.setdefault("HOST_API_URL", "http://test:9090/restart")
 os.environ.setdefault("HOST_API_USERNAME", "test")
 os.environ.setdefault("HOST_API_PASSWORD", "test")
 
@@ -33,11 +34,13 @@ class _InMemoryRedisServer:
         self._strings: Dict[str, str] = {}
         self._sorted_sets: Dict[str, Dict[str, float]] = defaultdict(dict)
         self._hashes: Dict[str, Dict[str, Any]] = defaultdict(dict)
+        self._ttls: Dict[str, int] = {}
 
     def reset(self) -> None:
         self._strings.clear()
         self._sorted_sets.clear()
         self._hashes.clear()
+        self._ttls.clear()
 
 
 @dataclass
@@ -63,7 +66,7 @@ class _FakeRedis:
     async def ping(self) -> bool:
         return True
 
-    async def set(self, key: str, value: str) -> None:
+    async def set(self, key: str, value: str, ex: int | None = None) -> None:
         self._server._strings[key] = value
 
     async def get(self, key: str) -> str | None:
@@ -72,11 +75,26 @@ class _FakeRedis:
     async def zadd(self, key: str, mapping: Dict[str, float]) -> None:
         self._server._sorted_sets[key].update(mapping)
 
+    async def zremrangebyrank(self, key: str, start: int, stop: int) -> int:
+        values = self._server._sorted_sets.get(key, {})
+        ordered = sorted(values.items(), key=lambda item: item[1])
+        if stop < 0:
+            stop = len(ordered) + stop + 1
+        removed = ordered[start:stop]
+        for member, _ in removed:
+            values.pop(member, None)
+        return len(removed)
+
+    def pipeline(self, transaction: bool = True):
+        return _FakePipeline(self)
+
     async def zrevrangebyscore(
         self,
         key: str,
         max: float | str = "+inf",
         min: float | str = "-inf",
+        start: int = 0,
+        num: int | None = None,
         withscores: bool = False,
     ) -> Iterable[Tuple[str, float]]:
         sorted_set = self._server._sorted_sets.get(key, {})
@@ -89,6 +107,7 @@ class _FakeRedis:
             if min_score <= score <= max_score
         ]
         items.sort(key=lambda item: item[1], reverse=True)
+        items = items[start : start + num if num is not None else None]
         if withscores:
             return items
         return [member for member, _ in items]
@@ -98,6 +117,63 @@ class _FakeRedis:
 
     async def hgetall(self, key: str) -> Dict[str, Any]:
         return dict(self._server._hashes.get(key, {}))
+
+    async def expire(self, key: str, seconds: int) -> bool:
+        self._server._ttls[key] = seconds
+        return True
+
+    async def zremrangebyscore(
+        self, key: str, min: float | str, max: float | str
+    ) -> int:
+        values = self._server._sorted_sets.get(key, {})
+        min_score = _normalise_score(min, default=-math.inf)
+        max_score = _normalise_score(max, default=math.inf)
+        removed = [m for m, score in values.items() if min_score <= score <= max_score]
+        for member in removed:
+            values.pop(member)
+        return len(removed)
+
+    async def unlink(self, *keys: str) -> int:
+        removed = 0
+        for key in keys:
+            for store in (self._server._sorted_sets, self._server._hashes):
+                if store.pop(key, None) is not None:
+                    removed += 1
+        return removed
+
+
+class _FakePipeline:
+    def __init__(self, redis: _FakeRedis) -> None:
+        self.redis = redis
+        self.operations = []
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb):
+        return False
+
+    def zadd(self, key: str, mapping: Dict[str, float]):
+        self.operations.append((self.redis.zadd, key, mapping))
+        return self
+
+    def zremrangebyrank(self, key: str, start: int, stop: int):
+        self.operations.append((self.redis.zremrangebyrank, key, start, stop))
+        return self
+
+    def hset(self, key: str, mapping: Dict[str, Any]):
+        self.operations.append((self.redis.hset, key, mapping))
+        return self
+
+    def expire(self, key: str, seconds: int):
+        self.operations.append((self.redis.expire, key, seconds))
+        return self
+
+    async def execute(self):
+        results = []
+        for operation, *args in self.operations:
+            results.append(await operation(*args))
+        return results
 
 
 def _normalise_score(value: float | str, default: float) -> float:
@@ -134,6 +210,7 @@ class DummyRedisClient:
 
     def __init__(self) -> None:
         self.closed = False
+        self.settings = SimpleNamespace(redis_max_history_points=1000)
         gps_record = GPSRedisData(
             timestamp=datetime(2024, 1, 1, 12, tzinfo=timezone.utc),
             status=GPSStatus.ACTIVE,
@@ -156,6 +233,8 @@ class DummyRedisClient:
     async def read_set(
         self, sensor_id: str, datetime_range: Any | None = None
     ) -> list[dict[str, Any]]:
+        if sensor_id == "VESSEL_STATE":
+            return [{"vessel_state": "underway"}]
         return self.named_sets.get(sensor_id, [])
 
     async def write_set(self, sensor_id: str, payload: dict[str, Any]) -> None:
@@ -189,8 +268,14 @@ class DummyRedisClient:
     async def read_value(self, key: str) -> str | None:
         return self._values.get(key)
 
+    sensor_key = staticmethod(redis_client_module.RedisClient.sensor_key)
+
     async def delete(self, key: str) -> None:
         self.sorted_sets.pop(key, None)
+
+    async def delete_sets(self, *sensor_ids: str) -> None:
+        for sensor_id in sensor_ids:
+            self.sorted_sets.pop(self.sensor_key(sensor_id), None)
 
     async def zcard(self, key: str) -> int:
         return len(self.sorted_sets.get(key, []))
@@ -200,12 +285,15 @@ class DummyRedisClient:
         key: str,
         max: str | float = "+inf",
         min: str | float = "-inf",
+        start: int = 0,
+        num: int | None = None,
         withscores: bool = False,
     ) -> list[Any]:
         entries = self.sorted_sets.get(key, [])
         if withscores:
             return entries
-        return [value for value, _ in entries]
+        values = [value for value, _ in entries]
+        return values[start : start + num if num is not None else None]
 
 
 class DummyGPSInterface:
@@ -220,14 +308,14 @@ class DummyGPSInterface:
             latitude_nmea="5123.46",
             longitude_nmea="00123.99",
         )
-        self.history_payload = [self.latest_model.model_dump(mode="json")]
+        self.history_payload = [self.latest_model]
 
     async def read_gps_latest(self, active: bool = False) -> GPSRedisData:
         if self.raise_latest:
             raise RuntimeError("GPS unavailable")
         return self.latest_model
 
-    async def read_gps_all_history(self, active: bool = False) -> list[dict[str, Any]]:
+    async def read_gps_all_history(self, active: bool = False) -> list[GPSRedisData]:
         return self.history_payload
 
     async def read_gps_history_time_series(
@@ -235,12 +323,12 @@ class DummyGPSInterface:
         start_datetime: datetime,
         end_datetime: datetime,
         active: bool = False,
-    ) -> list[dict[str, Any]]:
+    ) -> list[GPSRedisData]:
         return self.history_payload
 
     async def read_gps_history_length(
         self, length: int, active: bool = False
-    ) -> list[dict[str, Any]]:
+    ) -> list[GPSRedisData]:
         return self.history_payload[:length]
 
 
@@ -319,7 +407,7 @@ def make_settings(**sections: Any) -> SimpleNamespace:
     """Construct a SimpleNamespace mimicking our Settings object for tests."""
     host_api = SimpleNamespace(
         restart_url=os.getenv(
-            "HOST_API_RESTART_URL", "http://host.docker.internal:9090/restart"
+            "HOST_API_URL", "http://host.docker.internal:9090/restart"
         ),
         username=os.getenv("HOST_API_USERNAME", "kelder"),
         password=os.getenv("HOST_API_PASSWORD", "kelder"),
@@ -372,11 +460,26 @@ def app_client(monkeypatch: pytest.MonkeyPatch):
     from src.kelder_api.app import main
 
     monkeypatch.setattr(main, "RedisClient", DummyRedisClient)
+    from src.kelder_api.components.background_orchestrator import orchestrator
+
+    monkeypatch.setattr(orchestrator, "RedisClient", DummyRedisClient)
     monkeypatch.setattr(main, "GPSInterface", DummyGPSInterface)
     monkeypatch.setattr(main, "CompassInterface", DummyCompassInterface)
     monkeypatch.setattr(main, "VelocityCalculator", DummyVelocityCalculator)
     monkeypatch.setattr(main, "LogTracker", DummyLogTracker)
     from src.kelder_api.components.agentic_workflow import graph as graph_module
+    from src.kelder_api.components.background_orchestrator import orchestrator
+
+    class DummyBilgeDepthSensor:
+        """Keep app route tests independent of physical GPIO hardware."""
+
+        def __init__(self, _redis_client: DummyRedisClient) -> None:
+            pass
+
+        async def record_bilge_depth(self) -> None:
+            pass
+
+    monkeypatch.setattr(orchestrator, "BilgeDepthSensor", DummyBilgeDepthSensor)
 
     monkeypatch.setattr(graph_module, "AgentWorkflow", FakeAgentWorkflow)
     monkeypatch.setattr(main, "AgentWorkflow", FakeAgentWorkflow)

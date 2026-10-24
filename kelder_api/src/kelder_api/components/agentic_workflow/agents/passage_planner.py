@@ -1,4 +1,3 @@
-import logging
 import textwrap
 from datetime import datetime, timezone
 from typing import Any
@@ -11,8 +10,9 @@ from src.kelder_api.components.agentic_workflow.agents.tools import save_passage
 from src.kelder_api.components.velocity.utils import (
     haversine,
 )
+from src.kelder_api.configuration.logging_controller import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__, "passage_planner")
 
 # TODO - Move passage plan tool timeout to config
 
@@ -57,7 +57,8 @@ passage_plan_agent = Agent(
 
 @passage_plan_agent.system_prompt
 def passage_planner_datetime_prompt() -> str:
-    return f"Current UTC datetime: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')} UTC."
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M")
+    return f"Current UTC datetime: {now} UTC."
 
 
 @passage_plan_agent.tool

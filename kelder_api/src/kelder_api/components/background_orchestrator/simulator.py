@@ -1,12 +1,10 @@
-import logging
 import math
 import random
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
 
-from src.kelder_api.components.background_orchestrator.enums import VesselState
 from src.kelder_api.components.compass_new.interface import CompassInterface
 from src.kelder_api.components.compass_new.models import CompassRedisData
 from src.kelder_api.components.gps_new.interface import GPSInterface
@@ -18,11 +16,9 @@ from src.kelder_api.components.velocity.utils import (
     convert_to_decimal_degrees,
     decimal_to_dms_format,
 )
-from src.kelder_api.configuration.logging_config import setup_logging
-from src.kelder_api.configuration.settings import get_settings
+from src.kelder_api.configuration.logging_controller import get_logger
 
-setup_logging(component="simulator")
-logger = logging.getLogger("simulator")
+logger = get_logger(__name__, "simulator")
 
 
 class Simulator(CompassInterface, GPSInterface):
@@ -33,13 +29,17 @@ class Simulator(CompassInterface, GPSInterface):
         redis_client: RedisClient,
         simulation_file_name: str,
     ):
-        self.current_time = datetime.now(tz=timezone.utc)
         self.redis_client = redis_client
+        self.reset_clock()
 
+        self.simulation_file_name = simulation_file_name
+        self._initialise_simulation_parameters()
+
+    def _initialise_simulation_parameters(self) -> None:
         parent_path = (
             Path(__file__).resolve().parents[0]
             / "simulations"
-            / f"{simulation_file_name}.yaml"
+            / f"{self.simulation_file_name}.yaml"
         )
         config = yaml.safe_load(open(parent_path))
 
@@ -48,14 +48,16 @@ class Simulator(CompassInterface, GPSInterface):
         self.turn_rate = config["boat"][2]["turn_rate"]
         self.heading_variation = config["boat"][3]["heading_variation"]
 
+        self.max_iterations = config["simulation"][0]["max_iterations"]
+        self.interation = 0
         # Not sure how to do manage the different simulations in one file,
         #  w dicts or many files with one dict
-        self.latitude = config["simulation"][0]["start_latitude"]
-        self.longitude = config["simulation"][1]["start_longitude"]
-        self.heading = config["simulation"][2]["heading"]
+        self.latitude = config["simulation"][1]["start_latitude"]
+        self.longitude = config["simulation"][2]["start_longitude"]
+        self.heading = config["simulation"][3]["heading"]
 
         try:
-            velocity_plan = config["simulation"][3]
+            velocity_plan = config["simulation"][4]
 
             self.loop_count = 0
             self.velocity_plan = []
@@ -72,37 +74,41 @@ class Simulator(CompassInterface, GPSInterface):
         except IndexError:
             self.velocity_plan = None
 
-        self.STATIONARY_SLEEP = get_settings().sleep_times.STATIONARY_SLEEP
-        self.UNDERWAY_SLEEP = get_settings().sleep_times.UNDER_WAY_SLEEP
+        logger.info("Initialised simulation data")
 
-        self.gps_history = []
+    async def repeat_handler(self) -> None:
+        self.interation += 1
+        logger.debug(
+            "Simulation currently on iteration %s of %s",
+            self.interation,
+            self.max_iterations,
+        )
+
+        if self.interation == self.max_iterations:
+            await self.clear_redis()
+            self._initialise_simulation_parameters()
+
+    def reset_clock(self) -> None:
+        """Start timing from now, so start-up delay doesn't move the boat."""
+        self.current_time = datetime.now(tz=timezone.utc)
 
     async def clear_redis(self) -> None:
-        for sensor in [
+        await self.redis_client.delete_sets(
             RedisSetNames.GPS,
             RedisSetNames.COMPASS,
             RedisSetNames.VELOCITY,
             RedisSetNames.LOG,
             RedisSetNames.DRIFT,
             RedisSetNames.BILGE_DEPTH,
-        ]:
-            async with self.redis_client.get_connection() as redis:
-                await redis.delete(f"sensor:ts:{sensor.value}")
+        )
 
         logger.info("Cleared the redis data streams")
 
     async def simulate_gps_sensor(self):
-        # Engine needed to calculate timestamp, lat and long
-        vessel_state = (await self.redis_client.read_set(RedisSetNames.VESSEL_STATE))[
-            0
-        ]["vessel_state"]
-        if vessel_state == VesselState.STATIONARY:
-            time_increment = self.STATIONARY_SLEEP
-        elif vessel_state == VesselState.UNDERWAY:
-            time_increment = self.UNDERWAY_SLEEP
-        else:
-            time_increment = self.time_increment
-        self.current_time = self.current_time + timedelta(seconds=time_increment)
+        # Advance by the real elapsed time so loop overhead doesn't drift the clock
+        now = datetime.now(tz=timezone.utc)
+        time_increment = (now - self.current_time).total_seconds()
+        self.current_time = now
 
         if self.velocity_plan is not None:
             if self.loop_count == self.velocity_plan[self.turn][0]:
@@ -130,8 +136,6 @@ class Simulator(CompassInterface, GPSInterface):
             hdop=0,
             satellites_in_view={},
         )
-
-        self.gps_history.append(gps_redis_data)
 
         await self.redis_client.write_set(RedisSetNames.GPS, gps_redis_data)
 

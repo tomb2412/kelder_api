@@ -1,11 +1,24 @@
 import math
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from typing import Literal
 
 import numpy as np
 
+from src.kelder_api.configuration.settings import get_settings
+
 EARTH_RADIUS_KM = 6371.0
 EARTH_RADIUS_NM = 3440.065
+
+
+def velocity_time_window(
+    start_datetime: datetime | None, end_datetime: datetime | None
+) -> tuple[datetime, datetime]:
+    """Fill a missing time window with the velocity history period ending now."""
+    end_datetime = end_datetime or datetime.now(timezone.utc)
+    start_datetime = start_datetime or end_datetime - timedelta(
+        seconds=get_settings().velocity.gps_velocity_history
+    )
+    return start_datetime, end_datetime
 
 
 def parse_timestamp(time: str) -> datetime:

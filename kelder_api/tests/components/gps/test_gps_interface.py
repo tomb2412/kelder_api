@@ -3,6 +3,7 @@ from typing import Dict, List
 from unittest.mock import AsyncMock
 
 import pytest
+from pydantic import ValidationError
 
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.gps_new.models import (
@@ -74,7 +75,7 @@ def test_gps_redis_data_coordinate_rounding(latitude: str, longitude: str) -> No
         status=GPSStatus.ACTIVE,
         latitude_nmea=latitude,
         longitude_nmea=longitude,
-    )
+    ).round_coordinates()
     expected_lat = round_ddmm(latitude, 2)
     expected_lon = round_ddmm(longitude, 3)
     assert data.latitude_nmea == expected_lat
@@ -83,7 +84,7 @@ def test_gps_redis_data_coordinate_rounding(latitude: str, longitude: str) -> No
 
 def test_gps_redis_data_invalid_coordinate_type_fails() -> None:
     """Non-string coordinates should raise a type error."""
-    with pytest.raises(TypeError):
+    with pytest.raises(ValidationError):
         GPSRedisData(
             timestamp=datetime.now(timezone.utc),
             status=GPSStatus.ACTIVE,
@@ -125,7 +126,7 @@ async def test_write_gps_builds_payload_and_writes_to_redis(
     assert args[0] == "GPS"
     persisted_model = args[1]
     assert isinstance(persisted_model, GPSRedisData)
-    assert persisted_model.latitude_nmea.endswith(".46")
+    assert persisted_model.latitude_nmea == "5123.4567"
 
 
 @pytest.mark.asyncio

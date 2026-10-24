@@ -1,10 +1,10 @@
-import logging
 from datetime import date, datetime, timezone
 from typing import List
 
 from async_lru import alru_cache
 from httpx import AsyncClient
 
+from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.routes.tidal_measurements.models import TideInfo
 
@@ -17,7 +17,7 @@ PORTSMOUTH_STATION_ID_ENV_AGENCY = "E71839"
 
 # https://environment.data.gov.uk/flood-monitoring/id/stations/E71839/readings.json?today&_sorted
 
-logger = logging.getLogger("api.routes.tidal_measurements")
+logger = get_logger(__name__, "routes.tidal_measurements")
 
 
 async def get_height_of_tide_now() -> TideInfo:

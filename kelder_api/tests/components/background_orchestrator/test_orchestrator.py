@@ -76,7 +76,10 @@ class _VelocityReaderStub:
 def configure_orchestrator_settings(monkeypatch: pytest.MonkeyPatch):
     def _configure(sog_threshold: float = 5.0) -> None:
         settings = make_settings(
-            orchestrator=SimpleNamespace(sog_threshold=sog_threshold)
+            orchestrator=SimpleNamespace(
+                sog_threshold=sog_threshold, run_simulator=False
+            ),
+            sleep_times=SimpleNamespace(UNDER_WAY_SLEEP=1, STATIONARY_SLEEP=2),
         )
         monkeypatch.setattr(
             "src.kelder_api.components.background_orchestrator.orchestrator.get_settings",
@@ -185,6 +188,7 @@ def test_register_components_initialises_dependencies(
         "VELOCITY",
         "LOG",
         "DRIFT",
+        "PASSAGE_PLAN_TRACKER",
     }
     gps_instance = components["GPS"]["instance"]
     compass_instance = components["COMPASS"]["instance"]
@@ -225,6 +229,12 @@ async def test_underway_strategy_executes_all_components(
             ),
             "method": "read_heading_from_compass",
         },
+        "BILGE_DEPTH": {
+            "instance": _ComponentStub(
+                "BILGE_DEPTH", "record_bilge_depth", call_sequence
+            ),
+            "method": "record_bilge_depth",
+        },
         "VELOCITY": {
             "instance": _ComponentStub(
                 "VELOCITY", "calculate_gps_velocity", call_sequence
@@ -232,6 +242,18 @@ async def test_underway_strategy_executes_all_components(
             "method": "calculate_gps_velocity",
         },
         "LOG": {"instance": _LogStub(call_sequence), "method": "increment_log"},
+        "DRIFT": {
+            "instance": _ComponentStub(
+                "DRIFT", "instantaneous_drift_calculator", call_sequence
+            ),
+            "method": "instantaneous_drift_calculator",
+        },
+        "PASSAGE_PLAN_TRACKER": {
+            "instance": _ComponentStub(
+                "PASSAGE_PLAN_TRACKER", "calculate_progress", call_sequence
+            ),
+            "method": "calculate_progress",
+        },
     }
 
     sleep_calls: list[float] = []
@@ -239,22 +261,17 @@ async def test_underway_strategy_executes_all_components(
     async def fake_sleep(delay: float) -> None:
         sleep_calls.append(delay)
 
-    monkeypatch.setattr(
-        "src.kelder_api.components.background_orchestrator.underway_strategy.asyncio.sleep",
-        fake_sleep,
-    )
-
-    await UnderwayStrategy.execute(
-        components=components, previous_vessel_state=VesselState.UNDERWAY
-    )
+    await UnderwayStrategy.execute(components=components)
 
     assert call_sequence == [
         "GPS.stream_serial_data",
         "COMPASS.read_heading_from_compass",
+        "BILGE_DEPTH.record_bilge_depth",
         "VELOCITY.calculate_gps_velocity",
         "LOG.increment_log",
+        "DRIFT.instantaneous_drift_calculator",
+        "PASSAGE_PLAN_TRACKER.calculate_progress",
     ]
-    assert sleep_calls == [5]
     assert components["LOG"]["instance"].finish_calls == 0
 
 
@@ -300,14 +317,7 @@ async def test_underway_strategy_handles_errors_and_finishes_journey(
     async def fake_sleep(_: float) -> None:
         return None
 
-    monkeypatch.setattr(
-        "src.kelder_api.components.background_orchestrator.underway_strategy.asyncio.sleep",
-        fake_sleep,
-    )
-
-    await UnderwayStrategy.execute(
-        components=components, previous_vessel_state=VesselState.STATIONARY
-    )
+    await UnderwayStrategy.execute(components=components)
 
     assert "COMPASS.read_heading_from_compass" in call_sequence
     assert "VELOCITY.calculate_gps_velocity" in call_sequence
@@ -343,22 +353,14 @@ async def test_stationary_strategy_executes_expected_components(
     async def fake_sleep(delay: float) -> None:
         call_sequence.append(f"sleep:{delay}")
 
-    monkeypatch.setattr(
-        "src.kelder_api.components.background_orchestrator.stationary_strategy.asyncio.sleep",
-        fake_sleep,
-    )
-
-    await StationaryStrategy.execute(
-        components=components, previous_vessel_state=VesselState.UNDERWAY
-    )
+    await StationaryStrategy.execute(components=components)
 
     assert call_sequence == [
         "GPS.stream_serial_data",
         "BILGE_DEPTH.record_bilge_depth",
         "VELOCITY.calculate_gps_velocity",
-        "sleep:10",
     ]
-    assert components["LOG"]["instance"].finish_calls == 1
+    assert components["LOG"]["instance"].finish_calls == 0
 
 
 @pytest.mark.asyncio
@@ -381,6 +383,8 @@ async def test_calculate_new_state_resolves_vessel_state(
     manager = object.__new__(BackgroundTaskManager)
     manager.components = {"VELOCITY": {"instance": _VelocityReaderStub(speed)}}
     manager.settings = SimpleNamespace(sog_threshold=threshold)
+    manager.UNDER_WAY_SLEEP = 1
+    manager.STATIONARY_SLEEP = 2
 
     result = await BackgroundTaskManager.calculate_new_state(manager, previous_state)
     assert result == expected_state

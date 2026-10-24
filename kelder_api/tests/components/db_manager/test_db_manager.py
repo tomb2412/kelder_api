@@ -24,7 +24,7 @@ def journey_record_factory() -> Callable[..., JourneyHistoryRecord]:
         days_offset: int = 0,
         hours_offset: int = 0,
         distance: float = 12.5,
-        gps_data: str | None = None,
+        gps_data: str | None = "",
     ) -> JourneyHistoryRecord:
         departure = base_time + timedelta(days=days_offset, hours=hours_offset)
         arrival = departure + timedelta(hours=6, minutes=30)
@@ -54,7 +54,7 @@ def test_save_trip_persists_record(db_manager: DBManager, journey_record_factory
     assert persisted is not None
     assert persisted.departure_location.latitude == "52.13.77"
     assert persisted.distance_travelled == pytest.approx(record.distance_travelled)
-    assert persisted.gps_data is None
+    assert persisted.gps_data == ""
 
 
 def test_list_trips_returns_newest_first(
@@ -89,6 +89,19 @@ def test_latest_trip_returns_most_recent(
     assert db_manager.latest_trip().unique_key == latest.unique_key
 
 
+def test_latest_trip_on_returns_last_trip_of_that_day(
+    db_manager: DBManager, journey_record_factory
+) -> None:
+    db_manager.save_trip(journey_record_factory())
+    last = db_manager.save_trip(journey_record_factory(hours_offset=3))
+    db_manager.save_trip(journey_record_factory(days_offset=1))
+
+    day = datetime(2025, 1, 10, tzinfo=timezone.utc).date()
+
+    assert db_manager.latest_trip_on(day).unique_key == last.unique_key
+    assert db_manager.latest_trip_on(day - timedelta(days=1)) is None
+
+
 def test_save_trip_persists_gps_data(db_manager: DBManager, journey_record_factory):
     gps_blob = "0123456789," * 1000
     record = journey_record_factory(gps_data=gps_blob)
@@ -119,6 +132,9 @@ def test_save_from_journey_data_round_trips(db_manager: DBManager) -> None:
     assert fetched.arrival_location.longitude == journey_data.end_longitude
     assert fetched.distance_travelled == pytest.approx(journey_data.distance_travelled)
     assert fetched.gps_data == journey_data.gps_data
+
+    # And back again, as served by /get_journey for past days
+    assert JourneyData.from_history_record(fetched) == journey_data
 
 
 def test_existing_database_is_migrated_to_include_gps_column(db_path) -> None:

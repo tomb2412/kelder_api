@@ -1,5 +1,4 @@
 import asyncio
-import logging
 from datetime import datetime, timedelta, timezone
 
 from src.kelder_api.components.background_orchestrator.enums import (
@@ -23,9 +22,10 @@ from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.ultrasound.service import BilgeDepthSensor
 from src.kelder_api.components.velocity.service import VelocityCalculator
+from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
 
-logger = logging.getLogger("background_orchestrator")
+logger = get_logger(__name__, "background_task_manager")
 
 
 class BackgroundTaskManager:
@@ -39,7 +39,9 @@ class BackgroundTaskManager:
         self.UNDER_WAY_SLEEP = get_settings().sleep_times.UNDER_WAY_SLEEP
         self.STATIONARY_SLEEP = get_settings().sleep_times.STATIONARY_SLEEP
         self.sleep_time = self.STATIONARY_SLEEP
+        self.simulator = None
 
+        self.db_manager = DBManager()
         self.redis_client = RedisClient()
 
         # Initialise components and their writing functions
@@ -61,7 +63,8 @@ class BackgroundTaskManager:
             bilge_depth_sensor_method = "record_bilge_depth"
         else:
             self.simulator = Simulator(
-                redis_client=self.redis_client, simulation_file_name="velocity_plan"
+                redis_client=self.redis_client,
+                simulation_file_name="velocity_plan",
             )
             gps_interface = self.simulator
             gps_method = "simulate_gps_sensor"
@@ -75,12 +78,11 @@ class BackgroundTaskManager:
             gps_interface=gps_interface, redis_client=self.redis_client
         )
 
-        db_manager = DBManager()
         log_tracker = LogTracker(
             gps_interface=gps_interface,
             redis_client=self.redis_client,
             velocity_calculator=velocity_calculator,
-            db_manager=db_manager,
+            db_manager=self.db_manager,
         )
 
         drift_calculator = DriftCalculator(
@@ -130,6 +132,10 @@ class BackgroundTaskManager:
         velocity = await self.components["VELOCITY"]["instance"].read_velocity_latest(
             active=True
         )
+        if velocity.speed_over_ground is None:
+            logger.warning("No valid velocity available, preserving %s", vessel_state)
+            return vessel_state
+
         try:
             if velocity.speed_over_ground >= self.settings.sog_threshold:
                 self.sleep_time = self.UNDER_WAY_SLEEP
@@ -144,8 +150,9 @@ class BackgroundTaskManager:
             return vessel_state
 
     async def run(self):
-        if self.simulator:
+        if self.simulator is not None:
             await self.simulator.clear_redis()
+            self.simulator.reset_clock()
 
         self.vessel_state = VesselState.STATIONARY
         await self.write_vessel_state()
@@ -159,7 +166,6 @@ class BackgroundTaskManager:
             )
 
             self.vessel_state = await self.calculate_new_state(self.vessel_state)
-            await self.write_vessel_state()
             if self.vessel_state != previous_vessel_state:
                 logger.info(
                     "Vessel state change detected: %s -> %s",
@@ -169,7 +175,15 @@ class BackgroundTaskManager:
 
                 if self.vessel_state == VesselState.STATIONARY:
                     logger.info("Journey finishing")
-                    await self.components["LOG"]["instance"].finish_journey()
+                    try:
+                        await self.components["LOG"]["instance"].finish_journey()
+
+                        if self.simulator is not None:
+                            await self.simulator.repeat_handler()
+                    except Exception:
+                        logger.exception("Failed to finish the journey")
+
+            await self.write_vessel_state()
 
             # Clear all the data in the last 10 mins
             if self.vessel_state == VesselState.STATIONARY:
@@ -181,8 +195,7 @@ class BackgroundTaskManager:
 
     async def write_vessel_state(self) -> None:
         logger.info(f"Writing the vessel state to redis: {self.vessel_state.value}")
-        async with self.redis_client.get_connection() as redis:
-            await redis.delete(f"sensor:ts:{RedisSetNames.VESSEL_STATE.value}")
+        await self.redis_client.delete_sets(RedisSetNames.VESSEL_STATE)
         await self.redis_client.write_set(
             RedisSetNames.VESSEL_STATE,
             VesselStateModel(vessel_state=self.vessel_state),

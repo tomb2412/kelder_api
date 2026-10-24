@@ -1,5 +1,4 @@
 import json
-import logging
 from pathlib import Path
 from typing import Any, List
 
@@ -10,8 +9,9 @@ from src.kelder_api.components.agentic_workflow.models import (
     ReasoningEndNodes,
     State,
 )
+from src.kelder_api.configuration.logging_controller import get_logger
 
-logger = logging.getLogger("agent_workflow")
+logger = get_logger(__name__, "agent_workflow")
 
 
 def clean_user_message(new_messages, users_message):

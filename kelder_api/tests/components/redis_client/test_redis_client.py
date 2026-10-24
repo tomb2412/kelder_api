@@ -84,10 +84,41 @@ async def test_hashed_set_roundtrip(redis_server) -> None:
     reading = StatusReading(timestamp=timestamp, status="ok", value=184)
 
     # Persist to the hash that matches the same day as the timestamp.
-    await client.write_hashed_set("journey:", reading, datetime=timestamp)
-    hashed_values = await client.read_hashed_set("journey:", datetime=timestamp)
+    await client.write_hashed_set("journey:", reading, timestamp=timestamp)
+    hashed_values = await client.read_hashed_set("journey:", timestamp=timestamp)
 
     assert hashed_values == reading.model_dump(mode="json")
+
+
+@pytest.mark.asyncio
+async def test_hashed_set_expires(redis_server) -> None:
+    """Daily hashes get a TTL so old days do not accumulate in redis."""
+    client = RedisClient()
+
+    timestamp = datetime(2024, 5, 20, 15, 30, tzinfo=timezone.utc)
+    reading = StatusReading(timestamp=timestamp, status="ok", value=184)
+
+    await client.write_hashed_set("journey:", reading, timestamp=timestamp)
+
+    assert (
+        redis_server._ttls["journey:20052024"]
+        == client.settings.redis_daily_hash_ttl_seconds
+    )
+
+
+@pytest.mark.asyncio
+async def test_clear_set_preserves_passage_plan(redis_server) -> None:
+    """Clearing all sets removes old sensor history but keeps the passage plan."""
+    client = RedisClient()
+
+    old = datetime(2024, 1, 1, tzinfo=timezone.utc)
+    await client.write_set("GPS", GPSReading(timestamp=old, coordinate="A"))
+    await client.write_set("PASSAGE_PLAN", GPSReading(timestamp=old, coordinate="B"))
+
+    await client.clear_set(end_datetime=old + timedelta(days=1))
+
+    assert await client.read_set("GPS") == []
+    assert len(await client.read_set("PASSAGE_PLAN")) == 1
 
 
 @pytest.mark.asyncio

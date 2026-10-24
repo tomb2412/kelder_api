@@ -1,5 +1,4 @@
 import asyncio
-import logging
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from time import time
@@ -18,11 +17,10 @@ from src.kelder_api.components.gps_new.models import (
 )
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.redis_client.types import RedisSetNames
-from src.kelder_api.configuration.logging_config import setup_logging
+from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
 
-setup_logging(component="gps")
-logger = logging.getLogger("gps")
+logger = get_logger(__name__, "gps")
 
 
 class GPSInterface:
@@ -153,10 +151,11 @@ class GPSInterface:
     async def read_gps_history_time_series(
         self,
         start_datetime: datetime,
-        end_datetime: datetime = datetime.now(timezone.utc),
+        end_datetime: datetime | None = None,
         active: bool = False,
     ) -> List[GPSRedisData]:
         """Retrieves the gps measurement within a datetime range"""
+        end_datetime = end_datetime or datetime.now(timezone.utc)
         gps_time_series = await self.redis_client.read_set(
             RedisSetNames.GPS, [start_datetime, end_datetime]
         )

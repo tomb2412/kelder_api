@@ -1,6 +1,5 @@
 from __future__ import annotations as _annotations
 
-import logging
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -30,12 +29,13 @@ from src.kelder_api.components.agentic_workflow.utils import (
     load_map,
     notify_progress,
 )
+from src.kelder_api.configuration.logging_controller import get_logger
 
 # TODO: they need the date!
 # TODO: Do we need getter agents and deletion agents.
 # TODO: task pass or fail communication? - flag in Node model.
 # TODO: do we need to allow nodes to directly communicate with the chatbot?
-logger = logging.getLogger("agent_workflow.nodes")
+logger = get_logger(__name__, "agent_workflow.nodes")
 
 MARKS_FILE = Path(__file__).resolve().parents[3] / "assets" / "marks.json"
 SOLENT_COASTLINE_FILE = Path(__file__).resolve().parents[3] / "assets" / "seas.json"
@@ -137,9 +137,9 @@ class BuildPassageNode(BaseNode[State]):
             ctx.state.passage_plan = result.output
         except Exception:
             logger.exception("Passage plan agent failed")
-            ctx.state.workflow_plan[ctx.state.job_count].node_output = (
-                "Passage planning failed — could not generate a route."
-            )
+            ctx.state.workflow_plan[
+                ctx.state.job_count
+            ].node_output = "Passage planning failed — could not generate a route."
         ctx.state.job_count += 1
 
         return ReasoningAgent()
@@ -174,7 +174,9 @@ class TidalSearchNode(BaseNode[State]):
             ctx.state.workflow_plan[ctx.state.job_count].node_output = result.output
         except Exception:
             logger.exception("Tidal agent failed")
-            ctx.state.workflow_plan[ctx.state.job_count].node_output = (
+            ctx.state.workflow_plan[
+                ctx.state.job_count
+            ].node_output = (
                 "Tidal data unavailable — could not retrieve tidal information."
             )
         ctx.state.job_count += 1

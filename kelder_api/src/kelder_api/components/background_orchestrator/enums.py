@@ -12,5 +12,5 @@ class VesselState(str, Enum):
 
 
 class VesselStateModel(BaseModel):
-    timestamp: datetime = Field(default=datetime.now(tz=timezone.utc))
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(tz=timezone.utc))
     vessel_state: VesselState

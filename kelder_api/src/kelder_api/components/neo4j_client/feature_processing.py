@@ -99,14 +99,12 @@ def process_cardinal_mark(feature: dict) -> dict:
 
 def process_lateral_mark(feature: dict) -> dict:
     properties = feature.get("properties", {})
-    category = (
-        properties.get("seamark:buoy_lateral:category")
-        or properties.get("seamark:beacon_lateral:category")
+    category = properties.get("seamark:buoy_lateral:category") or properties.get(
+        "seamark:beacon_lateral:category"
     )
     if category is None:
-        colour = (
-            properties.get("seamark:buoy_lateral:colour")
-            or properties.get("seamark:beacon_lateral:colour")
+        colour = properties.get("seamark:buoy_lateral:colour") or properties.get(
+            "seamark:beacon_lateral:colour"
         )
         if colour == "red":
             category = "port"
