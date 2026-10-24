@@ -135,6 +135,7 @@ async def get_gps_card(
     tracker = PassagePlanTracker(redis_client, gps_interface)
     progress = await tracker.read_progress_latest()
     dtw = progress.distance_to_waypoint if progress else None
+    xte = progress.cross_track_error if progress else None
 
     # TODO will this return the previous journeys stats?
     if journey_data and velocity_data.speed_over_ground:
@@ -154,6 +155,7 @@ async def get_gps_card(
             log=log,
             drift=drift_data.drift_speed,
             dtw=dtw,
+            xte=xte,
         )
     else:
         raise HTTPException(

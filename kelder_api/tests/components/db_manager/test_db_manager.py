@@ -6,6 +6,10 @@ from typing import Callable
 
 import pytest
 
+from src.kelder_api.components.agentic_workflow.agents.models import (
+    PassagePlan,
+    Waypoint,
+)
 from src.kelder_api.components.db_manager.models import (
     JourneyHistoryRecord,
     JourneyLocation,
@@ -164,3 +168,34 @@ def test_existing_database_is_migrated_to_include_gps_column(db_path) -> None:
         }
 
     assert "gps_data" in columns
+
+
+def _plan(departure: str, minutes: int = 0) -> PassagePlan:
+    return PassagePlan(
+        timestamp=datetime(2025, 6, 1, 9, minutes, tzinfo=timezone.utc),
+        departure_place_name=departure,
+        desination_place_name="Cowes",
+        course_to_steer=[
+            Waypoint(name=departure, latitude=50.84, longitude=-1.31),
+            Waypoint(name=None, latitude=50.80, longitude=-1.29),
+            Waypoint(name="Cowes", latitude=50.76, longitude=-1.30),
+        ],
+    )
+
+
+def test_save_passage_plan_round_trips(db_manager: DBManager) -> None:
+    stored = db_manager.save_passage_plan(_plan("Hamble Point"))
+
+    assert stored.unique_key is not None
+    fetched = db_manager.fetch_passage_plan(stored.unique_key)
+    assert fetched == stored
+    assert len(fetched.passage_plan.distance_between_waypoints) == 2
+
+
+def test_list_passage_plans_newest_first(db_manager: DBManager) -> None:
+    older = db_manager.save_passage_plan(_plan("Hamble Point", minutes=0))
+    newer = db_manager.save_passage_plan(_plan("Lymington", minutes=30))
+
+    keys = [record.unique_key for record in db_manager.list_passage_plans()]
+    assert keys == [newer.unique_key, older.unique_key]
+    assert db_manager.fetch_passage_plan(9999) is None

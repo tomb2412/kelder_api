@@ -1,6 +1,6 @@
 import textwrap
 from datetime import datetime, timezone
-from typing import Any
+from typing import Annotated, Any
 
 from pydantic import Field
 from pydantic_ai import Agent, RunContext
@@ -11,6 +11,7 @@ from src.kelder_api.components.velocity.utils import (
     haversine,
 )
 from src.kelder_api.configuration.logging_controller import get_logger
+from src.kelder_api.configuration.settings import get_settings
 
 logger = get_logger(__name__, "passage_planner")
 
@@ -49,13 +50,14 @@ system_prompt = textwrap.dedent(
 ).strip()
 
 passage_plan_agent = Agent(
-    "openai:gpt-4o-mini",
-    system_prompt=system_prompt,
+    get_settings().inference.chat_model,
+    instructions=system_prompt,
     output_type=PassagePlan,
+    defer_model_check=True,
 )
 
 
-@passage_plan_agent.system_prompt
+@passage_plan_agent.instructions
 def passage_planner_datetime_prompt() -> str:
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M")
     return f"Current UTC datetime: {now} UTC."
@@ -72,18 +74,18 @@ async def save_passage_plan_tool(
 @passage_plan_agent.tool
 def calculate_distance_between_waypoints(
     ctx: RunContext,
-    start_latitude: float = Field(
-        description="The start waypoint latitude in decimal degrees"
-    ),
-    start_longitude: float = Field(
-        description="The start waypoint longitude in decimal degrees"
-    ),
-    end_latitude: float = Field(
-        description="The end waypoint latitude in decimal degrees"
-    ),
-    end_longitude: float = Field(
-        description="The end waypoint longitude in decimal degrees"
-    ),
+    start_latitude: Annotated[
+        float, Field(description="The start waypoint latitude in decimal degrees")
+    ],
+    start_longitude: Annotated[
+        float, Field(description="The start waypoint longitude in decimal degrees")
+    ],
+    end_latitude: Annotated[
+        float, Field(description="The end waypoint latitude in decimal degrees")
+    ],
+    end_longitude: Annotated[
+        float, Field(description="The end waypoint longitude in decimal degrees")
+    ],
 ):
     """
     Calculate the distance in nautical miles between waypoints.
@@ -115,12 +117,12 @@ def _neighbour_search(
 @passage_plan_agent.tool
 def find_nearest_marks(
     ctx: RunContext,
-    latitude: float = Field(
-        description="Latitude of the current position in decimal degrees"
-    ),
-    longitude: float = Field(
-        description="Longitude of the current position in decimal degrees"
-    ),
+    latitude: Annotated[
+        float, Field(description="Latitude of the current position in decimal degrees")
+    ],
+    longitude: Annotated[
+        float, Field(description="Longitude of the current position in decimal degrees")
+    ],
 ):
     """Lookup nearby marks such as harbours, buoys, and cardinal markers."""
     MARKS_DATA = ctx.deps.get("marks_data")
@@ -152,8 +154,8 @@ def find_nearest_marks(
 @passage_plan_agent.tool
 def find_route_between_marks(
     ctx: RunContext,
-    name_from: str = Field(description="Exact name of the departure mark"),
-    name_to: str = Field(description="Exact name of the destination mark"),
+    name_from: Annotated[str, Field(description="Exact name of the departure mark")],
+    name_to: Annotated[str, Field(description="Exact name of the destination mark")],
 ):
     """Find the optimal safe route between two named marks using A* graph pathfinding.
 

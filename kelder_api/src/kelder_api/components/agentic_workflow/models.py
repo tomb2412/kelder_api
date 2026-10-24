@@ -1,72 +1,31 @@
-from enum import Enum
-from typing import Awaitable, Callable, List
+from dataclasses import dataclass
+from typing import Any, Awaitable, Callable
 
-from pydantic import BaseModel, ConfigDict, Field, computed_field
-from pydantic_ai.messages import ModelMessage
-
-from src.kelder_api.components.agentic_workflow.agents.models import PassagePlan
+from src.kelder_api.components.db_manager.service import DBManager
 from src.kelder_api.components.neo4j_client import Neo4jClient
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 
-"""
-Feautures:
-- Waypoint / passage plan
-- Weather and tides
 
-"""
+@dataclass
+class ChatDeps:
+    """Dependencies shared by the chatbot and the specialist agents it calls."""
 
-
-class ReasoningEndNodes(Enum):
-    PASSAGE_PLAN = "passage_plan"
-    TIDAL_SEARCH = "tidal_search"
-
-
-class GeneratePassagePlan(BaseModel):
-    # TODO: add Field descriptions
-    departure_location: str
-    destination_location: str
-    departure_time: str | None = None
-    destination_time: str | None = None
-    extra_considerations: str | None = None
-
-
-class Node(BaseModel):
-    # TODO: Potentially node_type and node_input may lead to conflicting results?
-    node_type: ReasoningEndNodes = Field(
-        description="The node which will be called in the output."
-    )
-    condifence: int = Field(
-        description="Out of 10, confidence level that this node is required."
-    )
-    justification: str = Field(
-        description="A consise, very short reason why this node is required."
-    )
-    node_input: str | GeneratePassagePlan = Field(
-        description="The required input for the node type of what the node needs to do."
-    )
-    node_output: str | None = Field(
-        default=None,
-        description="Completed by the tool as a summary of their tool.",
-    )
-
-
-class State(BaseModel):
     redis_client: RedisClient
-    neo4j_client: Neo4jClient | None = Field(default=None)
-    user_message: str | None = Field(default=None)
-    message_history: list[ModelMessage] = Field(default_factory=list)
+    neo4j_client: Neo4jClient | None = None
+    db_manager: DBManager | None = None
+    marks_data: list[dict[str, Any]] | None = None
+    marks_index: Any = None
+    progress_callback: Callable[[str], Awaitable[None]] | None = None
 
-    workflow_plan: List[Node] = Field(default_factory=list)
-    job_count: int = 0
+    async def notify(self, message: str) -> None:
+        """Report what the assistant is doing to the streaming client."""
+        if self.progress_callback is not None:
+            await self.progress_callback(message)
 
-    passage_plan: PassagePlan | None = Field(default=None)
-    progress_callback: Callable[[str], Awaitable[None]] | None = Field(
-        default=None, exclude=True
-    )
-
-    @computed_field
-    @property
-    def workflow_length(self) -> int:
-        return len(self.workflow_plan)
-
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    def passage_planner_deps(self) -> dict[str, Any]:
+        return {
+            "redis_client": self.redis_client,
+            "neo4j_client": self.neo4j_client,
+            "marks_index": self.marks_index,
+            "marks_data": self.marks_data,
+        }

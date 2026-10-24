@@ -1,7 +1,8 @@
+import re
 from datetime import datetime, timezone
 from typing import List, Optional
 
-from pydantic import BaseModel, Field, computed_field
+from pydantic import BaseModel, Field, computed_field, model_validator
 
 from src.kelder_api.components.velocity.utils import (
     bearing_degrees,
@@ -33,6 +34,24 @@ class Waypoint(BaseModel):
     #     return convert_to_decimal_degrees(self.longitude)
 
 
+AUTO_WAYPOINT_NAME = re.compile(r"Waypoint \d+")
+
+
+def number_waypoints(waypoints: List[Waypoint]) -> List[Waypoint]:
+    """Name unnamed waypoints by their position in the route, e.g. 'Waypoint 3'.
+
+    Names generated this way are renumbered too, so they stay correct after
+    waypoints are added or removed.
+    """
+    numbered = []
+    for position, waypoint in enumerate(waypoints, start=1):
+        name = (waypoint.name or "").strip()
+        if not name or AUTO_WAYPOINT_NAME.fullmatch(name):
+            waypoint = waypoint.model_copy(update={"name": f"Waypoint {position}"})
+        numbered.append(waypoint)
+    return numbered
+
+
 class PilotageInfo(BaseModel):
     departure: str = Field(..., description="Pilotage notes for departure harbour")
     arrival: str = Field(..., description="Pilotage notes for arrival harbour")
@@ -57,6 +76,11 @@ class PassagePlan(BaseModel):
     course_to_steer: List[Waypoint] = Field(
         ..., description="List of waypoints forming the course to steer"
     )
+
+    @model_validator(mode="after")
+    def _number_unnamed_waypoints(self) -> "PassagePlan":
+        self.course_to_steer = number_waypoints(self.course_to_steer)
+        return self
 
     @computed_field
     @property

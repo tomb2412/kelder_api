@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 
 from pydantic_ai import Agent
 
+from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.routes.tidal_measurements.tidal_clients import (
     get_height_of_tide_now,
     get_tide_predictions,
@@ -26,13 +27,14 @@ prompt = textwrap.dedent(
 ).strip()
 
 tidal_agent = Agent(
-    "openai:gpt-4o-mini",
-    system_prompt=prompt,
+    get_settings().inference.chat_model,
+    instructions=prompt,
     tools=[get_height_of_tide_now, get_tide_predictions],
+    defer_model_check=True,
 )
 
 
-@tidal_agent.system_prompt
+@tidal_agent.instructions
 def tidal_datetime_prompt() -> str:
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M")
     return f"Current UTC datetime: {now} UTC."

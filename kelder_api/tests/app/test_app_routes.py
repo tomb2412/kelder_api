@@ -131,6 +131,7 @@ class AppRoute(Enum):
             "log": 12.5,
             "drift": None,
             "dtw": None,
+            "xte": None,
         },
     )
     COMPASS_HEADING = RouteExpectation(

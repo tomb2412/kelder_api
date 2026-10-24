@@ -1,9 +1,15 @@
 from __future__ import annotations
 
+import json
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional, Tuple
 
 from pydantic import BaseModel, Field, computed_field
+
+from src.kelder_api.components.agentic_workflow.agents.models import (
+    PassagePlan,
+    Waypoint,
+)
 
 if TYPE_CHECKING:
     from src.kelder_api.components.log.models import JourneyData
@@ -108,4 +114,47 @@ class JourneyHistoryRecord(BaseModel):
             ),
             distance_travelled=journey.distance_travelled,
             gps_data=journey.gps_data,
+        )
+
+
+class PassagePlanRecord(BaseModel):
+    """Represents a single entry in the passage_plans table."""
+
+    unique_key: Optional[int] = Field(
+        default=None,
+        description="Primary key assigned by SQLite when the record is stored.",
+    )
+    passage_plan: PassagePlan = Field(description="The stored passage plan")
+
+    def as_db_values(self) -> Tuple[str, str, str, str]:
+        """Return the tuple used by sqlite bindings."""
+        plan = self.passage_plan
+        return (
+            plan.timestamp.isoformat(),
+            plan.departure_place_name,
+            plan.desination_place_name,
+            json.dumps(
+                [waypoint.model_dump(mode="json") for waypoint in plan.course_to_steer]
+            ),
+        )
+
+    @classmethod
+    def from_row(cls, row: Tuple) -> "PassagePlanRecord":
+        (
+            unique_key,
+            created_time,
+            departure_place_name,
+            destination_place_name,
+            course_to_steer,
+        ) = row
+        return cls(
+            unique_key=unique_key,
+            passage_plan=PassagePlan(
+                timestamp=datetime.fromisoformat(created_time),
+                departure_place_name=departure_place_name,
+                desination_place_name=destination_place_name,
+                course_to_steer=[
+                    Waypoint(**waypoint) for waypoint in json.loads(course_to_steer)
+                ],
+            ),
         )

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import math
 import os
+import tempfile
 from collections import defaultdict
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
@@ -27,6 +28,11 @@ from src.kelder_api.components.gps_new.types import GPSStatus
 from src.kelder_api.components.log.models import JourneyData
 from src.kelder_api.components.redis_client import redis_client as redis_client_module
 from src.kelder_api.components.velocity.models import GPSVelocity
+from src.kelder_api.configuration import logging_controller
+
+# Keep test runs out of the app's real log files. Must run before any test
+# imports src.kelder_api.app.main, which calls setup_logging on import.
+logging_controller.LOG_DIR = tempfile.mkdtemp(prefix="kelder_test_logs_")
 
 
 class _InMemoryRedisServer:
@@ -467,7 +473,7 @@ def app_client(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(main, "CompassInterface", DummyCompassInterface)
     monkeypatch.setattr(main, "VelocityCalculator", DummyVelocityCalculator)
     monkeypatch.setattr(main, "LogTracker", DummyLogTracker)
-    from src.kelder_api.components.agentic_workflow import graph as graph_module
+    from src.kelder_api.components.agentic_workflow import workflow as workflow_module
     from src.kelder_api.components.background_orchestrator import orchestrator
 
     class DummyBilgeDepthSensor:
@@ -481,7 +487,7 @@ def app_client(monkeypatch: pytest.MonkeyPatch):
 
     monkeypatch.setattr(orchestrator, "BilgeDepthSensor", DummyBilgeDepthSensor)
 
-    monkeypatch.setattr(graph_module, "AgentWorkflow", FakeAgentWorkflow)
+    monkeypatch.setattr(workflow_module, "AgentWorkflow", FakeAgentWorkflow)
     monkeypatch.setattr(main, "AgentWorkflow", FakeAgentWorkflow)
 
     async def fake_height_of_tide():

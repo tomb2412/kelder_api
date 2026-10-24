@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # Component import
-from src.kelder_api.components.agentic_workflow.graph import AgentWorkflow
+from src.kelder_api.components.agentic_workflow.workflow import AgentWorkflow
 from src.kelder_api.components.background_orchestrator.orchestrator import (
     BackgroundTaskManager,
 )
@@ -95,7 +95,9 @@ async def lifespan(app: FastAPI):
     app.state.db_manager = db_manager
     app.state.log_tracker = log_tracker
     app.state.drift_calculator = drift_calculator
-    app.state.agent_workflow = AgentWorkflow(redis_client, neo4j_client=neo4j_client)
+    app.state.agent_workflow = AgentWorkflow(
+        redis_client, neo4j_client=neo4j_client, db_manager=db_manager
+    )
     app.state.background_orchestrator = background_orchestrator
     logger.debug("API dependencies initialised and stored on app state")
 
