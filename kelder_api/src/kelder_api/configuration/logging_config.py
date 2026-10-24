@@ -10,6 +10,10 @@ DEFAULT_JSON_CONFIG = {
     "backupCount": 5,
 }
 
+TRUNCATING_FORMATTER_PATH = (
+    "src.kelder_api.configuration.logging_controller.TruncatingFilePathFormatter"
+)
+
 log_conf = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -21,7 +25,7 @@ log_conf = {
     },
     "formatters": {
         "simple": {
-            "class": "src.kelder_api.configuration.logging_controller.TruncatingFilePathFormatter",
+            "class": TRUNCATING_FORMATTER_PATH,
             "format": DEFAULT_FORMAT,
             "style": "{",
             "datefmt": DEFAULT_DATE_FORMAT,

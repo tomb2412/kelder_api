@@ -50,7 +50,7 @@ class CompassInterface:
             message = (
                 "Connection to the I2C board has failed. Check status light and wiring."
             )
-            logging.error(message)
+            logger.error(message)
             heading = None
         else:
             magnetic_field_vector = np.array(magnetic_field_vector)

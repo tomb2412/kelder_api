@@ -33,7 +33,8 @@ def check_auth(credentials: HTTPBasicCredentials = Depends(security)):
     if not (correct_user and correct_pass):
         logger.info(f"{type(credentials.username)}")
         logger.warning(
-            f"Unauthorized restart attempt with\n username: {credentials.username}\npassword: {credentials.password}"
+            f"Unauthorized restart attempt with\n username: {credentials.username}"
+            "\npassword: {credentials.password}"
         )
         raise HTTPException(401, "Unauthorized")
     logger.debug("Authentication succeeded")

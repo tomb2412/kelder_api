@@ -57,7 +57,8 @@ passage_plan_agent = Agent(
 
 @passage_plan_agent.system_prompt
 def passage_planner_datetime_prompt() -> str:
-    return f"Current UTC datetime: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')} UTC."
+    now = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')
+    return f"Current UTC datetime: {now} UTC."
 
 
 @passage_plan_agent.tool

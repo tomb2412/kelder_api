@@ -159,7 +159,7 @@ async def get_gps_card(
 
 
 @router_card.get("/gps_map_position")
-async def get_gps_card(
+async def get_gps_map_position(
     gps_interface: GPSInterface = Depends(get_dependancy),
     velocity_calculator: VelocityCalculator = Depends(get_velocity_dependancy),
     log_tracker: LogTracker = Depends(get_log_dependancy),

@@ -59,21 +59,25 @@ class DriftCalculator:
         else:
             drift_speed = None
             drift_angle = None
+        
+        drift_data = DriftData(
+            timestamp=end_datetime,
+            drift_speed=drift_speed,
+            drift_angle=drift_angle
+        )
         logger.debug(
-            f"The final drift is: {DriftData(timestamp=end_datetime, drift_speed=drift_speed, drift_angle=drift_angle)}"
+            f"The final drift is: {drift_data}"
         )
-        await self.write_drift(
-            DriftData(
-                timestamp=end_datetime, drift_speed=drift_speed, drift_angle=drift_angle
-            )
-        )
+        
+        await self.write_drift(drift_data)
 
     async def _calculate_avg_velocity(
         self, end_datetime: datetime | None = None
     ) -> Tuple[float | None]:
         """General method to retrieve the gps.
 
-        NOT USED because isn't instantanous though as it will always be behind the velocity.
+        NOT USED 
+        because isn't instantanous though as it will always be behind the velocity.
         """
         if end_datetime is None:
             end_datetime = datetime.now(timezone.utc).replace(microsecond=0)
@@ -84,7 +88,8 @@ class DriftCalculator:
             end_datetime=end_datetime, start_datetime=start_datetime, active=True
         )
         logger.debug(
-            f"Requesting the velocity timeseries. From: {start_datetime}-{end_datetime}. Got length: {len(velocity_history)}"
+            f"Requesting the velocity timeseries."
+            f"From: {start_datetime}-{end_datetime}. Got length: {len(velocity_history)}"
         )
         # TODO: catch no data
         try:
@@ -110,7 +115,8 @@ class DriftCalculator:
         self, end_datetime: datetime | None = None
     ) -> Tuple[float | None]:
         """
-        A method to simply request the latest velocity within the time period avgd for the compass
+        A method to simply request the latest velocity within the time period 
+        avgd for the compass.
         """
         if end_datetime is None:
             end_datetime = datetime.now(timezone.utc).replace(microsecond=0)
@@ -122,7 +128,8 @@ class DriftCalculator:
             end_datetime=end_datetime, start_datetime=start_datetime, active=True
         )
         logger.debug(
-            f"Requesting the velocity timeseries. From: {start_datetime}-{end_datetime}. Got length: {len(velocity_history)}"
+            f"Requesting the velocity timeseries."
+            f"From: {start_datetime}-{end_datetime}. Got length: {len(velocity_history)}"
         )
         try:
             return velocity_history[0].speed_over_ground, velocity_history[
@@ -146,7 +153,8 @@ class DriftCalculator:
             end_datetime=end_datetime, start_datetime=start_datetime, active=True
         )
         logger.debug(
-            f"Requesting the compass timeseries. From: {start_datetime}-{end_datetime}. Got length: {len(compass_history)}"
+            f"Requesting the compass timeseries."
+            f"From: {start_datetime}-{end_datetime}. Got length: {len(compass_history)}"
         )
 
         try:

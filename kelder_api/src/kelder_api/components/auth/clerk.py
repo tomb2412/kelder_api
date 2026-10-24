@@ -17,7 +17,11 @@ def _get_jwks_client():
 
 
 def get_optional_user_id(request: Request) -> str:
-    """Extract Clerk user_id from Bearer JWT. Returns 'anonymous' on missing/invalid token."""
+    """
+    Extract Clerk user_id from Bearer JWT. 
+    
+    Returns 'anonymous' on missing/invalid token.
+    """
     auth = request.headers.get("Authorization", "")
     if not auth.startswith("Bearer "):
         return "anonymous"

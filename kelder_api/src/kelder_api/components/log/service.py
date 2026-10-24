@@ -192,7 +192,6 @@ class LogTracker:
     async def get_journey_set(
         self, datetime: datetime = datetime.now(timezone.utc)
     ) -> JourneyData:
-        data = await self.redis_client.read_hashed_set(RedisSetNames.JOURNEY, datetime)
         try:
             return JourneyData(
                 **(

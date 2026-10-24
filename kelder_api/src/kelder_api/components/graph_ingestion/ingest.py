@@ -33,7 +33,10 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--map-path",
         default=str(DEFAULT_GEOJSON_PATH),
-        help="Path to the GeoJSON seamarks file (default: raw_maps/seamarks_and_coastlines_solent.geojson)",
+        help=(
+            "Path to the GeoJSON seamarks file"
+            "default: raw_maps/seamarks_and_coastlines_solent.geojson)"
+        ),
     )
     parser.add_argument(
         "--neo4j-uri",
