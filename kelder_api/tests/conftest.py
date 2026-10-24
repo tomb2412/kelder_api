@@ -16,7 +16,7 @@ from fastapi.testclient import TestClient
 
 os.environ.setdefault("OPENAI_API_KEY", "test-key")
 os.environ.setdefault("TIDAL_API_KEY", "test-key")
-os.environ.setdefault("HOST_API_RESTART_URL", "http://test:9090/restart")
+os.environ.setdefault("HOST_API_URL", "http://test:9090/restart")
 os.environ.setdefault("HOST_API_USERNAME", "test")
 os.environ.setdefault("HOST_API_PASSWORD", "test")
 
@@ -368,7 +368,7 @@ def make_settings(**sections: Any) -> SimpleNamespace:
     """Construct a SimpleNamespace mimicking our Settings object for tests."""
     host_api = SimpleNamespace(
         restart_url=os.getenv(
-            "HOST_API_RESTART_URL", "http://host.docker.internal:9090/restart"
+            "HOST_API_URL", "http://host.docker.internal:9090/restart"
         ),
         username=os.getenv("HOST_API_USERNAME", "kelder"),
         password=os.getenv("HOST_API_PASSWORD", "kelder"),
