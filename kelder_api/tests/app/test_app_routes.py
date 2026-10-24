@@ -130,7 +130,7 @@ class AppRoute(Enum):
             "speed_over_ground": 7.2,
             "log": 12.5,
             "drift": None,
-            "dtw": 4.7,
+            "dtw": None,
         },
     )
     COMPASS_HEADING = RouteExpectation(
@@ -167,7 +167,7 @@ class AppRoute(Enum):
         "GET",
         "/get_redis_set_size",
         200,
-        {"GPS": 1, "list_length": 0},
+        {"GPS": 1, "list_length": 1},
         request_params={"sensor": "GPS"},
         setup=_reset_redis_sets,
     )

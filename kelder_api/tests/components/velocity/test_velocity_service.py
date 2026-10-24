@@ -42,9 +42,9 @@ class RecordingGPSInterface:
 
     async def read_gps_history_length(
         self, length: int, active: bool = False
-    ) -> tuple[list[GPSRedisData], datetime]:
+    ) -> list[GPSRedisData]:
         self.calls.append(("length", length, active))
-        return self.history[:length], datetime.now(timezone.utc)
+        return self.history[:length]
 
     async def read_gps_history_time_series(
         self,
@@ -101,8 +101,12 @@ def _expected_aggregates(
     speeds: list[float] = []
     bearings: list[float] = []
     for index in range(len(history) - 1):
-        current = history[index]
-        nxt = history[index + 1]
+        # GPS history is newest-first; course is calculated from the older
+        # point toward the newer point.
+        newest = history[index]
+        older = history[index + 1]
+        current = older
+        nxt = newest
         lat_start = velocity_utils.convert_to_decimal_degrees(
             current.latitude_nmea, lon=False
         )
@@ -113,8 +117,8 @@ def _expected_aggregates(
         lon_end = velocity_utils.convert_to_decimal_degrees(nxt.longitude_nmea)
         distance = velocity_utils.haversine(lat_start, lat_end, lon_start, lon_end)
         time_delta = velocity_utils.time_difference_seconds(
-            time_end=current.timestamp,
-            time_start=nxt.timestamp,
+            time_end=newest.timestamp,
+            time_start=older.timestamp,
         )
         bearings.append(
             velocity_utils.bearing_degrees(lat_start, lon_start, lat_end, lon_end)

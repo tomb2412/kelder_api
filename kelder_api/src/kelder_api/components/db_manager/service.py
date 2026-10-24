@@ -54,6 +54,10 @@ class DBManager:
 
         with self._cursor() as cursor:
             cursor.execute(CREATE_JOURNEY_HISTORY_TABLE)
+            cursor.execute("PRAGMA table_info(journey_history)")
+            columns = {row[1] for row in cursor.fetchall()}
+            if "gps_data" not in columns:
+                cursor.execute("ALTER TABLE journey_history ADD COLUMN gps_data TEXT")
         self._initialised = True
         logger.info("Journey history database ready at %s", self.database_path)
 
