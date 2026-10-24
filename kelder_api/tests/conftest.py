@@ -429,6 +429,18 @@ def app_client(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(main, "VelocityCalculator", DummyVelocityCalculator)
     monkeypatch.setattr(main, "LogTracker", DummyLogTracker)
     from src.kelder_api.components.agentic_workflow import graph as graph_module
+    from src.kelder_api.components.background_orchestrator import orchestrator
+
+    class DummyBilgeDepthSensor:
+        """Keep app route tests independent of physical GPIO hardware."""
+
+        def __init__(self, _redis_client: DummyRedisClient) -> None:
+            pass
+
+        async def record_bilge_depth(self) -> None:
+            pass
+
+    monkeypatch.setattr(orchestrator, "BilgeDepthSensor", DummyBilgeDepthSensor)
 
     monkeypatch.setattr(graph_module, "AgentWorkflow", FakeAgentWorkflow)
     monkeypatch.setattr(main, "AgentWorkflow", FakeAgentWorkflow)
