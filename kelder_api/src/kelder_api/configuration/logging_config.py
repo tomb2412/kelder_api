@@ -1,8 +1,8 @@
-DEFAULT_FORMAT = '[{levelname}] - {asctime} - {parent_module} : {message}'
+DEFAULT_FORMAT = '[{levelname}] {asctime} - {parent_module} : {message}'
 #NOTE - delete this as unused
-COMPONENT_FORMAT = '[{levelname}] - {asctime} - {component} - {module} : {message}'
+COMPONENT_FORMAT = '[{levelname}] {asctime} - {component} - {module} : {message}'
 
-DEFAULT_DATE_FORMAT = '%d/%m/%Y %H:%M:%S'
+DEFAULT_DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
 DEFAULT_FILENAME = "logs/text_log.log"
 DEFAULT_JSON_CONFIG = {
     "filename": "logs/json/json_log.json",
