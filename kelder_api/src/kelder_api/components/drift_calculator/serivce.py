@@ -61,13 +61,9 @@ class DriftCalculator:
             drift_angle = None
 
         drift_data = DriftData(
-            timestamp=end_datetime,
-            drift_speed=drift_speed,
-            drift_angle=drift_angle
+            timestamp=end_datetime, drift_speed=drift_speed, drift_angle=drift_angle
         )
-        logger.debug(
-            f"The final drift is: {drift_data}"
-        )
+        logger.debug(f"The final drift is: {drift_data}")
 
         await self.write_drift(drift_data)
 

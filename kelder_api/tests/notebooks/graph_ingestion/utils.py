@@ -2,11 +2,16 @@ import math
 
 from shapely.geometry import shape
 
-def _parse_wkt_coordinates(
-    coordinates: list[list[float, float]]
-) -> str:
+
+def _parse_wkt_coordinates(coordinates: list[list[float, float]]) -> str:
     coords_string = [f"{lon} {lat}" for lon, lat in coordinates]
-    return str(coords_string).replace("[", "").replace("]", "").replace("\"", "").replace("\'", "")
+    return (
+        str(coords_string)
+        .replace("[", "")
+        .replace("]", "")
+        .replace('"', "")
+        .replace("'", "")
+    )
 
 
 def build_danger_zone_coords(
@@ -24,23 +29,23 @@ def build_danger_zone_coords(
 
     if len(coordinates) < 2:
         raise ValueError("coordinates must contain latitude and longitude")
-    
+
     lon = coordinates[0]
     lat = coordinates[1]
-    
+
     center_lat = lat
     center_lon = lon
 
     if cardinal:
         cardinal = cardinal.lower().strip()
         if cardinal == "north":
-            center_lat -= radius_deg*1.05
+            center_lat -= radius_deg * 1.05
         elif cardinal == "south":
-            center_lat += radius_deg*1.05
+            center_lat += radius_deg * 1.05
         elif cardinal == "east":
-            center_lon -= radius_deg*1.05
+            center_lon -= radius_deg * 1.05
         elif cardinal == "west":
-            center_lon += radius_deg*1.05
+            center_lon += radius_deg * 1.05
         else:
             raise ValueError(f"Unsupported cardinal direction: {cardinal}")
 
@@ -56,6 +61,7 @@ def build_danger_zone_coords(
     coords.append(coords[0])
 
     return _parse_wkt_coordinates(coords)
+
 
 def process_harbour(feature: dict) -> dict:
     # print(feature)
@@ -77,6 +83,7 @@ def process_harbour(feature: dict) -> dict:
 
     return {"name": name, "type": type, "coordinates": [longitude, latitude]}
 
+
 def process_fairway(feature: dict) -> dict:
     try:
         name = feature["properties"]["name"]
@@ -87,6 +94,7 @@ def process_fairway(feature: dict) -> dict:
 
     return {"name": name, "type": "fairway", "coordinates": coordinates}
 
+
 def process_precautionary_area(feature: dict) -> dict:
     try:
         name = feature["properties"]["seamark:name"]
@@ -96,6 +104,7 @@ def process_precautionary_area(feature: dict) -> dict:
     coordinates = feature["geometry"]["coordinates"]
 
     return {"name": name, "type": "precautionary_area", "coordinates": coordinates}
+
 
 def process_lateral_marks(feature: dict, seamark_type: str) -> dict:
     try:
@@ -130,6 +139,7 @@ def process_lateral_marks(feature: dict, seamark_type: str) -> dict:
         "light": light_characteristic,
     }
 
+
 def process_cardinal_marks(feature: dict, seamark_type: str) -> dict:
     try:
         name = feature["properties"]["seamark:name"]
@@ -159,6 +169,7 @@ def process_cardinal_marks(feature: dict, seamark_type: str) -> dict:
         "light": light_characteristic,
     }
 
+
 def process_special_purpose(feature: dict) -> dict:
     try:
         name = feature["properties"]["seamark:name"]
@@ -185,6 +196,7 @@ def process_special_purpose(feature: dict) -> dict:
         "light": light_characteristic,
     }
 
+
 def process_isolated_danger(feature: dict) -> dict:
     try:
         name = feature["properties"]["seamark:name"]
@@ -194,6 +206,7 @@ def process_isolated_danger(feature: dict) -> dict:
     coordinates = feature["geometry"]["coordinates"]
 
     return {"name": name, "type": "isolated_danger", "coordinates": coordinates}
+
 
 def process_coastline(feature: dict) -> dict:
     try:
@@ -205,17 +218,17 @@ def process_coastline(feature: dict) -> dict:
     try:
         type = feature["properties"]["place"]
     except KeyError:
-        type = 'mainland'
+        type = "mainland"
 
-    if feature["geometry"]["type"]=="Polygon":
+    if feature["geometry"]["type"] == "Polygon":
         coordinates = _parse_wkt_coordinates(feature["geometry"]["coordinates"][0])
-    elif feature["geometry"]["type"]=="LineString":
+    elif feature["geometry"]["type"] == "LineString":
         coordinates = _parse_wkt_coordinates(feature["geometry"]["coordinates"])
     else:
         raise TypeError("Unsupported coordinate WKT type")
 
-
     return {"name": name, "type": type, "linestring": coordinates}
+
 
 def process_lateral_marks(feature: dict) -> dict:
     try:
@@ -270,6 +283,7 @@ def process_harbour(feature: dict) -> dict:
 
     return {"name": name, "type": type, "coordinates": [longitude, latitude]}
 
+
 def process_wreck(feature: dict) -> dict:
     try:
         name = feature["properties"]["name"]
@@ -289,9 +303,5 @@ def process_wreck(feature: dict) -> dict:
     elif feature["geometry"]["type"] == "Point":
         polygon = build_danger_zone_coords([latitude, longitude])
     else:
-        raise TypeError(f"Unsupported wreck type {feature["properties"]}")
-    return {
-        "name": name,
-        "coordinates": [latitude, longitude],
-        "danger_zone": polygon  
-    }
+        raise TypeError(f"Unsupported wreck type {feature['properties']}")
+    return {"name": name, "coordinates": [latitude, longitude], "danger_zone": polygon}

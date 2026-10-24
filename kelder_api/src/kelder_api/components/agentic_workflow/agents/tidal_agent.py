@@ -34,5 +34,5 @@ tidal_agent = Agent(
 
 @tidal_agent.system_prompt
 def tidal_datetime_prompt() -> str:
-    now = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M")
     return f"Current UTC datetime: {now} UTC."

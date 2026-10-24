@@ -60,5 +60,5 @@ chatbot_agent = Agent(
 
 @chatbot_agent.system_prompt
 def chatbot_datetime_prompt() -> str:
-    now = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M")
     return f"Current UTC datetime: {now} UTC."
