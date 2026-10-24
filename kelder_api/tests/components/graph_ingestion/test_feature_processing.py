@@ -1,4 +1,4 @@
-from src.kelder_api.components.graph_ingestion.feature_processing import process_wreck
+from src.kelder_api.components.neo4j_client.feature_processing import process_wreck
 
 
 def test_process_wreck_point_keeps_lon_lat_order():
