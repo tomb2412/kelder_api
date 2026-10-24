@@ -122,15 +122,20 @@ class RedisClient:
 
             return [json.loads(measurement) for measurement, _ in sensor_data]
 
+    @staticmethod
+    def _daily_key(key: str, timestamp: datetime | None = None) -> str:
+        timestamp = timestamp or datetime.now(timezone.utc)
+        return f"{key}{timestamp.date().strftime('%d%m%Y')}"
+
     async def write_hashed_set(
         self, key: str, data: BaseModel, timestamp: datetime | None = None
     ):
-        timestamp = timestamp or datetime.now(timezone.utc)
-        key = f"{key}{timestamp.date().strftime('%d%m%Y')}"
+        key = self._daily_key(key, timestamp)
 
         async with self.get_connection() as redis:
             try:
                 await redis.hset(key, mapping=data.model_dump(mode="json"))
+                await redis.expire(key, self.settings.redis_daily_hash_ttl_seconds)
             except Exception as error:
                 logger.error(
                     f"Redis exception raised writing to stream {key}, with {error}"
@@ -139,8 +144,7 @@ class RedisClient:
 
     async def read_hashed_set(self, key: str, timestamp: datetime | None = None):
         """Method to read the current days stream."""
-        timestamp = timestamp or datetime.now(timezone.utc)
-        key = f"{key}{timestamp.date().strftime('%d%m%Y')}"
+        key = self._daily_key(key, timestamp)
 
         async with self.get_connection() as redis:
             try:
@@ -176,7 +180,10 @@ class RedisClient:
         else:
             async with self.get_connection() as redis:
                 for set_name in RedisSetNames:
-                    if set_name == RedisSetNames.VESSEL_STATE:
+                    if set_name in (
+                        RedisSetNames.VESSEL_STATE,
+                        RedisSetNames.PASSAGE_PLAN,
+                    ):
                         continue
 
                     await redis.zremrangebyscore(

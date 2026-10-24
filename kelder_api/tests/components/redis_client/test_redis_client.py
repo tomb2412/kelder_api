@@ -91,6 +91,37 @@ async def test_hashed_set_roundtrip(redis_server) -> None:
 
 
 @pytest.mark.asyncio
+async def test_hashed_set_expires(redis_server) -> None:
+    """Daily hashes get a TTL so old days do not accumulate in redis."""
+    client = RedisClient()
+
+    timestamp = datetime(2024, 5, 20, 15, 30, tzinfo=timezone.utc)
+    reading = StatusReading(timestamp=timestamp, status="ok", value=184)
+
+    await client.write_hashed_set("journey:", reading, timestamp=timestamp)
+
+    assert (
+        redis_server._ttls["journey:20052024"]
+        == client.settings.redis_daily_hash_ttl_seconds
+    )
+
+
+@pytest.mark.asyncio
+async def test_clear_set_preserves_passage_plan(redis_server) -> None:
+    """Clearing all sets removes old sensor history but keeps the passage plan."""
+    client = RedisClient()
+
+    old = datetime(2024, 1, 1, tzinfo=timezone.utc)
+    await client.write_set("GPS", GPSReading(timestamp=old, coordinate="A"))
+    await client.write_set("PASSAGE_PLAN", GPSReading(timestamp=old, coordinate="B"))
+
+    await client.clear_set(end_datetime=old + timedelta(days=1))
+
+    assert await client.read_set("GPS") == []
+    assert len(await client.read_set("PASSAGE_PLAN")) == 1
+
+
+@pytest.mark.asyncio
 async def test_close_connection_pool_resets_state(redis_server) -> None:
     """Closing the client clears the cached pool and signals the fake pool shutdown."""
     client = RedisClient()

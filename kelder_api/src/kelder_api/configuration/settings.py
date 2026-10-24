@@ -47,6 +47,11 @@ class Redis(BaseSettings):
         default=30 * 24 * 60 * 60,
         gt=0,
     )
+    redis_daily_hash_ttl_seconds: int = Field(
+        description="Lifetime of the per-day journey and leg hashes",
+        default=48 * 60 * 60,
+        gt=0,
+    )
 
     model_config = model_config
 

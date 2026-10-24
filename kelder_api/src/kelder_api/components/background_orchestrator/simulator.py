@@ -89,16 +89,19 @@ class Simulator(CompassInterface, GPSInterface):
             self._initialise_simulation_parameters()
 
     async def clear_redis(self) -> None:
-        for sensor in [
-            RedisSetNames.GPS,
-            RedisSetNames.COMPASS,
-            RedisSetNames.VELOCITY,
-            RedisSetNames.LOG,
-            RedisSetNames.DRIFT,
-            RedisSetNames.BILGE_DEPTH,
-        ]:
-            async with self.redis_client.get_connection() as redis:
-                await redis.delete(f"sensor:ts:{sensor.value}")
+        sensor_keys = [
+            f"sensor:ts:{sensor.value}"
+            for sensor in [
+                RedisSetNames.GPS,
+                RedisSetNames.COMPASS,
+                RedisSetNames.VELOCITY,
+                RedisSetNames.LOG,
+                RedisSetNames.DRIFT,
+                RedisSetNames.BILGE_DEPTH,
+            ]
+        ]
+        async with self.redis_client.get_connection() as redis:
+            await redis.unlink(*sensor_keys)
 
         logger.info("Cleared the redis data streams")
 

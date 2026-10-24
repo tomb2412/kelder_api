@@ -34,11 +34,13 @@ class _InMemoryRedisServer:
         self._strings: Dict[str, str] = {}
         self._sorted_sets: Dict[str, Dict[str, float]] = defaultdict(dict)
         self._hashes: Dict[str, Dict[str, Any]] = defaultdict(dict)
+        self._ttls: Dict[str, int] = {}
 
     def reset(self) -> None:
         self._strings.clear()
         self._sorted_sets.clear()
         self._hashes.clear()
+        self._ttls.clear()
 
 
 @dataclass
@@ -115,6 +117,21 @@ class _FakeRedis:
 
     async def hgetall(self, key: str) -> Dict[str, Any]:
         return dict(self._server._hashes.get(key, {}))
+
+    async def expire(self, key: str, seconds: int) -> bool:
+        self._server._ttls[key] = seconds
+        return True
+
+    async def zremrangebyscore(
+        self, key: str, min: float | str, max: float | str
+    ) -> int:
+        values = self._server._sorted_sets.get(key, {})
+        min_score = _normalise_score(min, default=-math.inf)
+        max_score = _normalise_score(max, default=math.inf)
+        removed = [m for m, score in values.items() if min_score <= score <= max_score]
+        for member in removed:
+            values.pop(member)
+        return len(removed)
 
 
 class _FakePipeline:
