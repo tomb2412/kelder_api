@@ -211,15 +211,15 @@ class AppRoute(Enum):
 
 def test_app_initialisation_sets_state(app_client):
     _, app = app_client
+    from src.kelder_api.components.background_orchestrator.orchestrator import (
+        BackgroundTaskManager,
+    )
     from tests.conftest import (
         DummyCompassInterface,
         DummyGPSInterface,
         DummyLogTracker,
         DummyRedisClient,
         DummyVelocityCalculator,
-    )
-    from src.kelder_api.components.background_orchestrator.orchestrator import (
-        BackgroundTaskManager,
     )
 
     assert isinstance(app.state.redis_client, DummyRedisClient)

@@ -1,32 +1,32 @@
+from contextlib import contextmanager
 from typing import List
 
 from neo4j import GraphDatabase
-from contextlib import contextmanager
 
 from tests.notebooks.graph_ingestion.queries import (
-    CREATE_GRAPH,
-    ADD_NATIVE_LAYER,
-    ADD_DANGER_LAYERS,
-    ADD_COASTLINE_LAYER,
-    CREATE_COASTLINE,
-    CREATE_GENERAL_MARK,
-    CREATE_DANGER_MARK,
-    CREATE_CARDNAL_MARK,
-    CREATE_GENERAL_MARK_BATCH,
-    DELETE_ALL_NODES,
-    CREATE_SAFE_EDGES,
-    CREATE_HARBOUR,
-    CREATE_WRECK,
     A_STAR_ROUTE_OPTIMISATION_WITH_NAMES,
+    ADD_COASTLINE_LAYER,
+    ADD_DANGER_LAYERS,
+    ADD_NATIVE_LAYER,
+    CREATE_CARDNAL_MARK,
+    CREATE_COASTLINE,
+    CREATE_DANGER_MARK,
+    CREATE_GENERAL_MARK,
+    CREATE_GENERAL_MARK_BATCH,
+    CREATE_GRAPH,
+    CREATE_HARBOUR,
+    CREATE_SAFE_EDGES,
+    CREATE_WRECK,
+    DELETE_ALL_NODES,
 )
 from tests.notebooks.graph_ingestion.utils import (
-    process_special_purpose,
-    process_isolated_danger,
-    process_cardinal_marks,
     build_danger_zone_coords,
+    process_cardinal_marks,
     process_coastline,
-    process_lateral_marks,
     process_harbour,
+    process_isolated_danger,
+    process_lateral_marks,
+    process_special_purpose,
     process_wreck,
 )
 

@@ -239,9 +239,9 @@ def process_lateral_marks(feature: dict) -> dict:
     coordinates = feature["geometry"]["coordinates"]
 
     try:
-        catagory = feature["properties"][f"seamark:buoy_lateral:category"]
+        catagory = feature["properties"]["seamark:buoy_lateral:category"]
     except KeyError:
-        colour = feature["properties"][f"seamark:buoy_lateral:colour"]
+        colour = feature["properties"]["seamark:buoy_lateral:colour"]
         catagory = "port" if colour == "red" else "green"
 
     try:
