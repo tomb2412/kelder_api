@@ -312,6 +312,12 @@ async def test_underway_strategy_handles_errors_and_finishes_journey(
             "method": "instantaneous_drift_calculator",
         },
         "LOG": {"instance": _LogStub(call_sequence), "method": "increment_log"},
+        "PASSAGE_PLAN_TRACKER": {
+            "instance": _ComponentStub(
+                "PASSAGE_PLAN_TRACKER", "calculate_progress", call_sequence
+            ),
+            "method": "calculate_progress",
+        },
     }
 
     async def fake_sleep(_: float) -> None:
@@ -322,6 +328,7 @@ async def test_underway_strategy_handles_errors_and_finishes_journey(
     assert "COMPASS.read_heading_from_compass" in call_sequence
     assert "VELOCITY.calculate_gps_velocity" in call_sequence
     assert "LOG.increment_log" in call_sequence
+    assert "PASSAGE_PLAN_TRACKER.calculate_progress" in call_sequence
     assert components["LOG"]["instance"].finish_calls == 0
 
 
