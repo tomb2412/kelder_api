@@ -4,7 +4,11 @@ import logging
 from logging.config import dictConfig
 import json
 
-from src.kelder_api.configuration.logging_config import log_conf
+from src.kelder_api.configuration.logging_config import log_conf, DEFAULT_JSON_CONFIG
+
+def extract_parent_module(file_path: str) -> str:
+    pathname = file_path.replace('.py', '')
+    return '.'.join(pathname.split('/')[-2:])
 
 class JsonFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
@@ -16,6 +20,7 @@ class JsonFormatter(logging.Formatter):
             "name": record.name,
             "service": getattr(record, "service", "-"),
             "component": getattr(record, "component", "-"),
+            "parent_module": extract_parent_module(record.pathname),
             "msg": record.getMessage(),
             "logger": record.name,
         }
@@ -26,6 +31,12 @@ class JsonFormatter(logging.Formatter):
         if record.exc_info:
             out["exc"] = self.formatException(record.exc_info)
         return json.dumps(out, default=str)
+    
+class TruncatingFilePathFormatter(logging.Formatter):
+    def format(self, record: logging.LogRecord) -> str:
+        record.parent_module = extract_parent_module(record.pathname)
+
+        return super(TruncatingFilePathFormatter, self).format(record)
 
 class ComponentFilter(logging.Filter):
     """Adds a component name for readable container log output."""
@@ -41,7 +52,7 @@ class ComponentFilter(logging.Filter):
 def setup_logging(service: str, config: dict = log_conf):
         dictConfig(copy.deepcopy(config))
 
-        handler = logging.StreamHandler()
+        handler = logging.handlers.TimedRotatingFileHandler(**DEFAULT_JSON_CONFIG)
         handler.setFormatter(JsonFormatter())
         handler.addFilter(
             ComponentFilter(

@@ -22,11 +22,6 @@ services:
       interval: 10s
       timeout: 3s
       retries: 5
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   kelder_api:
     build: .
@@ -35,6 +30,7 @@ services:
     tty: true
     volumes:
       - /dev:/dev
+      - ${HOST_PROJECT_ROOT:-.}/logs:/app/logs
       - ${HOST_PROJECT_ROOT:-.}/journey_history:/app/src/kelder_api/assets/
     devices:
       - /dev/gpiomem
@@ -55,16 +51,12 @@ services:
     networks:
       - kelder_net
     restart: unless-stopped
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   worker:
     build: .
     privileged: true
     volumes:
+      - ${HOST_PROJECT_ROOT:-.}/logs:/app/logs
       - ${HOST_PROJECT_ROOT:-.}/journey_history:/app/src/kelder_api/assets/
     environment:
       REDIS_HOST: redis
@@ -80,8 +72,4 @@ services:
     networks:
       - kelder_net
     restart: unless-stopped
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
+
