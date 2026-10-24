@@ -15,9 +15,7 @@ from pydantic_ai.messages import (
 )
 from pydantic_ai.models.test import TestModel
 
-from src.kelder_api.components.agentic_workflow.agents.reasoning import (
-    reasoning_agent,
-)
+from src.kelder_api.components.agentic_workflow.agents.chatbot import chatbot_agent
 from src.kelder_api.components.agentic_workflow.chat_storage import (
     _adapter,
     load_history,
@@ -71,17 +69,19 @@ async def test_load_history_strips_persisted_system_prompts():
 
 
 @pytest.mark.asyncio
-async def test_reasoning_agent_uses_its_own_instructions_with_chat_history():
+async def test_chatbot_instructions_are_sent_with_chat_history():
     chat_history = [
         ModelRequest(parts=[UserPromptPart(content="Plan a passage")]),
         ModelResponse(parts=[TextPart(content="Handing over")]),
     ]
 
     with capture_run_messages() as messages:
-        with reasoning_agent.override(model=TestModel()):
-            await reasoning_agent.run("Plan a passage", message_history=chat_history)
+        with chatbot_agent.override(model=TestModel(call_tools=[])):
+            await chatbot_agent.run(
+                "Plan a passage", message_history=chat_history, deps=None
+            )
 
     request = next(
         m for m in messages[len(chat_history) :] if isinstance(m, ModelRequest)
     )
-    assert "orchestration agent" in request.instructions
+    assert "sailing assistant" in request.instructions

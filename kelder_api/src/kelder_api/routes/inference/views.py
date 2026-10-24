@@ -5,7 +5,7 @@ from uuid import uuid4
 from fastapi import APIRouter, Depends, Request
 from starlette.responses import StreamingResponse
 
-from src.kelder_api.components.agentic_workflow.graph import AgentWorkflow
+from src.kelder_api.components.agentic_workflow.workflow import AgentWorkflow
 from src.kelder_api.components.auth.clerk import get_optional_user_id
 from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings

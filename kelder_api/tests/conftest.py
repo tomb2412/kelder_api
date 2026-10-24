@@ -467,7 +467,7 @@ def app_client(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(main, "CompassInterface", DummyCompassInterface)
     monkeypatch.setattr(main, "VelocityCalculator", DummyVelocityCalculator)
     monkeypatch.setattr(main, "LogTracker", DummyLogTracker)
-    from src.kelder_api.components.agentic_workflow import graph as graph_module
+    from src.kelder_api.components.agentic_workflow import workflow as workflow_module
     from src.kelder_api.components.background_orchestrator import orchestrator
 
     class DummyBilgeDepthSensor:
@@ -481,7 +481,7 @@ def app_client(monkeypatch: pytest.MonkeyPatch):
 
     monkeypatch.setattr(orchestrator, "BilgeDepthSensor", DummyBilgeDepthSensor)
 
-    monkeypatch.setattr(graph_module, "AgentWorkflow", FakeAgentWorkflow)
+    monkeypatch.setattr(workflow_module, "AgentWorkflow", FakeAgentWorkflow)
     monkeypatch.setattr(main, "AgentWorkflow", FakeAgentWorkflow)
 
     async def fake_height_of_tide():

@@ -30,6 +30,7 @@ tidal_agent = Agent(
     get_settings().inference.chat_model,
     instructions=prompt,
     tools=[get_height_of_tide_now, get_tide_predictions],
+    defer_model_check=True,
 )
 
 

@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # Component import
-from src.kelder_api.components.agentic_workflow.graph import AgentWorkflow
+from src.kelder_api.components.agentic_workflow.workflow import AgentWorkflow
 from src.kelder_api.components.background_orchestrator.orchestrator import (
     BackgroundTaskManager,
 )

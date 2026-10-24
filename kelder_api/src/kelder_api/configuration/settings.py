@@ -150,6 +150,10 @@ class Inference(BaseSettings):
         description="Maximum number of chat messages kept and sent to the model",
         default=20,
     )
+    max_model_requests: int = Field(
+        description="Maximum model requests per chat message, across all agents",
+        default=25,
+    )
     model_config = model_config
 
 
