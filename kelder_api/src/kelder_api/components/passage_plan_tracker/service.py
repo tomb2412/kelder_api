@@ -11,6 +11,7 @@ from src.kelder_api.components.redis_client.types import RedisSetNames
 from src.kelder_api.components.velocity.utils import (
     bearing_degrees,
     convert_to_decimal_degrees,
+    cross_track_distance,
     haversine,
 )
 from src.kelder_api.configuration.logging_controller import get_logger
@@ -27,6 +28,16 @@ class PassagePlanTracker:
 
     async def calculate_progress(self) -> None:
         """Called by the orchestrator each tick to update passage plan progress."""
+        progress = await self.compute_progress()
+        if progress is not None:
+            await self._write_progress(progress)
+
+    async def compute_progress(self) -> PassagePlanProgress | None:
+        """Work out progress along the active plan from the latest GPS fix.
+
+        Returns progress with empty fields when no plan is set, or None when
+        there is no GPS fix to measure from.
+        """
         # Read passage plan from Redis
         try:
             plan_data = (await self.redis_client.read_set(RedisSetNames.PASSAGE_PLAN))[
@@ -34,36 +45,20 @@ class PassagePlanTracker:
             ]
         except IndexError:
             logger.debug("No passage plan set")
-            await self._write_progress(
-                PassagePlanProgress(
-                    timestamp=datetime.now(timezone.utc),
-                    distance_to_waypoint=None,
-                    next_waypoint_name=None,
-                    next_waypoint_index=None,
-                )
-            )
-            return
+            return self._empty_progress()
 
         plan = PassagePlan(**plan_data)
         waypoints = plan.course_to_steer
 
         if not waypoints:
             logger.debug("Passage plan has no waypoints")
-            await self._write_progress(
-                PassagePlanProgress(
-                    timestamp=datetime.now(timezone.utc),
-                    distance_to_waypoint=None,
-                    next_waypoint_name=None,
-                    next_waypoint_index=None,
-                )
-            )
-            return
+            return self._empty_progress()
 
         # Read latest GPS position
         gps_data = await self.gps_interface.read_gps_latest(active=True)
         if gps_data is None:
             logger.debug("No GPS fix available, skipping progress update")
-            return
+            return None
 
         # Convert NMEA to decimal degrees
         boat_lat = convert_to_decimal_degrees(gps_data.latitude_nmea)
@@ -72,13 +67,39 @@ class PassagePlanTracker:
         # Find next waypoint
         target_index, distance = self._find_next_waypoint(boat_lat, boat_lon, waypoints)
 
-        await self._write_progress(
-            PassagePlanProgress(
-                timestamp=datetime.now(timezone.utc),
-                distance_to_waypoint=round(distance, 2),
-                next_waypoint_name=waypoints[target_index].name,
-                next_waypoint_index=target_index,
+        # Cross track error is measured from the leg being sailed, so there is
+        # none until the first waypoint is reached.
+        cross_track_error = None
+        if target_index > 0:
+            leg_start = waypoints[target_index - 1]
+            leg_end = waypoints[target_index]
+            cross_track_error = round(
+                cross_track_distance(
+                    latitude_start=leg_start.latitude,
+                    longitude_start=leg_start.longitude,
+                    latitude_end=leg_end.latitude,
+                    longitude_end=leg_end.longitude,
+                    latitude=boat_lat,
+                    longitude=boat_lon,
+                ),
+                2,
             )
+
+        return PassagePlanProgress(
+            timestamp=datetime.now(timezone.utc),
+            distance_to_waypoint=round(distance, 2),
+            next_waypoint_name=waypoints[target_index].name,
+            next_waypoint_index=target_index,
+            cross_track_error=cross_track_error,
+        )
+
+    @staticmethod
+    def _empty_progress() -> PassagePlanProgress:
+        return PassagePlanProgress(
+            timestamp=datetime.now(timezone.utc),
+            distance_to_waypoint=None,
+            next_waypoint_name=None,
+            next_waypoint_index=None,
         )
 
     def _find_next_waypoint(

@@ -23,6 +23,13 @@ class GPSCard(BaseModel):
         default=None,
         description="The distance to the next waypoint / nautical miles",
     )
+    xte: float | None = Field(
+        default=None,
+        description=(
+            "Cross track error from the current leg / nautical miles, "
+            "positive to starboard of the track"
+        ),
+    )
 
 
 class GPSMap(BaseModel):

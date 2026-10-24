@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from unittest.mock import AsyncMock
 
 import pytest
@@ -22,6 +23,8 @@ from src.kelder_api.components.agentic_workflow.agents.tidal_agent import tidal_
 from src.kelder_api.components.agentic_workflow.chat_storage import _adapter
 from src.kelder_api.components.agentic_workflow.workflow import AgentWorkflow
 from src.kelder_api.components.db_manager.service import DBManager
+from src.kelder_api.components.passage_plan_tracker.models import PassagePlanProgress
+from src.kelder_api.components.passage_plan_tracker.service import PassagePlanTracker
 from src.kelder_api.components.redis_client.types import RedisSetNames
 
 
@@ -191,3 +194,29 @@ async def test_loading_unknown_route_is_reported(
 
     assert result == "No saved route with id 42."
     mock_redis_client.write_set.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_chatbot_reports_dtw_and_xte(
+    mock_redis_client: AsyncMock, monkeypatch: pytest.MonkeyPatch
+):
+    progress = PassagePlanProgress(
+        timestamp=datetime(2025, 6, 1, 9, tzinfo=timezone.utc),
+        distance_to_waypoint=2.4,
+        next_waypoint_name="Cowes",
+        next_waypoint_index=1,
+        cross_track_error=0.3,
+    )
+    monkeypatch.setattr(
+        PassagePlanTracker, "compute_progress", AsyncMock(return_value=progress)
+    )
+    workflow = AgentWorkflow(redis_client=mock_redis_client)
+
+    with chatbot_agent.override(
+        model=FunctionModel(_call_tools_then_echo(("get_route_progress", {})))
+    ):
+        result = await workflow.run("test_user", "How far to the next mark?")
+
+    assert "'dtw_nm': 2.4" in result
+    assert "'xte_nm': 0.3" in result
+    assert "'steer_to_regain_track': 'port'" in result

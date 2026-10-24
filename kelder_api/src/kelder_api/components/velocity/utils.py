@@ -60,6 +60,43 @@ def bearing_degrees(latitude_start, longitude_start, latitude_end, longitude_end
     return bearing
 
 
+def cross_track_distance(
+    latitude_start: float,
+    longitude_start: float,
+    latitude_end: float,
+    longitude_end: float,
+    latitude: float,
+    longitude: float,
+) -> float:
+    """Distance in nautical miles from a position to the track start -> end.
+
+    Positive when the position is to starboard (right) of the track, negative to
+    port. All arguments in decimal degrees.
+    """
+    angular_distance = (
+        haversine(
+            latitude_start=latitude_start,
+            latitude_end=latitude,
+            longitude_start=longitude_start,
+            longitude_end=longitude,
+        )
+        / EARTH_RADIUS_NM
+    )
+    bearing_to_position = bearing_degrees(
+        latitude_start, longitude_start, latitude, longitude
+    )
+    track_bearing = bearing_degrees(
+        latitude_start, longitude_start, latitude_end, longitude_end
+    )
+    return (
+        math.asin(
+            math.sin(angular_distance)
+            * math.sin(math.radians(bearing_to_position - track_bearing))
+        )
+        * EARTH_RADIUS_NM
+    )
+
+
 def average_bearing(bearings):
     """Average bearings using vector method"""
     bearings_rad = np.radians(bearings)

@@ -13,6 +13,8 @@ from src.kelder_api.components.agentic_workflow.agents.passage_planner import (
 from src.kelder_api.components.agentic_workflow.agents.tidal_agent import tidal_agent
 from src.kelder_api.components.agentic_workflow.agents.tools import save_passage_plan
 from src.kelder_api.components.agentic_workflow.models import ChatDeps
+from src.kelder_api.components.gps_new.interface import GPSInterface
+from src.kelder_api.components.passage_plan_tracker.service import PassagePlanTracker
 from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
 
@@ -36,6 +38,9 @@ prompt = textwrap.dedent(
     - Use list_saved_routes to find routes the user saved before, and
       load_saved_route to show one on the map again. If several routes match,
       ask which one before loading.
+    - Use get_route_progress for distance to the next waypoint (DTW) and cross
+      track error (XTE). Quote XTE with its side of the track, and say which way
+      to steer to regain it.
 
     Examples:
     - "Plan a route to Plymouth" → create a passage plan, then confirm the plan
@@ -185,3 +190,36 @@ async def load_saved_route(
     if not await save_passage_plan(plan, ctx.deps.redis_client):
         return "Could not load the route — the plan store did not respond."
     return plan
+
+
+@chatbot_agent.tool
+async def get_route_progress(ctx: RunContext[ChatDeps]) -> dict | str:
+    """Distance to the next waypoint (DTW) and cross track error (XTE) right now."""
+    await ctx.deps.notify("Checking progress along the route")
+    tracker = PassagePlanTracker(
+        ctx.deps.redis_client, GPSInterface(ctx.deps.redis_client)
+    )
+    progress = await tracker.compute_progress()
+    if progress is None:
+        return "No GPS fix — cannot work out progress along the route."
+    if progress.next_waypoint_index is None:
+        return "No active passage plan."
+
+    result = {
+        "next_waypoint": progress.next_waypoint_name,
+        "next_waypoint_number": progress.next_waypoint_index + 1,
+        "dtw_nm": progress.distance_to_waypoint,
+        "xte_nm": None,
+        "measured_at": progress.timestamp.isoformat(),
+    }
+    if progress.cross_track_error is None:
+        result["xte_note"] = "Not yet on a leg — heading to the first waypoint."
+    elif progress.cross_track_error == 0:
+        result["xte_nm"] = 0.0
+        result["xte_note"] = "On track."
+    else:
+        xte = progress.cross_track_error
+        result["xte_nm"] = abs(xte)
+        result["off_track_to"] = "starboard" if xte > 0 else "port"
+        result["steer_to_regain_track"] = "port" if xte > 0 else "starboard"
+    return result
