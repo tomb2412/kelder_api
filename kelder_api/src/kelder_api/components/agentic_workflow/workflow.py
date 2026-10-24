@@ -15,6 +15,7 @@ from src.kelder_api.components.agentic_workflow.utils import (
     build_marks_index,
     load_map,
 )
+from src.kelder_api.components.db_manager.service import DBManager
 from src.kelder_api.components.neo4j_client import Neo4jClient
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.configuration.logging_controller import get_logger
@@ -27,10 +28,14 @@ MARKS_FILE = Path(__file__).resolve().parents[2] / "assets" / "marks.json"
 
 class AgentWorkflow:
     def __init__(
-        self, redis_client: RedisClient, neo4j_client: Neo4jClient | None = None
+        self,
+        redis_client: RedisClient,
+        neo4j_client: Neo4jClient | None = None,
+        db_manager: DBManager | None = None,
     ):
         self.redis_client = redis_client
         self.neo4j_client = neo4j_client
+        self.db_manager = db_manager
         self.marks_data = load_map(MARKS_FILE)
         self.marks_index = build_marks_index(self.marks_data)
 
@@ -48,6 +53,7 @@ class AgentWorkflow:
         deps = ChatDeps(
             redis_client=self.redis_client,
             neo4j_client=self.neo4j_client,
+            db_manager=self.db_manager,
             marks_data=self.marks_data,
             marks_index=self.marks_index,
             progress_callback=progress_callback,

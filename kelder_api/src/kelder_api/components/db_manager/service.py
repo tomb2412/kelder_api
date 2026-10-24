@@ -6,20 +6,28 @@ from datetime import date
 from pathlib import Path
 from typing import TYPE_CHECKING, Generator, Sequence
 
-from src.kelder_api.components.db_manager.models import JourneyHistoryRecord
+from src.kelder_api.components.db_manager.models import (
+    JourneyHistoryRecord,
+    PassagePlanRecord,
+)
 from src.kelder_api.components.db_manager.queries import (
     CREATE_JOURNEY_HISTORY_TABLE,
+    CREATE_PASSAGE_PLAN_TABLE,
     DELETE_ALL_JOURNEYS,
     DELETE_JOURNEY_BY_ID,
     INSERT_JOURNEY_HISTORY,
+    INSERT_PASSAGE_PLAN,
     SELECT_ALL_JOURNEYS,
     SELECT_JOURNEY_BY_ID,
     SELECT_LATEST_JOURNEY_ON_DATE,
+    SELECT_PASSAGE_PLAN_BY_ID,
     SELECT_RECENT_JOURNEYS,
+    SELECT_RECENT_PASSAGE_PLANS,
 )
 from src.kelder_api.configuration.logging_controller import get_logger
 
 if TYPE_CHECKING:
+    from src.kelder_api.components.agentic_workflow.agents.models import PassagePlan
     from src.kelder_api.components.log.models import JourneyData
 
 logger = get_logger(__name__, "db_manager")
@@ -28,7 +36,7 @@ DEFAULT_DB_PATH = Path(__file__).resolve().parents[2] / "assets" / "journey_hist
 
 
 class DBManager:
-    """High level helper around the SQLite journey history database."""
+    """High level helper around the SQLite journey and passage plan database."""
 
     def __init__(self, database_path: str | Path | None = None):
         self.database_path = Path(database_path) if database_path else DEFAULT_DB_PATH
@@ -60,6 +68,7 @@ class DBManager:
             columns = {row[1] for row in cursor.fetchall()}
             if "gps_data" not in columns:
                 cursor.execute("ALTER TABLE journey_history ADD COLUMN gps_data TEXT")
+            cursor.execute(CREATE_PASSAGE_PLAN_TABLE)
         self._initialised = True
         logger.info("Journey history database ready at %s", self.database_path)
 
@@ -113,6 +122,36 @@ class DBManager:
         with self._cursor() as cursor:
             cursor.execute(DELETE_ALL_JOURNEYS)
         logger.info("Successfully cleared the db.")
+
+    def save_passage_plan(self, passage_plan: "PassagePlan") -> PassagePlanRecord:
+        """Insert a passage plan and return it populated with the primary key."""
+        self._ensure_initialised()
+        record = PassagePlanRecord(passage_plan=passage_plan)
+
+        with self._cursor() as cursor:
+            cursor.execute(INSERT_PASSAGE_PLAN, record.as_db_values())
+            unique_key = cursor.lastrowid
+
+        logger.debug("Persisted passage plan %s", unique_key)
+        return record.model_copy(update={"unique_key": unique_key})
+
+    def list_passage_plans(self, limit: int = 10) -> list[PassagePlanRecord]:
+        """Retrieve saved passage plans, newest first."""
+        return self._fetch_passage_plans(SELECT_RECENT_PASSAGE_PLANS, (limit,))
+
+    def fetch_passage_plan(self, unique_key: int) -> PassagePlanRecord | None:
+        """Fetch a single saved passage plan by unique key."""
+        results = self._fetch_passage_plans(SELECT_PASSAGE_PLAN_BY_ID, (unique_key,))
+        return results[0] if results else None
+
+    def _fetch_passage_plans(
+        self, query: str, params: Sequence
+    ) -> list[PassagePlanRecord]:
+        self._ensure_initialised()
+        with self._cursor() as cursor:
+            cursor.execute(query, params)
+            rows = cursor.fetchall()
+        return [PassagePlanRecord.from_row(row) for row in rows]
 
     def _fetch_records(
         self, query: str, params: Sequence | None = None

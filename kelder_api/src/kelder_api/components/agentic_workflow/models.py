@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Awaitable, Callable
 
+from src.kelder_api.components.db_manager.service import DBManager
 from src.kelder_api.components.neo4j_client import Neo4jClient
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 
@@ -11,6 +12,7 @@ class ChatDeps:
 
     redis_client: RedisClient
     neo4j_client: Neo4jClient | None = None
+    db_manager: DBManager | None = None
     marks_data: list[dict[str, Any]] | None = None
     marks_index: Any = None
     progress_callback: Callable[[str], Awaitable[None]] | None = None

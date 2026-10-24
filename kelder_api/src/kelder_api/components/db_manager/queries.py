@@ -81,3 +81,45 @@ WHERE unique_key = ?;
 """.strip()
 
 DELETE_ALL_JOURNEYS = f"DELETE FROM {JOURNEY_HISTORY_TABLE};"
+
+PASSAGE_PLAN_TABLE = "passage_plans"
+
+CREATE_PASSAGE_PLAN_TABLE = f"""
+CREATE TABLE IF NOT EXISTS {PASSAGE_PLAN_TABLE}(
+    unique_key INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_time TEXT NOT NULL,
+    departure_place_name TEXT NOT NULL,
+    destination_place_name TEXT NOT NULL,
+    course_to_steer TEXT NOT NULL
+);
+""".strip()
+
+INSERT_PASSAGE_PLAN = f"""
+INSERT INTO {PASSAGE_PLAN_TABLE} (
+    created_time,
+    departure_place_name,
+    destination_place_name,
+    course_to_steer
+) VALUES (?, ?, ?, ?);
+""".strip()
+
+SELECT_RECENT_PASSAGE_PLANS = f"""
+SELECT unique_key,
+    created_time,
+    departure_place_name,
+    destination_place_name,
+    course_to_steer
+FROM {PASSAGE_PLAN_TABLE}
+ORDER BY created_time DESC, unique_key DESC
+LIMIT ?;
+""".strip()
+
+SELECT_PASSAGE_PLAN_BY_ID = f"""
+SELECT unique_key,
+    created_time,
+    departure_place_name,
+    destination_place_name,
+    course_to_steer
+FROM {PASSAGE_PLAN_TABLE}
+WHERE unique_key = ?;
+""".strip()

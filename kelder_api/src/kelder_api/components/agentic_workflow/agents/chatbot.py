@@ -11,6 +11,7 @@ from src.kelder_api.components.agentic_workflow.agents.passage_planner import (
     passage_plan_agent,
 )
 from src.kelder_api.components.agentic_workflow.agents.tidal_agent import tidal_agent
+from src.kelder_api.components.agentic_workflow.agents.tools import save_passage_plan
 from src.kelder_api.components.agentic_workflow.models import ChatDeps
 from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
@@ -32,6 +33,9 @@ prompt = textwrap.dedent(
       considerations.
     - If you need a departure or destination to plan a passage, ask for it.
       Assume tomorrow if no date is given.
+    - Use list_saved_routes to find routes the user saved before, and
+      load_saved_route to show one on the map again. If several routes match,
+      ask which one before loading.
 
     Examples:
     - "Plan a route to Plymouth" → create a passage plan, then confirm the plan
@@ -127,3 +131,57 @@ async def create_passage_plan(
         logger.exception("Passage plan agent failed")
         return "Passage planning failed — could not generate a route."
     return result.output
+
+
+@chatbot_agent.tool
+async def list_saved_routes(
+    ctx: RunContext[ChatDeps],
+    limit: Annotated[
+        int, Field(description="How many routes to return, newest first", ge=1, le=50)
+    ] = 10,
+) -> list[dict] | str:
+    """List previously saved routes with their ids, newest first."""
+    if ctx.deps.db_manager is None:
+        return "Saved routes unavailable — no database configured."
+
+    await ctx.deps.notify("Looking up saved routes")
+    records = ctx.deps.db_manager.list_passage_plans(limit)
+    if not records:
+        return "No saved routes yet."
+
+    return [
+        {
+            "route_id": record.unique_key,
+            "saved_at": record.passage_plan.timestamp.isoformat(),
+            "departure": record.passage_plan.departure_place_name,
+            "destination": record.passage_plan.desination_place_name,
+            "waypoints": len(record.passage_plan.course_to_steer),
+            "distance_nm": round(
+                sum(record.passage_plan.distance_between_waypoints), 1
+            ),
+        }
+        for record in records
+    ]
+
+
+@chatbot_agent.tool
+async def load_saved_route(
+    ctx: RunContext[ChatDeps],
+    route_id: Annotated[int, Field(description="route_id from list_saved_routes")],
+) -> PassagePlan | str:
+    """Make a saved route the active passage plan so it shows on the map."""
+    if ctx.deps.db_manager is None:
+        return "Saved routes unavailable — no database configured."
+
+    await ctx.deps.notify("Loading a saved route")
+    record = ctx.deps.db_manager.fetch_passage_plan(route_id)
+    if record is None:
+        return f"No saved route with id {route_id}."
+
+    # A fresh timestamp makes it the newest entry in the passage plan set.
+    plan = record.passage_plan.model_copy(
+        update={"timestamp": datetime.now(timezone.utc)}
+    )
+    if not await save_passage_plan(plan, ctx.deps.redis_client):
+        return "Could not load the route — the plan store did not respond."
+    return plan

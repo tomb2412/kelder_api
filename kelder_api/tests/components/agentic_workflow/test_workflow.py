@@ -14,9 +14,15 @@ from pydantic_ai.models.function import AgentInfo, FunctionModel
 from pydantic_ai.models.test import TestModel
 
 from src.kelder_api.components.agentic_workflow.agents.chatbot import chatbot_agent
+from src.kelder_api.components.agentic_workflow.agents.models import (
+    PassagePlan,
+    Waypoint,
+)
 from src.kelder_api.components.agentic_workflow.agents.tidal_agent import tidal_agent
 from src.kelder_api.components.agentic_workflow.chat_storage import _adapter
 from src.kelder_api.components.agentic_workflow.workflow import AgentWorkflow
+from src.kelder_api.components.db_manager.service import DBManager
+from src.kelder_api.components.redis_client.types import RedisSetNames
 
 
 def _ask_for_tides(messages: list[ModelMessage], info: AgentInfo) -> ModelResponse:
@@ -105,3 +111,83 @@ def test_marks_index_loads_from_assets(mock_redis_client: AsyncMock):
 
     assert workflow.marks_data
     assert workflow.marks_index is not None
+
+
+def _call_tools_then_echo(*calls: tuple[str, dict]):
+    """Call each tool in turn, then reply with the last tool's return value."""
+
+    def _model(messages: list[ModelMessage], info: AgentInfo) -> ModelResponse:
+        tool_returns = [
+            part
+            for message in messages
+            for part in message.parts
+            if isinstance(part, ToolReturnPart)
+        ]
+        if len(tool_returns) < len(calls):
+            name, args = calls[len(tool_returns)]
+            return ModelResponse(parts=[ToolCallPart(name, args)])
+        return ModelResponse(parts=[TextPart(str(tool_returns[-1].content))])
+
+    return _model
+
+
+def _saved_plan(db_manager: DBManager) -> int:
+    plan = PassagePlan(
+        departure_place_name="Hamble Point",
+        desination_place_name="Cowes",
+        course_to_steer=[
+            Waypoint(name="Hamble Point", latitude=50.84, longitude=-1.31),
+            Waypoint(name="Cowes", latitude=50.76, longitude=-1.30),
+        ],
+    )
+    return db_manager.save_passage_plan(plan).unique_key
+
+
+@pytest.mark.asyncio
+async def test_chatbot_lists_saved_routes(mock_redis_client: AsyncMock, db_manager):
+    route_id = _saved_plan(db_manager)
+    workflow = AgentWorkflow(redis_client=mock_redis_client, db_manager=db_manager)
+
+    with chatbot_agent.override(
+        model=FunctionModel(_call_tools_then_echo(("list_saved_routes", {})))
+    ):
+        result = await workflow.run("test_user", "What routes have I saved?")
+
+    assert f"'route_id': {route_id}" in result
+    assert "'destination': 'Cowes'" in result
+
+
+@pytest.mark.asyncio
+async def test_chatbot_loads_saved_route_as_active_plan(
+    mock_redis_client: AsyncMock, db_manager
+):
+    route_id = _saved_plan(db_manager)
+    workflow = AgentWorkflow(redis_client=mock_redis_client, db_manager=db_manager)
+
+    with chatbot_agent.override(
+        model=FunctionModel(
+            _call_tools_then_echo(("load_saved_route", {"route_id": route_id}))
+        )
+    ):
+        await workflow.run("test_user", "Load my Cowes route")
+
+    set_name, plan = mock_redis_client.write_set.await_args.args
+    assert set_name == RedisSetNames.PASSAGE_PLAN
+    assert plan.desination_place_name == "Cowes"
+
+
+@pytest.mark.asyncio
+async def test_loading_unknown_route_is_reported(
+    mock_redis_client: AsyncMock, db_manager
+):
+    workflow = AgentWorkflow(redis_client=mock_redis_client, db_manager=db_manager)
+
+    with chatbot_agent.override(
+        model=FunctionModel(
+            _call_tools_then_echo(("load_saved_route", {"route_id": 42}))
+        )
+    ):
+        result = await workflow.run("test_user", "Load route 42")
+
+    assert result == "No saved route with id 42."
+    mock_redis_client.write_set.assert_not_awaited()
