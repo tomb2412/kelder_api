@@ -32,9 +32,10 @@ class CompassInterface:
 
     async def read_heading_from_compass(
         self,
-        now: datetime = datetime.now(timezone.utc),
+        now: datetime | None = None,
         fake_measurements: List[float] | None = None,
     ):
+        now = now or datetime.now(timezone.utc)
         try:
             if fake_measurements:
                 logger.debug("Using fake compass sensor")
@@ -128,9 +129,10 @@ class CompassInterface:
     async def read_heading_history_timeseries(
         self,
         start_datetime: datetime,
-        end_datetime: datetime = datetime.now(timezone.utc),
+        end_datetime: datetime | None = None,
         active: bool = False,
     ) -> List[CompassRedisData]:
+        end_datetime = end_datetime or datetime.now(timezone.utc)
         logger.debug(f"Reading compass data between {start_datetime} to {end_datetime}")
         heading_history = await self.redis_client.read_set(
             RedisSetNames.COMPASS, [start_datetime, end_datetime]

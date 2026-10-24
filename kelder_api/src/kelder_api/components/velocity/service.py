@@ -178,9 +178,10 @@ class VelocityCalculator:
     async def read_velocity_timeseries(
         self,
         start_datetime: datetime,
-        end_datetime: datetime = datetime.now(tz=timezone.utc),
+        end_datetime: datetime | None = None,
         active: bool = True,
     ) -> List[GPSVelocity]:
+        end_datetime = end_datetime or datetime.now(tz=timezone.utc)
         logger.info(f"Reading velocity data between {start_datetime} to {end_datetime}")
         velocity_set = await self.redis_client.read_set(
             RedisSetNames.VELOCITY, [start_datetime, end_datetime]

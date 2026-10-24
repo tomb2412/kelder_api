@@ -87,12 +87,15 @@ async def get_gps_coords_all(gps_interface: GPSInterface = Depends(get_dependanc
 
 @router.get("/gps_coords_timeseries")
 async def get_gps_coords_timeseries(
-    start_datetime: datetime = datetime.now(timezone.utc)
-    - timedelta(seconds=get_settings().velocity.gps_velocity_history),
-    end_datetime: datetime = datetime.now(timezone.utc),
+    start_datetime: datetime | None = None,
+    end_datetime: datetime | None = None,
     gps_interface: GPSInterface = Depends(get_dependancy),
 ):
     """Defualts to velocity history params"""
+    end_datetime = end_datetime or datetime.now(timezone.utc)
+    start_datetime = start_datetime or end_datetime - timedelta(
+        seconds=get_settings().velocity.gps_velocity_history
+    )
     logger.info("Requesting GPS data")
     gps_data = await gps_interface.read_gps_history_time_series(
         start_datetime=start_datetime, end_datetime=end_datetime, active=True

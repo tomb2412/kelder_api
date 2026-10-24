@@ -24,6 +24,14 @@ async def clearRedisSet(
     return {"status": "cleared"}
 
 
+@router.post("/flush_redis")
+async def flushRedis(redis_client: RedisClient = Depends(get_dependancy)):
+    """Deletes every key on the redis server, including chat history."""
+    logger.warning("Flushing all redis data")
+    await redis_client.flush_all()
+    return {"status": "flushed"}
+
+
 @router.get("/get_redis_set_size")
 async def getRedisSetSize(
     sensor: str, redis_client: RedisClient = Depends(get_dependancy)

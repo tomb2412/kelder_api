@@ -38,11 +38,15 @@ async def getVelocityAll(
 
 @router.get("/velocity_timeseries")
 async def getVelocityTimeSeries(
-    start_datetime: datetime = datetime.now(timezone.utc)
-    - timedelta(seconds=get_settings().velocity.gps_velocity_history),
-    end_datetime: datetime = datetime.now(timezone.utc),
+    start_datetime: datetime | None = None,
+    end_datetime: datetime | None = None,
     velocity_calculator: VelocityCalculator = Depends(get_dependancy),
 ):
+    """Defaults to velocity history params"""
+    end_datetime = end_datetime or datetime.now(timezone.utc)
+    start_datetime = start_datetime or end_datetime - timedelta(
+        seconds=get_settings().velocity.gps_velocity_history
+    )
     logger.info("Requesting velocity data")
     velocity_data = await velocity_calculator.read_velocity_timeseries(
         start_datetime=start_datetime, end_datetime=end_datetime, active=True

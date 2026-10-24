@@ -151,10 +151,11 @@ class GPSInterface:
     async def read_gps_history_time_series(
         self,
         start_datetime: datetime,
-        end_datetime: datetime = datetime.now(timezone.utc),
+        end_datetime: datetime | None = None,
         active: bool = False,
     ) -> List[GPSRedisData]:
         """Retrieves the gps measurement within a datetime range"""
+        end_datetime = end_datetime or datetime.now(timezone.utc)
         gps_time_series = await self.redis_client.read_set(
             RedisSetNames.GPS, [start_datetime, end_datetime]
         )

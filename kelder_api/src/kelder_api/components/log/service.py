@@ -189,14 +189,12 @@ class LogTracker:
         await self.redis_client.write_hashed_set(RedisSetNames.JOURNEY, journey_data)
         await self.redis_client.write_hashed_set(RedisSetNames.LEG, leg_data)
 
-    async def get_journey_set(
-        self, datetime: datetime = datetime.now(timezone.utc)
-    ) -> JourneyData:
+    async def get_journey_set(self, timestamp: datetime | None = None) -> JourneyData:
         try:
             return JourneyData(
                 **(
                     await self.redis_client.read_hashed_set(
-                        RedisSetNames.JOURNEY, datetime
+                        RedisSetNames.JOURNEY, timestamp
                     )
                 )
             )
@@ -206,12 +204,14 @@ class LogTracker:
         except Exception:
             raise
 
-    async def get_leg_set(
-        self, datetime: datetime = datetime.now(timezone.utc)
-    ) -> LegData | None:
+    async def get_leg_set(self, timestamp: datetime | None = None) -> LegData | None:
         try:
             return LegData(
-                **(await self.redis_client.read_hashed_set(RedisSetNames.LEG, datetime))
+                **(
+                    await self.redis_client.read_hashed_set(
+                        RedisSetNames.LEG, timestamp
+                    )
+                )
             )
         except ValidationError:
             logger.debug("No data in the leg set")

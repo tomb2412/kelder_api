@@ -63,7 +63,6 @@ class BackgroundTaskManager:
             bilge_depth_sensor_method = "record_bilge_depth"
         else:
             self.simulator = Simulator(
-                db_manager=self.db_manager,
                 redis_client=self.redis_client,
                 simulation_file_name="velocity_plan",
             )

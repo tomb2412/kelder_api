@@ -84,8 +84,8 @@ async def test_hashed_set_roundtrip(redis_server) -> None:
     reading = StatusReading(timestamp=timestamp, status="ok", value=184)
 
     # Persist to the hash that matches the same day as the timestamp.
-    await client.write_hashed_set("journey:", reading, datetime=timestamp)
-    hashed_values = await client.read_hashed_set("journey:", datetime=timestamp)
+    await client.write_hashed_set("journey:", reading, timestamp=timestamp)
+    hashed_values = await client.read_hashed_set("journey:", timestamp=timestamp)
 
     assert hashed_values == reading.model_dump(mode="json")
 

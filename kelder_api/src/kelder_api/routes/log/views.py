@@ -1,7 +1,7 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from http import HTTPStatus
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
 from src.kelder_api.app.getters import get_log_tracker
 from src.kelder_api.components.log.models import JourneyData
@@ -20,10 +20,10 @@ def get_dependancy(request: Request) -> LogTracker:
 @router.get("/get_journey")
 async def getCurrentJourney(
     log_tracker: LogTracker = Depends(get_dependancy),
-    datetime: datetime = datetime.now(timezone.utc),
+    timestamp: datetime | None = Query(default=None, alias="datetime"),
 ) -> JourneyData:
     logger.info("Current journey request recieved.")
-    journey_data = await log_tracker.get_journey_set(datetime)
+    journey_data = await log_tracker.get_journey_set(timestamp)
 
     if journey_data:
         return journey_data

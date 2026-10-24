@@ -123,9 +123,10 @@ class RedisClient:
             return [json.loads(measurement) for measurement, _ in sensor_data]
 
     async def write_hashed_set(
-        self, key: str, data: BaseModel, datetime: datetime = datetime.now(timezone.utc)
+        self, key: str, data: BaseModel, timestamp: datetime | None = None
     ):
-        key = f"{key}{datetime.date().strftime('%d%m%Y')}"
+        timestamp = timestamp or datetime.now(timezone.utc)
+        key = f"{key}{timestamp.date().strftime('%d%m%Y')}"
 
         async with self.get_connection() as redis:
             try:
@@ -136,11 +137,10 @@ class RedisClient:
                 )
                 raise error
 
-    async def read_hashed_set(
-        self, key: str, datetime: datetime = datetime.now(timezone.utc)
-    ):
+    async def read_hashed_set(self, key: str, timestamp: datetime | None = None):
         """Method to read the current days stream."""
-        key = f"{key}{datetime.date().strftime('%d%m%Y')}"
+        timestamp = timestamp or datetime.now(timezone.utc)
+        key = f"{key}{timestamp.date().strftime('%d%m%Y')}"
 
         async with self.get_connection() as redis:
             try:
@@ -154,13 +154,14 @@ class RedisClient:
     async def clear_set(
         self,
         set_name: RedisSetNames | None = None,
-        end_datetime: datetime = datetime.now(timezone.utc),
+        end_datetime: datetime | None = None,
     ) -> None:
         """
         Method to clear the redis data, of a particular set.
 
         None will delete all sets
         """
+        end_datetime = end_datetime or datetime.now(timezone.utc)
 
         if set_name:
             async with self.get_connection() as redis:

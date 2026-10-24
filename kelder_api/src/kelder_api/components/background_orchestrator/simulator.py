@@ -7,7 +7,6 @@ import yaml
 
 from src.kelder_api.components.compass_new.interface import CompassInterface
 from src.kelder_api.components.compass_new.models import CompassRedisData
-from src.kelder_api.components.db_manager.service import DBManager
 from src.kelder_api.components.gps_new.interface import GPSInterface
 from src.kelder_api.components.gps_new.models import GPSRedisData
 from src.kelder_api.components.gps_new.types import GPSStatus
@@ -21,29 +20,20 @@ from src.kelder_api.configuration.logging_controller import get_logger
 
 logger = get_logger(__name__, "simulator")
 
-MAX_SIMULATION_LENGTH_SECONDS = 600
-
 
 class Simulator(CompassInterface, GPSInterface):
     """Injects simulation data for the hardware, using yaml behaviours"""
 
     def __init__(
         self,
-        db_manager: DBManager,
         redis_client: RedisClient,
         simulation_file_name: str,
     ):
-        self.db_manager = db_manager
         self.redis_client = redis_client
+        self.current_time = datetime.now(tz=timezone.utc)
 
         self.simulation_file_name = simulation_file_name
-        self._reset_clock()
         self._initialise_simulation_parameters()
-
-    def _reset_clock(self) -> None:
-        """Align the simulation clock with the wall clock."""
-        self.start_time = datetime.now(tz=timezone.utc)
-        self.current_time = self.start_time
 
     def _initialise_simulation_parameters(self) -> None:
         parent_path = (
@@ -97,12 +87,6 @@ class Simulator(CompassInterface, GPSInterface):
         if self.interation == self.max_iterations:
             await self.clear_redis()
             self._initialise_simulation_parameters()
-
-        simulation_duration = datetime.now(tz=timezone.utc) - self.start_time
-        if simulation_duration.total_seconds() >= MAX_SIMULATION_LENGTH_SECONDS:
-            await self.redis_client.flush_all()
-            self.db_manager.clear_history()
-            self._reset_clock()
 
     async def clear_redis(self) -> None:
         for sensor in [
