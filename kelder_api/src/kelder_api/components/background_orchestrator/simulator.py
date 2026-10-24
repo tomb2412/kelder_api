@@ -30,7 +30,7 @@ class Simulator(CompassInterface, GPSInterface):
         simulation_file_name: str,
     ):
         self.redis_client = redis_client
-        self.current_time = datetime.now(tz=timezone.utc)
+        self.reset_clock()
 
         self.simulation_file_name = simulation_file_name
         self._initialise_simulation_parameters()
@@ -88,20 +88,19 @@ class Simulator(CompassInterface, GPSInterface):
             await self.clear_redis()
             self._initialise_simulation_parameters()
 
+    def reset_clock(self) -> None:
+        """Start timing from now, so start-up delay doesn't move the boat."""
+        self.current_time = datetime.now(tz=timezone.utc)
+
     async def clear_redis(self) -> None:
-        sensor_keys = [
-            f"sensor:ts:{sensor.value}"
-            for sensor in [
-                RedisSetNames.GPS,
-                RedisSetNames.COMPASS,
-                RedisSetNames.VELOCITY,
-                RedisSetNames.LOG,
-                RedisSetNames.DRIFT,
-                RedisSetNames.BILGE_DEPTH,
-            ]
-        ]
-        async with self.redis_client.get_connection() as redis:
-            await redis.unlink(*sensor_keys)
+        await self.redis_client.delete_sets(
+            RedisSetNames.GPS,
+            RedisSetNames.COMPASS,
+            RedisSetNames.VELOCITY,
+            RedisSetNames.LOG,
+            RedisSetNames.DRIFT,
+            RedisSetNames.BILGE_DEPTH,
+        )
 
         logger.info("Cleared the redis data streams")
 

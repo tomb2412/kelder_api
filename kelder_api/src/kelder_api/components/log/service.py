@@ -165,7 +165,9 @@ class LogTracker:
 
     async def finish_journey(self):
         "Writes and clears the cached journey data."
+        end_datetime = datetime.now(timezone.utc)
         if self.journey_data is not None:
+            end_datetime = self.journey_data.end_datetime
             try:
                 # The bounded GPS sorted set may no longer contain the full voyage.
                 # The journey record already carries the track as it is collected.
@@ -175,12 +177,11 @@ class LogTracker:
                 logger.exception("Failed to persist journey history record")
 
         await self.redis_client.clear_set(
-            end_datetime=self.journey_data.end_datetime - timedelta(minutes=10)
+            end_datetime=end_datetime - timedelta(minutes=10)
         )
-        del self.journey_data
-        del self.leg_data
         self.start_journey = True
         self.journey_data = None
+        self.leg_data = None
 
     async def update_redis_set(
         self, journey_data: JourneyData, leg_data: LegData

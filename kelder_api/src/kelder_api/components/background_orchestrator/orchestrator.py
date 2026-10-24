@@ -152,6 +152,7 @@ class BackgroundTaskManager:
     async def run(self):
         if self.simulator is not None:
             await self.simulator.clear_redis()
+            self.simulator.reset_clock()
 
         self.vessel_state = VesselState.STATIONARY
         await self.write_vessel_state()
@@ -174,10 +175,13 @@ class BackgroundTaskManager:
 
                 if self.vessel_state == VesselState.STATIONARY:
                     logger.info("Journey finishing")
-                    await self.components["LOG"]["instance"].finish_journey()
+                    try:
+                        await self.components["LOG"]["instance"].finish_journey()
 
-                    if self.simulator is not None:
-                        await self.simulator.repeat_handler()
+                        if self.simulator is not None:
+                            await self.simulator.repeat_handler()
+                    except Exception:
+                        logger.exception("Failed to finish the journey")
 
             await self.write_vessel_state()
 
@@ -191,8 +195,7 @@ class BackgroundTaskManager:
 
     async def write_vessel_state(self) -> None:
         logger.info(f"Writing the vessel state to redis: {self.vessel_state.value}")
-        async with self.redis_client.get_connection() as redis:
-            await redis.delete(f"sensor:ts:{RedisSetNames.VESSEL_STATE.value}")
+        await self.redis_client.delete_sets(RedisSetNames.VESSEL_STATE)
         await self.redis_client.write_set(
             RedisSetNames.VESSEL_STATE,
             VesselStateModel(vessel_state=self.vessel_state),

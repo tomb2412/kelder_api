@@ -1,8 +1,11 @@
-from fastapi import APIRouter, Depends, Request
+from http import HTTPStatus
+
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from src.kelder_api.app.getters import get_redis_client
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.configuration.logging_controller import get_logger
+from src.kelder_api.configuration.settings import get_settings
 
 logger = get_logger(__name__, "routes.redis")
 
@@ -18,15 +21,23 @@ async def clearRedisSet(
     sensor: str, redis_client: RedisClient = Depends(get_dependancy)
 ):
     logger.info("Clearing the redis data")
-    async with redis_client.get_connection() as redis:
-        await redis.delete(f"sensor:ts:{sensor}")
+    await redis_client.delete_sets(sensor)
     logger.info("Successfully read cleared redis data")
     return {"status": "cleared"}
 
 
 @router.post("/flush_redis")
 async def flushRedis(redis_client: RedisClient = Depends(get_dependancy)):
-    """Deletes every key on the redis server, including chat history."""
+    """Deletes every key on the redis server, including chat history.
+
+    Only available while running the simulator, as the API is unauthenticated.
+    """
+    if not get_settings().orchestrator.run_simulator:
+        raise HTTPException(
+            status_code=HTTPStatus.FORBIDDEN,
+            detail="Flushing redis is only allowed when running the simulator",
+        )
+
     logger.warning("Flushing all redis data")
     await redis_client.flush_all()
     return {"status": "flushed"}
@@ -38,7 +49,7 @@ async def getRedisSetSize(
 ):
     logger.info("Sizing the redis data")
     async with redis_client.get_connection() as redis:
-        key = f"sensor:ts:{sensor}"
+        key = redis_client.sensor_key(sensor)
         size = await redis.zcard(key)
         list_gps = await redis.zrevrangebyscore(
             key,

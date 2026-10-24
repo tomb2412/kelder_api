@@ -88,9 +88,21 @@ class RedisClient:
                 )
                 raise error
 
+    @staticmethod
+    def sensor_key(sensor_id: str) -> str:
+        """Redis key of the sorted set holding a sensor's time series."""
+        return f"sensor:ts:{sensor_id}"
+
+    async def delete_sets(self, *sensor_ids: str) -> None:
+        """Deletes whole sensor sets, freeing the memory in the background."""
+        async with self.get_connection() as redis:
+            await redis.unlink(
+                *[self.sensor_key(sensor_id) for sensor_id in sensor_ids]
+            )
+
     async def write_set(self, sensor_id: str, reading: BaseModel) -> None:
         async with self.get_connection() as redis:
-            key = f"sensor:ts:{sensor_id}"
+            key = self.sensor_key(sensor_id)
             try:
                 max_points = self.settings.redis_max_history_points
                 async with redis.pipeline(transaction=True) as pipeline:
@@ -108,7 +120,7 @@ class RedisClient:
     ) -> List[BaseModel]:
         async with self.get_connection() as redis:
             """Get time-range data from sorted set."""
-            key = f"sensor:ts:{sensor_id}"
+            key = self.sensor_key(sensor_id)
 
             # Get data in time range with scores (timestamps)
             sensor_data = await redis.zrevrangebyscore(
@@ -134,8 +146,10 @@ class RedisClient:
 
         async with self.get_connection() as redis:
             try:
-                await redis.hset(key, mapping=data.model_dump(mode="json"))
-                await redis.expire(key, self.settings.redis_daily_hash_ttl_seconds)
+                async with redis.pipeline(transaction=True) as pipeline:
+                    pipeline.hset(key, mapping=data.model_dump(mode="json"))
+                    pipeline.expire(key, self.settings.redis_daily_hash_ttl_seconds)
+                    await pipeline.execute()
             except Exception as error:
                 logger.error(
                     f"Redis exception raised writing to stream {key}, with {error}"
@@ -170,7 +184,7 @@ class RedisClient:
         if set_name:
             async with self.get_connection() as redis:
                 await redis.zremrangebyscore(
-                    f"sensor:ts:{set_name.value}", "-inf", end_datetime.timestamp()
+                    self.sensor_key(set_name.value), "-inf", end_datetime.timestamp()
                 )
 
             logger.info(
@@ -187,7 +201,9 @@ class RedisClient:
                         continue
 
                     await redis.zremrangebyscore(
-                        f"sensor:ts:{set_name.value}", "-inf", end_datetime.timestamp()
+                        self.sensor_key(set_name.value),
+                        "-inf",
+                        end_datetime.timestamp(),
                     )
 
             logger.info("Cleared all redis sets before: %s", end_datetime)

@@ -2,6 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field, computed_field
 
+from src.kelder_api.components.db_manager.models import JourneyHistoryRecord
 from src.kelder_api.components.velocity.utils import (
     convert_to_decimal_degrees,
     haversine,
@@ -42,4 +43,17 @@ class JourneyData(BaseModel):
 
         return round(
             haversine(latitude_start, latitude_end, longitude_start, longitude_end), 2
+        )
+
+    @classmethod
+    def from_history_record(cls, record: JourneyHistoryRecord) -> "JourneyData":
+        """Rebuild a finished journey from its sqlite history record."""
+        return cls(
+            timestamp=record.departure_time,
+            end_datetime=record.arrival_time,
+            start_latitude=record.departure_location.latitude,
+            start_longitude=record.departure_location.longitude,
+            end_latitude=record.arrival_location.latitude,
+            end_longitude=record.arrival_location.longitude,
+            gps_data=record.gps_data,
         )

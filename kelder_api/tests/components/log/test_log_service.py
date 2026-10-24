@@ -264,8 +264,29 @@ async def test_finish_journey_persists_and_resets_state(
 
     assert tracker.start_journey is True
     assert tracker.journey_data is None
-    assert not hasattr(tracker, "leg_data")
+    assert tracker.leg_data is None
     assert db_manager_stub.saved == [journey_snapshot]
+
+
+@pytest.mark.asyncio
+async def test_finish_journey_without_journey_data(
+    configure_log_settings, db_manager_stub
+):
+    """No journey is recorded if every log increment failed, which must not crash."""
+    configure_log_settings()
+    timestamp = datetime(2024, 1, 1, 12, tzinfo=timezone.utc)
+    tracker = LogTracker(
+        StubGPSInterface(_make_gps(timestamp)),
+        RecordingRedisClient(),
+        StubVelocityCalculator(_make_velocity(timestamp)),
+        db_manager_stub,
+    )
+
+    await tracker.finish_journey()
+
+    assert tracker.start_journey is True
+    assert tracker.journey_data is None
+    assert db_manager_stub.saved == []
 
 
 @pytest.mark.asyncio

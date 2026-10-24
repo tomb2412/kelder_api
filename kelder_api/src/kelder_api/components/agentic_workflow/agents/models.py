@@ -46,7 +46,7 @@ class PortOfRefuge(BaseModel):
 class PassagePlan(BaseModel):
     timestamp: datetime = Field(
         description="The timestamp the passage plan was created",
-        default=datetime.now(tz=timezone.utc),
+        default_factory=lambda: datetime.now(tz=timezone.utc),
     )
     departure_place_name: str = Field(
         ..., description="Place of departure for the passage plan, e.g. 'Cowes'"

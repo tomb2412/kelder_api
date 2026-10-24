@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import sqlite3
 from contextlib import contextmanager
+from datetime import date
 from pathlib import Path
 from typing import TYPE_CHECKING, Generator, Sequence
 
@@ -13,6 +14,7 @@ from src.kelder_api.components.db_manager.queries import (
     INSERT_JOURNEY_HISTORY,
     SELECT_ALL_JOURNEYS,
     SELECT_JOURNEY_BY_ID,
+    SELECT_LATEST_JOURNEY_ON_DATE,
     SELECT_RECENT_JOURNEYS,
 )
 from src.kelder_api.configuration.logging_controller import get_logger
@@ -90,6 +92,11 @@ class DBManager:
     def latest_trip(self) -> JourneyHistoryRecord | None:
         """Return the most recently started trip, if one exists."""
         trips = self.list_trips(limit=1)
+        return trips[0] if trips else None
+
+    def latest_trip_on(self, day: date) -> JourneyHistoryRecord | None:
+        """Return the last trip that departed on the given (UTC) day, if any."""
+        trips = self._fetch_records(SELECT_LATEST_JOURNEY_ON_DATE, (day.isoformat(),))
         return trips[0] if trips else None
 
     def delete_trip(self, unique_key: int) -> bool:

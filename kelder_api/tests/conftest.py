@@ -133,6 +133,14 @@ class _FakeRedis:
             values.pop(member)
         return len(removed)
 
+    async def unlink(self, *keys: str) -> int:
+        removed = 0
+        for key in keys:
+            for store in (self._server._sorted_sets, self._server._hashes):
+                if store.pop(key, None) is not None:
+                    removed += 1
+        return removed
+
 
 class _FakePipeline:
     def __init__(self, redis: _FakeRedis) -> None:
@@ -151,6 +159,14 @@ class _FakePipeline:
 
     def zremrangebyrank(self, key: str, start: int, stop: int):
         self.operations.append((self.redis.zremrangebyrank, key, start, stop))
+        return self
+
+    def hset(self, key: str, mapping: Dict[str, Any]):
+        self.operations.append((self.redis.hset, key, mapping))
+        return self
+
+    def expire(self, key: str, seconds: int):
+        self.operations.append((self.redis.expire, key, seconds))
         return self
 
     async def execute(self):
@@ -252,8 +268,14 @@ class DummyRedisClient:
     async def read_value(self, key: str) -> str | None:
         return self._values.get(key)
 
+    sensor_key = staticmethod(redis_client_module.RedisClient.sensor_key)
+
     async def delete(self, key: str) -> None:
         self.sorted_sets.pop(key, None)
+
+    async def delete_sets(self, *sensor_ids: str) -> None:
+        for sensor_id in sensor_ids:
+            self.sorted_sets.pop(self.sensor_key(sensor_id), None)
 
     async def zcard(self, key: str) -> int:
         return len(self.sorted_sets.get(key, []))

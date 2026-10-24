@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 from http import HTTPStatus
 from typing import List, Tuple
 
@@ -19,7 +19,10 @@ from src.kelder_api.components.log.service import LogTracker
 from src.kelder_api.components.passage_plan_tracker.service import PassagePlanTracker
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.components.velocity.service import VelocityCalculator
-from src.kelder_api.components.velocity.utils import convert_to_decimal_degrees
+from src.kelder_api.components.velocity.utils import (
+    convert_to_decimal_degrees,
+    velocity_time_window,
+)
 from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
 from src.kelder_api.routes.gps.models import GPSCard, GPSMap
@@ -92,10 +95,7 @@ async def get_gps_coords_timeseries(
     gps_interface: GPSInterface = Depends(get_dependancy),
 ):
     """Defualts to velocity history params"""
-    end_datetime = end_datetime or datetime.now(timezone.utc)
-    start_datetime = start_datetime or end_datetime - timedelta(
-        seconds=get_settings().velocity.gps_velocity_history
-    )
+    start_datetime, end_datetime = velocity_time_window(start_datetime, end_datetime)
     logger.info("Requesting GPS data")
     gps_data = await gps_interface.read_gps_history_time_series(
         start_datetime=start_datetime, end_datetime=end_datetime, active=True

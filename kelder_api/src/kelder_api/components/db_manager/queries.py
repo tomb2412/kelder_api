@@ -61,6 +61,20 @@ ORDER BY departure_time DESC
 LIMIT ?;
 """.strip()
 
+SELECT_LATEST_JOURNEY_ON_DATE = f"""
+SELECT unique_key,
+    departure_time,
+    arrival_time,
+    departure_location,
+    arrival_location,
+    distance_travelled,
+    gps_data
+FROM {JOURNEY_HISTORY_TABLE}
+WHERE substr(departure_time, 1, 10) = ?
+ORDER BY departure_time DESC
+LIMIT 1;
+""".strip()
+
 DELETE_JOURNEY_BY_ID = f"""
 DELETE FROM {JOURNEY_HISTORY_TABLE}
 WHERE unique_key = ?;
