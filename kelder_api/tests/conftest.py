@@ -15,6 +15,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 os.environ.setdefault("OPENAI_API_KEY", "test-key")
+os.environ.setdefault("TIDAL_API_KEY", "test-key")
 os.environ.setdefault("HOST_API_RESTART_URL", "http://test:9090/restart")
 os.environ.setdefault("HOST_API_USERNAME", "test")
 os.environ.setdefault("HOST_API_PASSWORD", "test")
