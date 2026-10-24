@@ -12,10 +12,6 @@ from src.kelder_api.components.background_orchestrator.orchestrator import (
 from src.kelder_api.components.background_orchestrator.stationary_strategy import (
     StationaryStrategy,
 )
-from src.kelder_api.components.background_orchestrator import (
-    stationary_strategy as stationary_strategy_module,
-    underway_strategy as underway_strategy_module,
-)
 from src.kelder_api.components.background_orchestrator.underway_strategy import (
     UnderwayStrategy,
 )
@@ -80,7 +76,9 @@ class _VelocityReaderStub:
 def configure_orchestrator_settings(monkeypatch: pytest.MonkeyPatch):
     def _configure(sog_threshold: float = 5.0) -> None:
         settings = make_settings(
-            orchestrator=SimpleNamespace(sog_threshold=sog_threshold, run_simulator=False),
+            orchestrator=SimpleNamespace(
+                sog_threshold=sog_threshold, run_simulator=False
+            ),
             sleep_times=SimpleNamespace(UNDER_WAY_SLEEP=1, STATIONARY_SLEEP=2),
         )
         monkeypatch.setattr(
@@ -232,7 +230,9 @@ async def test_underway_strategy_executes_all_components(
             "method": "read_heading_from_compass",
         },
         "BILGE_DEPTH": {
-            "instance": _ComponentStub("BILGE_DEPTH", "record_bilge_depth", call_sequence),
+            "instance": _ComponentStub(
+                "BILGE_DEPTH", "record_bilge_depth", call_sequence
+            ),
             "method": "record_bilge_depth",
         },
         "VELOCITY": {
@@ -243,11 +243,15 @@ async def test_underway_strategy_executes_all_components(
         },
         "LOG": {"instance": _LogStub(call_sequence), "method": "increment_log"},
         "DRIFT": {
-            "instance": _ComponentStub("DRIFT", "instantaneous_drift_calculator", call_sequence),
+            "instance": _ComponentStub(
+                "DRIFT", "instantaneous_drift_calculator", call_sequence
+            ),
             "method": "instantaneous_drift_calculator",
         },
         "PASSAGE_PLAN_TRACKER": {
-            "instance": _ComponentStub("PASSAGE_PLAN_TRACKER", "calculate_progress", call_sequence),
+            "instance": _ComponentStub(
+                "PASSAGE_PLAN_TRACKER", "calculate_progress", call_sequence
+            ),
             "method": "calculate_progress",
         },
     }
