@@ -6,6 +6,7 @@ from src.kelder_api.components.agentic_workflow.chat_storage import (
     clear_history,
     load_history,
     save_history,
+    trim_history,
 )
 from src.kelder_api.components.agentic_workflow.models import State
 from src.kelder_api.components.agentic_workflow.nodes import (
@@ -18,6 +19,7 @@ from src.kelder_api.components.agentic_workflow.nodes import (
 from src.kelder_api.components.neo4j_client import Neo4jClient
 from src.kelder_api.components.redis_client.redis_client import RedisClient
 from src.kelder_api.configuration.logging_controller import get_logger
+from src.kelder_api.configuration.settings import get_settings
 
 logger = get_logger(__name__, "agent_workflow")
 
@@ -44,7 +46,10 @@ class AgentWorkflow:
         user_message: str,
         progress_callback: Callable[[str], Awaitable[None]] | None = None,
     ) -> str:
-        history = await load_history(self.redis_client, user_id)
+        max_messages = get_settings().inference.max_history_messages
+        history = trim_history(
+            await load_history(self.redis_client, user_id), max_messages
+        )
         state = State(
             redis_client=self.redis_client,
             neo4j_client=self.neo4j_client,
@@ -55,7 +60,11 @@ class AgentWorkflow:
         try:
             logger.info("Running the graph for user %s", user_id)
             result = await self.graph.run(ChatBotAgent(), state=state)
-            await save_history(self.redis_client, user_id, state.message_history)
+            await save_history(
+                self.redis_client,
+                user_id,
+                trim_history(state.message_history, max_messages),
+            )
         finally:
             state.progress_callback = None
 

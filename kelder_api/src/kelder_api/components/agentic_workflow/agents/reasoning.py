@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 from pydantic_ai import Agent
 
 from src.kelder_api.components.agentic_workflow.models import Node
+from src.kelder_api.configuration.settings import get_settings
 
 # TODO: how will the model manage dates?
 # TODO: conflicting prompt with same node more than once
@@ -73,7 +74,7 @@ prompt = textwrap.dedent(
 ).strip()
 
 reasoning_agent = Agent(
-    model="openai:gpt-4o-mini",
+    model=get_settings().inference.chat_model,
     output_type=OchestrationPlan,
-    system_prompt=prompt,
+    instructions=prompt,
 )

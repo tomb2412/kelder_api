@@ -142,6 +142,14 @@ class Inference(BaseSettings):
         description="Number of characters per streamed SSE chunk",
         default=1,
     )
+    chat_model: str = Field(
+        description="pydantic-ai model identifier used by every chatbot agent",
+        default="openai:gpt-4o-mini",
+    )
+    max_history_messages: int = Field(
+        description="Maximum number of chat messages kept and sent to the model",
+        default=20,
+    )
     model_config = model_config
 
 

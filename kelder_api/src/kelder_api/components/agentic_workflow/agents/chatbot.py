@@ -4,6 +4,8 @@ from datetime import datetime, timezone
 
 from pydantic_ai import Agent
 
+from src.kelder_api.configuration.settings import get_settings
+
 
 # TODO: class to initialise all the agents and then expopse runtime inference methods
 # TODO: I need to remove orchestration properties from this prompt -
@@ -52,13 +54,13 @@ prompt = textwrap.dedent(
 ).strip()
 
 chatbot_agent = Agent(
-    model="openai:gpt-4o-mini",
+    model=get_settings().inference.chat_model,
     output_type=ChatResponse | ReasoningInput,  # | TidalSearch | BuildPassageRoute,
-    system_prompt=prompt,
+    instructions=prompt,
 )
 
 
-@chatbot_agent.system_prompt
+@chatbot_agent.instructions
 def chatbot_datetime_prompt() -> str:
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M")
     return f"Current UTC datetime: {now} UTC."

@@ -11,6 +11,7 @@ from src.kelder_api.components.velocity.utils import (
     haversine,
 )
 from src.kelder_api.configuration.logging_controller import get_logger
+from src.kelder_api.configuration.settings import get_settings
 
 logger = get_logger(__name__, "passage_planner")
 
@@ -49,13 +50,13 @@ system_prompt = textwrap.dedent(
 ).strip()
 
 passage_plan_agent = Agent(
-    "openai:gpt-4o-mini",
-    system_prompt=system_prompt,
+    get_settings().inference.chat_model,
+    instructions=system_prompt,
     output_type=PassagePlan,
 )
 
 
-@passage_plan_agent.system_prompt
+@passage_plan_agent.instructions
 def passage_planner_datetime_prompt() -> str:
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M")
     return f"Current UTC datetime: {now} UTC."

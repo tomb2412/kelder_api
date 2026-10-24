@@ -9,7 +9,11 @@ from src.kelder_api.components.agentic_workflow.graph import AgentWorkflow
 from src.kelder_api.components.auth.clerk import get_optional_user_id
 from src.kelder_api.configuration.logging_controller import get_logger
 from src.kelder_api.configuration.settings import get_settings
-from src.kelder_api.routes.inference.utils import error_stream, extract_user_prompt
+from src.kelder_api.routes.inference.utils import (
+    describe_workflow_error,
+    error_stream,
+    extract_user_prompt,
+)
 
 logger = get_logger(__name__, "routes.inference")
 
@@ -70,7 +74,7 @@ async def stream_chat(user_prompt: str, user_id: str, agent_workflow: AgentWorkf
 
     except Exception as exc:  # pragma: no cover - defensive logging
         logger.exception("Agent workflow failed: %s", exc)
-        for chunk in error_stream("Agent workflow failed", message_id=message_id):
+        for chunk in error_stream(describe_workflow_error(exc), message_id=message_id):
             yield chunk
         return
     finally:
