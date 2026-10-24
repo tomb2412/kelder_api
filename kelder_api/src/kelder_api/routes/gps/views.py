@@ -131,9 +131,12 @@ async def get_gps_card(
     journey_data = await log_tracker.get_journey_set()
     drift_data = await drift_calculator.read_drift_latest(active=True)
 
-    # Read passage plan progress for DTW
     tracker = PassagePlanTracker(redis_client, gps_interface)
-    progress = await tracker.read_progress_latest()
+    try:
+        progress = await tracker.compute_progress()
+    except Exception:
+        logger.exception("Could not work out passage plan progress")
+        progress = None
     dtw = progress.distance_to_waypoint if progress else None
     xte = progress.cross_track_error if progress else None
 
