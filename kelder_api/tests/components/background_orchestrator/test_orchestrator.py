@@ -355,6 +355,12 @@ async def test_stationary_strategy_executes_expected_components(
             "method": "calculate_gps_velocity",
         },
         "LOG": {"instance": _LogStub(call_sequence), "method": "increment_log"},
+        "PASSAGE_PLAN_TRACKER": {
+            "instance": _ComponentStub(
+                "PASSAGE_PLAN_TRACKER", "calculate_progress", call_sequence
+            ),
+            "method": "calculate_progress",
+        },
     }
 
     async def fake_sleep(delay: float) -> None:
@@ -366,6 +372,7 @@ async def test_stationary_strategy_executes_expected_components(
         "GPS.stream_serial_data",
         "BILGE_DEPTH.record_bilge_depth",
         "VELOCITY.calculate_gps_velocity",
+        "PASSAGE_PLAN_TRACKER.calculate_progress",
     ]
     assert components["LOG"]["instance"].finish_calls == 0
 

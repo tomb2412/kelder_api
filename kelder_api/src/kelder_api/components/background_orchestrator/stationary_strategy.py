@@ -19,7 +19,7 @@ class StationaryStrategy:
 
     def required_calculators() -> List[str]:
         """Defines which calcuations are required and in what order"""
-        return ["VELOCITY"]
+        return ["VELOCITY", "PASSAGE_PLAN_TRACKER"]
 
     @classmethod
     async def execute(

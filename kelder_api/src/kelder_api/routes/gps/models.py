@@ -30,6 +30,14 @@ class GPSCard(BaseModel):
             "positive to starboard of the track"
         ),
     )
+    next_waypoint: str | None = Field(
+        default=None,
+        description="Name of the active waypoint being steered to",
+    )
+    next_waypoint_number: int | None = Field(
+        default=None,
+        description="Position of the active waypoint in the route, starting at 1",
+    )
 
 
 class GPSMap(BaseModel):

@@ -10,7 +10,7 @@ from src.kelder_api.components.agentic_workflow.chat_storage import (
     save_history,
     trim_history,
 )
-from src.kelder_api.components.agentic_workflow.models import ChatDeps
+from src.kelder_api.components.agentic_workflow.models import ChatDeps, VesselServices
 from src.kelder_api.components.agentic_workflow.utils import (
     build_marks_index,
     load_map,
@@ -32,10 +32,12 @@ class AgentWorkflow:
         redis_client: RedisClient,
         neo4j_client: Neo4jClient | None = None,
         db_manager: DBManager | None = None,
+        vessel_services: VesselServices | None = None,
     ):
         self.redis_client = redis_client
         self.neo4j_client = neo4j_client
         self.db_manager = db_manager
+        self.vessel_services = vessel_services
         self.marks_data = load_map(MARKS_FILE)
         self.marks_index = build_marks_index(self.marks_data)
 
@@ -54,6 +56,7 @@ class AgentWorkflow:
             redis_client=self.redis_client,
             neo4j_client=self.neo4j_client,
             db_manager=self.db_manager,
+            vessel=self.vessel_services,
             marks_data=self.marks_data,
             marks_index=self.marks_index,
             progress_callback=progress_callback,

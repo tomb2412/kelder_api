@@ -2,10 +2,14 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
 from enum import Enum
 from typing import Any, Callable, Dict
 
 import pytest
+
+from src.kelder_api.components.passage_plan_tracker.models import PassagePlanProgress
+from src.kelder_api.components.passage_plan_tracker.service import REDIS_KEY
 
 
 @dataclass(frozen=True)
@@ -132,6 +136,8 @@ class AppRoute(Enum):
             "drift": None,
             "dtw": None,
             "xte": None,
+            "next_waypoint": None,
+            "next_waypoint_number": None,
         },
     )
     COMPASS_HEADING = RouteExpectation(
@@ -262,3 +268,37 @@ def test_routes_behave_as_expected(app_client, route: AppRoute):
                 expectation.validator(response.json())
             elif expectation.expected_json is not None:
                 assert response.json() == expectation.expected_json
+
+
+def _store_progress(app, age: timedelta) -> None:
+    """Store route progress the way the worker does each tick."""
+    progress = PassagePlanProgress(
+        timestamp=datetime.now(timezone.utc) - age,
+        distance_to_waypoint=1.53,
+        next_waypoint_name="Waypoint 6",
+        next_waypoint_index=5,
+        cross_track_error=0.1,
+    )
+    app.state.redis_client._values[REDIS_KEY] = progress.model_dump_json()
+
+
+def test_gps_card_sends_the_workers_next_waypoint(app_client):
+    client, app = app_client
+    _store_progress(app, age=timedelta(seconds=2))
+
+    card = client.get("/gps_card_data").json()
+
+    assert card["next_waypoint"] == "Waypoint 6"
+    assert card["next_waypoint_number"] == 6
+    assert card["dtw"] == 1.53
+    assert card["xte"] == 0.1
+
+
+def test_gps_card_ignores_stale_progress(app_client):
+    client, app = app_client
+    _store_progress(app, age=timedelta(minutes=5))
+
+    card = client.get("/gps_card_data").json()
+
+    assert card["next_waypoint"] is None
+    assert card["dtw"] is None

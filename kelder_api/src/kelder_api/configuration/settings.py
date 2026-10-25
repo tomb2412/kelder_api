@@ -124,6 +124,13 @@ class Orchestrator(BaseSettings):
         ),
         default=0.5,
     )
+    passage_plan_progress_max_age_seconds: int = Field(
+        description=(
+            "Maximum age of the worker's stored route progress (DTW, XTE, next "
+            "waypoint) before readers treat it as unavailable"
+        ),
+        default=30,
+    )
 
     model_config = model_config
 

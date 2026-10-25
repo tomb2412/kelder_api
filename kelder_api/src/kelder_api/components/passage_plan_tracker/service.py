@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from src.kelder_api.components.agentic_workflow.agents.models import (
     PassagePlan,
@@ -15,10 +15,46 @@ from src.kelder_api.components.velocity.utils import (
     haversine,
 )
 from src.kelder_api.configuration.logging_controller import get_logger
+from src.kelder_api.configuration.settings import get_settings
 
 logger = get_logger(__name__, "passage_plan_tracker")
 
 REDIS_KEY = "progress:passage_plan"
+
+
+async def read_active_plan(redis_client: RedisClient) -> PassagePlan | None:
+    """The passage plan currently active and shown on the map, if any."""
+    plans = await redis_client.read_set(RedisSetNames.PASSAGE_PLAN)
+    return PassagePlan(**plans[0]) if plans else None
+
+
+async def read_stored_progress(redis_client: RedisClient) -> PassagePlanProgress | None:
+    """The worker's latest progress, or None if missing or too old to trust.
+
+    This is the one source of route progress for the API and chatbot; it goes
+    stale if the worker stops or loses its GPS fix.
+    """
+    raw = await redis_client.read_value(REDIS_KEY)
+    if raw is None:
+        return None
+    progress = PassagePlanProgress.model_validate_json(raw)
+    max_age = timedelta(
+        seconds=get_settings().orchestrator.passage_plan_progress_max_age_seconds
+    )
+    if datetime.now(timezone.utc) - progress.timestamp > max_age:
+        logger.debug("Stored passage plan progress is stale: %s", progress)
+        return None
+    return progress
+
+
+def distance_remaining(
+    plan: PassagePlan, progress: PassagePlanProgress
+) -> float | None:
+    """Nautical miles left: DTW plus every leg after the next waypoint."""
+    if progress.next_waypoint_index is None or progress.distance_to_waypoint is None:
+        return None
+    later_legs = plan.distance_between_waypoints[progress.next_waypoint_index :]
+    return round(progress.distance_to_waypoint + sum(later_legs), 2)
 
 
 class PassagePlanTracker:
@@ -38,16 +74,11 @@ class PassagePlanTracker:
         Returns progress with empty fields when no plan is set, or None when
         there is no GPS fix to measure from.
         """
-        # Read passage plan from Redis
-        try:
-            plan_data = (await self.redis_client.read_set(RedisSetNames.PASSAGE_PLAN))[
-                0
-            ]
-        except IndexError:
+        plan = await read_active_plan(self.redis_client)
+        if plan is None:
             logger.debug("No passage plan set")
             return self._empty_progress()
 
-        plan = PassagePlan(**plan_data)
         waypoints = plan.course_to_steer
 
         if not waypoints:
@@ -163,7 +194,4 @@ class PassagePlanTracker:
         await self.redis_client.write_value(REDIS_KEY, progress.model_dump_json())
 
     async def read_progress_latest(self) -> PassagePlanProgress | None:
-        raw = await self.redis_client.read_value(REDIS_KEY)
-        if raw is None:
-            return None
-        return PassagePlanProgress.model_validate_json(raw)
+        return await read_stored_progress(self.redis_client)
