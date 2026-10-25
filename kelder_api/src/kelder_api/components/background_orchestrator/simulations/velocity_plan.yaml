@@ -52,3 +52,15 @@ simulation:
       - cog: 0
       - heading: 0
 
+
+gps_blackout:
+  - phase: # no fix yet
+    - seconds: 15
+    - status: V
+    - satellites: []
+    - hdop: ""
+  - phase: # weak: too few satellites, poor HDOP
+    - seconds: 15
+    - status: A
+    - satellites: [5, 12, 21]
+    - hdop: 6.8

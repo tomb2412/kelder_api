@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from typing import Dict, List
 from unittest.mock import AsyncMock
 
+import pynmea2
 import pytest
 from pydantic import ValidationError
 
@@ -15,6 +16,7 @@ from src.kelder_api.components.gps_new.models import (
 from src.kelder_api.components.gps_new.types import GPSStatus
 from src.kelder_api.components.gps_new.utils import round_ddmm
 from src.kelder_api.components.redis_client.redis_client import RedisClient
+from src.kelder_api.components.velocity.utils import convert_to_decimal_degrees
 
 
 @pytest.fixture()
@@ -59,6 +61,63 @@ def test_round_ddmm_truncates_to_two_decimal_minutes(
     """Check utility rounding keeps degrees and rounds minutes to two decimals."""
     result = round_ddmm(raw_value, deg_digits)
     assert result == expected
+
+
+@pytest.mark.parametrize(
+    "raw_value,deg_digits,expected",
+    [
+        ("-00109.5678", 3, "-00109.57"),  # real GPS, west
+        ("-0118.906543", 3, "-00118.91"),  # simulator, west (2-digit degrees)
+        ("5059.996", 2, "5100.00"),  # minutes round up to 60 -> carry
+        ("-00159.999", 3, "-00200.00"),
+    ],
+)
+def test_round_ddmm_handles_sign_and_carry(
+    raw_value: str, deg_digits: int, expected: str
+) -> None:
+    """Signed values keep their sign and 60.00 minutes carry into the degrees."""
+    assert round_ddmm(raw_value, deg_digits) == expected
+
+
+@pytest.mark.parametrize(
+    "lat,lat_dir,lon,lon_dir,expected_lat,expected_lon",
+    [
+        ("5045.1234", "N", "00109.5678", "W", "5045.1234", "-00109.5678"),
+        ("3352.0000", "S", "15112.0000", "E", "-3352.0000", "15112.0000"),
+    ],
+)
+def test_gprmc_from_nmea_applies_hemisphere_sign(
+    lat: str,
+    lat_dir: str,
+    lon: str,
+    lon_dir: str,
+    expected_lat: str,
+    expected_lon: str,
+) -> None:
+    """The N/S/E/W fields are folded into the coordinate sign rather than dropped."""
+    sentence = pynmea2.RMC(
+        "GP",
+        "RMC",
+        ("123519", "A", lat, lat_dir, lon, lon_dir, "5.0", "084.4", "250926", "", ""),
+    )
+    course = GPRMCRecommendedCourse.from_nmea(pynmea2.parse(sentence.render()))
+
+    assert course.latitude_nmea == expected_lat
+    assert course.longitude_nmea == expected_lon
+    assert (convert_to_decimal_degrees(course.longitude_nmea) < 0) == (lon_dir == "W")
+    assert (convert_to_decimal_degrees(course.latitude_nmea) < 0) == (lat_dir == "S")
+
+
+def test_gprmc_from_nmea_void_fix_has_empty_coordinates() -> None:
+    """A void fix has no position; signing must leave the empty fields alone."""
+    sentence = pynmea2.RMC(
+        "GP", "RMC", ("123519", "V", "", "", "", "", "", "", "250926", "", "")
+    )
+    course = GPRMCRecommendedCourse.from_nmea(pynmea2.parse(sentence.render()))
+
+    assert course.status == GPSStatus.VOID
+    assert not course.latitude_nmea
+    assert not course.longitude_nmea
 
 
 @pytest.mark.parametrize(

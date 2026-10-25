@@ -10,7 +10,7 @@ from src.kelder_api.components.gps_new.types import (
     LatitudeHemisphere,
     LongitudeHemisphere,
 )
-from src.kelder_api.components.gps_new.utils import round_ddmm
+from src.kelder_api.components.gps_new.utils import round_ddmm, sign_ddmm
 
 
 class GPRMCRecommendedCourse(BaseModel):
@@ -24,11 +24,17 @@ class GPRMCRecommendedCourse(BaseModel):
     timestamp: datetime = Field(description="Timestamp taken from the GPRMC sentence")
     status: GPSStatus = Field(description="Status of GPS reading")
     latitude_nmea: str | None = Field(
-        description='Latitude NMEA output: DDMM.MMMM ("Degrees, decimal minutes")',
+        description=(
+            'Latitude NMEA output: DDMM.MMMM ("Degrees, decimal minutes"), '
+            "negative for South"
+        ),
         default=None,
     )
     longitude_nmea: str | None = Field(
-        description='Longitude NMEA output: DDDMM.MMMM ("Degrees, decimal minutes")',
+        description=(
+            'Longitude NMEA output: DDDMM.MMMM ("Degrees, decimal minutes"), '
+            "negative for West"
+        ),
         default=None,
     )
 
@@ -37,14 +43,12 @@ class GPRMCRecommendedCourse(BaseModel):
         return cls(
             timestamp=datetime.combine(nmea_data.datestamp, nmea_data.timestamp),
             status=GPSStatus.ACTIVE if nmea_data.status == "A" else GPSStatus.VOID,
-            latitude_nmea=nmea_data.lat,
-            latitude_hemisphere=LatitudeHemisphere.NORTH
-            if nmea_data.lat_dir == "N"
-            else LatitudeHemisphere.SOUTH,
-            longitude_nmea=nmea_data.lon,
-            longitude_hemisphere=LongitudeHemisphere.WEST
-            if nmea_data.lon_dir == "W"
-            else LongitudeHemisphere.EAST,
+            latitude_nmea=sign_ddmm(
+                nmea_data.lat, nmea_data.lat_dir == LatitudeHemisphere.SOUTH.value
+            ),
+            longitude_nmea=sign_ddmm(
+                nmea_data.lon, nmea_data.lon_dir == LongitudeHemisphere.WEST.value
+            ),
         )
 
 
@@ -153,11 +157,17 @@ class GPSRedisData(BaseModel):
     # Optional fields depending on status
     # Active fix data
     latitude_nmea: str = Field(
-        description='Latitude NMEA output: DDMM.MMMM ("Degrees, decimal minutes")',
+        description=(
+            'Latitude NMEA output: DDMM.MMMM ("Degrees, decimal minutes"), '
+            "negative for South"
+        ),
         default="",
     )
     longitude_nmea: str = Field(
-        description='Longitude NMEA output: DDDMM.MMMM ("Degrees, decimal minutes")',
+        description=(
+            'Longitude NMEA output: DDDMM.MMMM ("Degrees, decimal minutes"), '
+            "negative for West"
+        ),
         default="",
     )
 

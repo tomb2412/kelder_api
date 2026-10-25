@@ -20,6 +20,8 @@ from src.kelder_api.configuration.logging_controller import get_logger
 
 logger = get_logger(__name__, "simulator")
 
+GOOD_SIGNAL = (GPSStatus.ACTIVE, [2, 5, 10, 12, 15, 21, 24, 29], 0.9)
+
 
 class Simulator(CompassInterface, GPSInterface):
     """Injects simulation data for the hardware, using yaml behaviours"""
@@ -74,6 +76,20 @@ class Simulator(CompassInterface, GPSInterface):
         except IndexError:
             self.velocity_plan = None
 
+        # Optional scripted signal loss: (seconds, status, active satellite PRNs, HDOP)
+        self.blackout = [
+            (
+                phase["phase"][0]["seconds"],
+                GPSStatus(phase["phase"][1]["status"]),
+                phase["phase"][2]["satellites"],
+                phase["phase"][3]["hdop"],
+            )
+            for phase in config.get("gps_blackout", [])
+        ]
+
+        # Replay the blackout on every (re)start of the simulation
+        self.signal_started_at = datetime.now(tz=timezone.utc)
+
         logger.info("Initialised simulation data")
 
     async def repeat_handler(self) -> None:
@@ -91,6 +107,16 @@ class Simulator(CompassInterface, GPSInterface):
     def reset_clock(self) -> None:
         """Start timing from now, so start-up delay doesn't move the boat."""
         self.current_time = datetime.now(tz=timezone.utc)
+        self.signal_started_at = self.current_time
+
+    def _signal_at(self, now: datetime) -> tuple[GPSStatus, list[int], float | str]:
+        """The blackout (status, satellites, HDOP) for this point in the run."""
+        elapsed = (now - self.signal_started_at).total_seconds()
+        for duration, status, satellites, hdop in self.blackout:
+            if elapsed < duration:
+                return status, satellites, hdop
+            elapsed -= duration
+        return GOOD_SIGNAL
 
     async def clear_redis(self) -> None:
         await self.redis_client.delete_sets(
@@ -127,13 +153,16 @@ class Simulator(CompassInterface, GPSInterface):
             dt_seconds=float(time_increment),
         )
 
+        # The boat keeps moving during a lost fix; the reading just has no position
+        status, satellites, hdop = self._signal_at(now)
+        has_fix = status == GPSStatus.ACTIVE
         gps_redis_data = GPSRedisData(
             timestamp=self.current_time,
-            status=GPSStatus.ACTIVE,
-            latitude_nmea=self.latitude,
-            longitude_nmea=self.longitude,
-            active_prn=[10],
-            hdop=0,
+            status=status,
+            latitude_nmea=self.latitude if has_fix else "",
+            longitude_nmea=self.longitude if has_fix else "",
+            active_prn=satellites,
+            hdop=hdop,
             satellites_in_view={},
         )
 

@@ -127,6 +127,7 @@ async def get_gps_card(
 
     # TODO: This should be a time window, so the latest gps within say 1 hour
     gps_data = await gps_interface.read_gps_latest(active=True)
+    gps_status = await gps_interface.read_gps_latest(active=False)
     velocity_data = await velocity_calculator.read_velocity_latest(active=True)
     journey_data = await log_tracker.get_journey_set()
     drift_data = await drift_calculator.read_drift_latest(active=True)
@@ -161,6 +162,13 @@ async def get_gps_card(
             next_waypoint_number=(
                 progress.next_waypoint_index + 1
                 if progress and progress.next_waypoint_index is not None
+                else None
+            ),
+            fix_status=gps_status.status if gps_status else None,
+            satellites=len(gps_status.active_prn) if gps_status else None,
+            hdop=(
+                gps_status.hdop
+                if gps_status and isinstance(gps_status.hdop, (int, float))
                 else None
             ),
         )

@@ -2,6 +2,8 @@ from datetime import time
 
 from pydantic import BaseModel, Field
 
+from src.kelder_api.components.gps_new.types import GPSStatus
+
 
 class GPSCard(BaseModel):
     timestamp: time | str = Field(description="The time the GPS measurement was taken")
@@ -37,6 +39,21 @@ class GPSCard(BaseModel):
     next_waypoint_number: int | None = Field(
         default=None,
         description="Position of the active waypoint in the route, starting at 1",
+    )
+    fix_status: GPSStatus | None = Field(
+        default=None,
+        description=(
+            "Status of the most recent GPS reading (A = fix, V = no fix). The "
+            "position fields always come from the last reading with a fix."
+        ),
+    )
+    satellites: int | None = Field(
+        default=None,
+        description="Number of satellites used in the most recent reading",
+    )
+    hdop: float | None = Field(
+        default=None,
+        description="Horizontal dilution of precision of the most recent reading",
     )
 
 

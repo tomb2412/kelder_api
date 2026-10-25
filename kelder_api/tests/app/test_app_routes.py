@@ -138,6 +138,9 @@ class AppRoute(Enum):
             "xte": None,
             "next_waypoint": None,
             "next_waypoint_number": None,
+            "fix_status": "A",
+            "satellites": 0,
+            "hdop": None,
         },
     )
     COMPASS_HEADING = RouteExpectation(
@@ -302,3 +305,24 @@ def test_gps_card_ignores_stale_progress(app_client):
 
     assert card["next_waypoint"] is None
     assert card["dtw"] is None
+
+
+def test_gps_card_reports_live_fix_quality(app_client):
+    client, app = app_client
+    app.state.gps_interface.latest_model.active_prn = [2, 5, 10, 12, 15]
+    app.state.gps_interface.latest_model.hdop = 1.4
+
+    card = client.get("/gps_card_data").json()
+
+    assert card["fix_status"] == "A"
+    assert card["satellites"] == 5
+    assert card["hdop"] == 1.4
+
+
+def test_gps_card_reports_lost_fix(app_client):
+    client, app = app_client
+    app.state.gps_interface.latest_model.status = "V"
+
+    card = client.get("/gps_card_data").json()
+
+    assert card["fix_status"] == "V"
